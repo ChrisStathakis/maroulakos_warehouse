@@ -78,6 +78,7 @@ class ProductUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context["page_title"] = f'{self.object}'
         context['product_vendor_form'] = ProductForm(initial={'product': self.object})
+        context['back_url'] = reverse('catalogue:product_list')
         context['action_url'] = reverse('catalogue:product_list')
         return context
 

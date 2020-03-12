@@ -3,6 +3,7 @@ from .models import ProductClass, Product
 
 
 class ProductClassTable(tables.Table):
+    title = tables.TemplateColumn("<a href='{{ record.get_edit_url }}'>{{ record }} </a>")
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'
@@ -11,6 +12,7 @@ class ProductClassTable(tables.Table):
 
 
 class ProductTable(tables.Table):
+    title = tables.TemplateColumn("<a href='{{ record.get_edit_url }}'>{{ record }} </a>")
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'
