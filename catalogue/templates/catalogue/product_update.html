@@ -1,0 +1,123 @@
+{% extends 'catalogue/dashboard.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            Επεξεργασια {{ object }}
+                        </div>
+                        <div class="card-body">
+                            <form class="form" method="post">
+                                {% csrf_token %}
+                                {{ form }}
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Αποθηκευση </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="title">Επιλογή Συστατικών</div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="form">{% csrf_token %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Κοστος</th>
+                                    <th>Επιλογες</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for igre in object.ingredients.all %}
+                                    <tr>
+                                        <td>{{ igre }}</td>
+                                        <td>{{ igre.qty }}</td>
+                                        <td>{{ igre.cost }}</td>
+                                        <td>--</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">Δε υπαρχουν δεδομενα</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td><input class="form-control" type="text" required placeholder="Προϊον"> </td>
+                                    <td><input class="form-control" type="number" required placeholder="Ποσοτητα"> </td>
+                                    <td colspan="2"><button type="submit" class="btn btn-success pull-right"> <i class="fa fa-save"></i> </button> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            Επιλογή Αποθηκης
+                        </div>
+                        {% if object.product_class.have_storage %}
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Αποθηκη</th>
+                                        <th>Απόθεμα</th>
+                                        <th>Επιλογες</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                            <p>Δε υποστηρίζεται η αποηθηκη</p>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        Στοιχεια Προϊόντος
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>Sku</td>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>Barcode</td>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>Προμηθευτης</td>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>Τιμη Αγορας</td>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>Τιμη Πωλησης</td>
+                                    <th></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
