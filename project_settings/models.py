@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.shortcuts import reverse
 # Create your models here.
 
 PAYMENT_METHOD_CATEGORY = (
@@ -27,3 +27,9 @@ class Storage(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_edit_url(self):
+        return reverse('settings:storage_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('settings:storage_delete', kwargs={'pk': self.id})

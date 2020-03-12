@@ -8,4 +8,5 @@ class StorageTable(tables.Table):
 
     class Meta:
         model = Storage
-        fields = ['title', 'capacity']
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['title', 'capacity', 'active']

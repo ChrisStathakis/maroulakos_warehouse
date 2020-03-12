@@ -5,5 +5,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', include('dashboard.urls')),
-    path('catalogue/', include('catalogue.urls'))
+    path('catalogue/', include('catalogue.urls')),
+    path('project-settings/', include('project_settings.urls'))
 ]
