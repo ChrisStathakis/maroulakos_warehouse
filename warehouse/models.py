@@ -50,13 +50,13 @@ class Vendor(models.Model):
         super().save(*args, **kwargs)
 
     def get_edit_url(self):
-        return reverse('vendors:update', kwargs={'pk': self.id})
+        return reverse('warehouse:vendor_update', kwargs={'pk': self.id})
 
     def get_card_url(self):
-        return reverse('vendors:vendor_card', kwargs={'pk': self.id})
+        return reverse('warehouse:vendor_card', kwargs={'pk': self.id})
 
     def get_delete_url(self):
-        return reverse('vendors:delete', kwargs={'pk': self.id})
+        return reverse('warehouse:vendor_delete', kwargs={'pk': self.id})
 
     def update_paid_value(self):
         qs = self.payments.all()
@@ -146,6 +146,9 @@ class Invoice(models.Model):
     def __str__(self):
         return f'{self.title}'
 
+    def get_edit_url(self):
+        return reverse('warehouse:invoice_update', kwargs={'pk': self.id})
+
     def tag_value(self):
         return f'{self.final_value} {CURRENCY}'
 
@@ -159,7 +162,7 @@ class Invoice(models.Model):
         return qs
 
 
-class InvoiceItems(models.Model):
+class InvoiceItem(models.Model):
     UNITS = (
         ('a', 'Τεμάχιο'),
         ('b', 'Κιβώτιο'),
@@ -168,7 +171,7 @@ class InvoiceItems(models.Model):
     )
     order_code = models.CharField(max_length=50, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='')
-    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='')
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')

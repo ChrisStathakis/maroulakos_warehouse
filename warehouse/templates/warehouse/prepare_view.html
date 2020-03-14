@@ -1,0 +1,64 @@
+{% extends 'warehouse/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Συστατικα</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Υπολοιπο</th>
+                                    <th>Αποθηκη</th>
+                                    <th>Κοστολόγηση</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in object.ingredients.all %}
+                                    <tr>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.qty }} * {{ product.product.qty }}</td>
+                                        <td>--</td>
+                                        <td>{{ product.product.price_buy }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>Επιλογη Ποσοτητας Μετασχηματισμου</td>
+                                    <td>Μεγιστη Ποσοτητα ==> </td>
+                                    <td><input type="number" class="form-control" placeholder="0"></td>
+                                    <td><button class="btn btn-warning info_button"><i class="fa fa-save"></i> </button> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="title">
+                            <h4>Στοιχεια</h4>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>ΚΟΣΤΟΛΟΓΗΣΗ</h6>
+                                
+                            </div>
+                            <div class="col-6">Stoixaia</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

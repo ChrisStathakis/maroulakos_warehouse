@@ -70,6 +70,7 @@ class Product(models.Model):
     order_discount = models.IntegerField(default=0, verbose_name="'Εκπτωση Τιμολογίου σε %")
     qty_kilo = models.DecimalField(max_digits=5, decimal_places=3, default=1,
                                    verbose_name='Βάρος/Τεμάχια ανά Συσκευασία ')
+    taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     objects = models.Manager()
     # my_query = ProductManager()
 
@@ -84,15 +85,23 @@ class Product(models.Model):
     def get_delete_url(self):
         return reverse('catalogue:product_delete', kwargs={'pk': self.id})
 
+    def get_prepare_url(self):
+        return reverse('warehouse:transform_prepare', kwargs={'pk': self.id})
+
     @staticmethod
     def filters_data(request, qs):
         return qs
     
 
 class ProductStorage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    priority = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='storages')
     storage = models.ForeignKey(Storage, on_delete=models.PROTECT)
-    qty = models.DecimalField(decimal_places=2, max_digits=17)
+    qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+
+    class Meta:
+        unique_together = ['product', 'storage']
+        ordering = ['priority']
     
     def __str__(self):
         return self.storage.title
@@ -103,6 +112,9 @@ class ProductIngredient(models.Model):
     ingredient = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredient_value')
     qty = models.DecimalField(decimal_places=2, max_digits=17)
     cost = models.DecimalField(decimal_places=2, max_digits=17)
+
+    class Meta:
+        unique_together = ['product', 'ingredient']
 
     def __str__(self):
         return self.ingredient.title

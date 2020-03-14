@@ -25,7 +25,6 @@
                         <div class="title">Επιλογή Συστατικών</div>
                     </div>
                     <div class="card-body">
-                        <form method="post" class="form">{% csrf_token %}
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -48,15 +47,16 @@
                                         <td colspan="4">Δε υπαρχουν δεδομενα</td>
                                     </tr>
                                 {% endfor %}
-                                <tr>
-                                    <td><input class="form-control" type="text" required placeholder="Προϊον"> </td>
-                                    <td><input class="form-control" type="number" required placeholder="Ποσοτητα"> </td>
-                                    <td colspan="2"><button type="submit" class="btn btn-success pull-right"> <i class="fa fa-save"></i> </button> </td>
-                                </tr>
                             </tbody>
                         </table>
+                        <h4>Προσθηκη</h4>
+                        <form class="form" method="post" action="{% url 'catalogue:action_product_ingredient_create' object.id %}">
+                            {% csrf_token %}
+                            {{ product_ingredient_form }}
+                            <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> </button>
                         </form>
                     </div>
+
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -70,13 +70,27 @@
                                     <tr>
                                         <th>Αποθηκη</th>
                                         <th>Απόθεμα</th>
+                                        <th>Επιλογη</th>
                                         <th>Επιλογες</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    {% for storage in object.storages.all %}
+                                        <tr>
+                                            <td>{{ storage }}</td>
+                                            <td>{{ storage.qty }}</td>
+                                            <td>{% if storage.priority %} Επιλεγμενη {% else %} -- {% endif %}</td>
+                                            <td><a href="" class="btn btn-info"><i class="fa fa-edit"></i> </a></td>
+                                        </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
+                            <h4>Προσθηκη</h4>
+                            <form class="form" method="post" action="{% url 'catalogue:action_product_storage_create' object.id %}">
+                                {% csrf_token %}
+                                {{ product_storage_form }}
+                                <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> </button>
+                            </form>
                         </div>
                         {% else %}
                             <p>Δε υποστηρίζεται η αποηθηκη</p>

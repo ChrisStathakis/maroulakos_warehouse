@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (HomepageView, ProductClassListView,
                     ProductListView, ProductCreateView, ProductUpdateView, delete_product_view
                     )
-
+from .action_views import (create_storage_form_view, create_product_ingredient_view)
 app_name = 'catalogue'
 
 urlpatterns = [
@@ -16,4 +16,8 @@ urlpatterns = [
     path('edit-views/product-delete/<int:pk>/', delete_product_view, name='product_delete'),
 
 
+
+    # action views
+    path('product-storage-create/<int:pk>/', create_storage_form_view, name='action_product_storage_create'),
+    path('product-ingredient-create/<int:pk>/', create_product_ingredient_view, name='action_product_ingredient_create'),
 ]

@@ -1,0 +1,20 @@
+{% extends 'dashboard.html' %}
+
+{% block navbar %} {% include 'warehouse/navbar.html' %} {% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Μετασχηματισμός Προϊόντων</h4>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'warehouse:transform_list' %}" class="btn btn-info"><i class="fa fa-eye"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

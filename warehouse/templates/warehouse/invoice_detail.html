@@ -1,0 +1,89 @@
+{% extends 'warehouse/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Επιλογη Προϊοντος</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Κωδ. Προμ</th>
+                                    <th>Προϊον</th>
+                                    <th>Τιμη Αγορας</th>
+                                    <th>Εκπτωση</th>
+                                    <th>Υπολοιπο</th>
+                                    <th>--</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.order_sku }}</td>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.price_buy }}</td>
+                                        <td>{{ product.order_discount }}</td>
+                                        <td>{{ product.qty }}</td>
+                                        <td><button type="button" class="btn btn-success"><i class="fa fa-plus"></i> </button> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Δημιουργια Προϊοντος</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="form">
+                            {% csrf_token %}
+                            {{ product_form }}
+                            <button type="button" class="btn btn-success"> <i class="fa fa-save"></i> Αποθηκευση </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class='col-6'>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>Λεπτομεριες Τιμολογιου </h4>
+                    </div>
+                    <div class='card-body'>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Κωδ. Τιμο</th>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Εκπτωση</th>
+                                    <th>Φπα</th>
+                                    <th>--</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                    <tr>
+                                        <td>{{ item.sku }}</td>
+                                        <td>{{ item.product }}</td>
+                                        <td>{{ item.qty }}</td>
+                                        <td>{{ item.discount }}</td>
+                                        <td>{{ item.taxes_modifier }}</td>
+                                        <td><button type='button' class='btn btn-warning'><i class='fa fa-edit'></i> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

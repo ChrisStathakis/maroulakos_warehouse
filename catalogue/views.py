@@ -9,7 +9,7 @@ from django.db.models import Sum
 
 from .models import ProductClass, Product
 from .tables import ProductClassTable, ProductTable
-from .forms import ProductForm, ProductCreateForm
+from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
@@ -77,9 +77,11 @@ class ProductUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = f'{self.object}'
-        context['product_vendor_form'] = ProductForm(initial={'product': self.object})
+        context['product_storage_form'] = ProductStorageForm(initial={'product': self.object})
+        context['product_ingredient_form'] = ProductIngredientForm(initial={'product': self.object})
         context['back_url'] = reverse('catalogue:product_list')
         context['action_url'] = reverse('catalogue:product_list')
+
         return context
 
 

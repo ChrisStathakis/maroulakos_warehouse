@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product
+from .models import Product, ProductStorage, ProductIngredient
 from dal import autocomplete
 
 
@@ -29,3 +29,19 @@ class ProductCreateForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'vendor', 'sku', 'product_class']
+
+
+class ProductStorageForm(BaseForm, forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), required=True, widget=forms.HiddenInput())
+
+    class Meta:
+        model = ProductStorage
+        fields = '__all__'
+
+
+class ProductIngredientForm(BaseForm, forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), required=True, widget=forms.HiddenInput())
+
+    class Meta:
+        model = ProductIngredient
+        fields = '__all__'

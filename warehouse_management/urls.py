@@ -6,5 +6,6 @@ urlpatterns = [
 
     path('', include('dashboard.urls')),
     path('catalogue/', include('catalogue.urls')),
-    path('project-settings/', include('project_settings.urls'))
+    path('project-settings/', include('project_settings.urls')),
+    path('warehouse/', include('warehouse.urls')),
 ]
