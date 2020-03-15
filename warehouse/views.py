@@ -77,12 +77,12 @@ class UpdateVendorView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['invoice_form'] = InvoiceVendorDetailForm(initial={'vendor': self.object})
         context['payment_form'] = PaymentForm(initial={'vendor': self.object})
-        #context['employer_form'] = EmployerForm(initial={'vendor': self.object})
-        #context['page_title'] = f'{self.object.title}'
-        #context['notes'] = Note.objects.filter(vendor_related=self.object, status=True)
-        #context['invoices'] = Invoice.filters_data(self.request, self.object.invoices.all())
-        #context['payments'] = Payment.filters_data(self.request, self.object.payments.all())
-        #context['action_url'] = reverse('vendors:list')
+        # context['employer_form'] = EmployerForm(initial={'vendor': self.object})
+        # context['page_title'] = f'{self.object.title}'
+        # context['notes'] = Note.objects.filter(vendor_related=self.object, status=True)
+        # context['invoices'] = Invoice.filters_data(self.request, self.object.invoices.all())
+        # context['payments'] = Payment.filters_data(self.request, self.object.payments.all())
+        # context['action_url'] = reverse('vendors:list')
         return context
 
 

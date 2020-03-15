@@ -1,8 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-from project_settings.models import Storage
+from django.db.models import Sum
+
 # Create your models here.
+from project_settings.models import Storage
+from project_settings.constants import POSITIVE_INVOICES, NEGATIVE_INVOICES
 
 UNIT = (
         ('a', 'Τεμάχιο'),
@@ -74,7 +77,11 @@ class Product(models.Model):
     objects = models.Manager()
     # my_query = ProductManager()
 
-    # site attritubes
+    def save(self, *args, **kwargs):
+        if self.product_class.have_storage:
+            qs = self.storages.all()
+            self.qty = qs.aggregate(Sum('qty'))['qty__sum'] if qs.exists() else 0
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -87,6 +94,12 @@ class Product(models.Model):
 
     def get_prepare_url(self):
         return reverse('warehouse:transform_prepare', kwargs={'pk': self.id})
+
+    def update_product_from_invoice(self, item):
+        self.price_buy = item.value
+        self.order_discount = item.discount
+        self.taxes_modifier = item.taxes_modifier
+        self.save()
 
     @staticmethod
     def filters_data(request, qs):
@@ -108,6 +121,15 @@ class ProductStorage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='storages')
     storage = models.ForeignKey(Storage, on_delete=models.PROTECT)
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+
+    def save(self, *args, **kwargs):
+        invoices = self.storage_invoices.all()
+        add_invoices, remove_invoices = invoices.filter(invoice__order_type__in=POSITIVE_INVOICES), \
+                                        invoices.filter(invoice__order_type__in=NEGATIVE_INVOICES)
+        add_qty = add_invoices.aggregate(Sum('qty'))['qty__sum'] if add_invoices.exists() else 0
+        remove_qty = remove_invoices.aggregate(Sum('qty'))['qty__sum'] if remove_invoices.exists() else 0
+        self.qty = add_qty - remove_qty
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ['product', 'storage']

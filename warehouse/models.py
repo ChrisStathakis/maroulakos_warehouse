@@ -10,6 +10,7 @@ from decimal import Decimal
 
 from project_settings.models import PaymentMethod
 from project_settings.tools import initial_date
+from project_settings.constants import INVOICE_TYPES
 from catalogue.models import Product, ProductStorage
 
 
@@ -126,6 +127,7 @@ class VendorBankingAccount(models.Model):
 
 class Invoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
+    order_type = models.CharField(max_length=1, choices=INVOICE_TYPES, default='a')
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
@@ -187,7 +189,7 @@ class InvoiceItem(models.Model):
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
-    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
+    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE, related_name='storage_invoices')
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value
@@ -199,6 +201,8 @@ class InvoiceItem(models.Model):
         super().save(*args, **kwargs)
         self.invoice.save()
         self.product.save()
+        if self.storage:
+            self.storage.save()
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')

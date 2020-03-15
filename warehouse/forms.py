@@ -1,6 +1,5 @@
 from django import forms
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product
-
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem
 
 class BaseForm(forms.Form):
 
@@ -77,4 +76,16 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
         fields = ['order_sku', 'title', 'unit', 'taxes_modifier', 
                   'order_discount', 'product_class', 'vendor', 'price_buy',
                   
+                  ]
+
+
+class InvoiceItemForm(BaseForm, forms.ModelForm):
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
+    invoice = forms.ModelChoiceField(queryset=Invoice.objects.all(), widget=forms.HiddenInput())
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = InvoiceItem
+        fields = ['order_code', 'unit', 'qty', 'value', 'discount',
+                  'taxes_modifier', 'storage', 'vendor', 'invoice', 'product'
                   ]

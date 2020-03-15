@@ -5,7 +5,13 @@ from .views import (HomepageView,
                     VendorCardView, VendorNotesView,
                     InvoiceDetailView, InvoiceListView, delete_invoice_view, CreateInvoiceView
                     )
-from .action_views import (validate_invoice_form_view)
+from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_creation_view,
+                           validate_invoice_edit_view
+                           )
+from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal, ajax_modify_invoice_view,
+
+                         )
+
 
 app_name = 'warehouse'
 
@@ -28,5 +34,13 @@ urlpatterns = [
 
     # actions
     path('action-invoice-validation/<int:pk>/', validate_invoice_form_view, name='invoice_validation'),
+    path('action-create-product-from-invoice/<int:pk>/', create_product_from_invoice, name='create_product_from_invoice'),
+    path('validate-order-item-creation/<int:pk>/', validate_order_item_creation_view, name='validate_order_item_creation'),
+    path('validate-invoice-edit/<int:pk>/', validate_invoice_edit_view, name='validate_invoice_edit'),
+
+    # ajax 
+    path('ajax-create-product-from-invoice/<int:pk>/<int:dk>/', ajax_create_product_modal, name='ajax_create_product'),
+    path('ajax-modify-order-item-modal/<int:pk>/', ajax_modify_order_item_modal, name='ajax_modify_order_item'),
+    path('ajax-modify-invoice/<int:pk>/', ajax_modify_invoice_view, name='ajax_modify_invoice'),
     
 ]

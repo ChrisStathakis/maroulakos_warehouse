@@ -29,7 +29,7 @@
                                         <td>{{ product.price_buy }}</td>
                                         <td>{{ product.order_discount }}</td>
                                         <td>{{ product.qty }}</td>
-                                        <td><button type="button" class="btn btn-success"><i class="fa fa-plus"></i> </button> </td>
+                                        <td><button data-href='{% url "warehouse:ajax_create_product" object.id product.id %}' type="button" class="btn btn-success add_button"><i class="fa fa-plus"></i> </button> </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -42,12 +42,13 @@
                         <h4>Δημιουργια Προϊοντος</h4>
                     </div>
                     <div class="card-body">
-                        <form method="post" class="form">
+                        <form method="post" class="form" action="{% url 'warehouse:create_product_from_invoice' object.id %}">
                             {% csrf_token %}
                             {{ product_form }}
-                            <button type="button" class="btn btn-success"> <i class="fa fa-save"></i> Αποθηκευση </button>
+                            <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> Αποθηκευση </button>
                         </form>
                     </div>
+                    <div class="modal_area"></div>
                 </div>
             </div>
             <div class='col-6'>
@@ -62,6 +63,7 @@
                                     <th>Κωδ. Τιμο</th>
                                     <th>Προϊον</th>
                                     <th>Ποσοτητα</th>
+                                    <th>Αξία</th>
                                     <th>Εκπτωση</th>
                                     <th>Φπα</th>
                                     <th>--</th>
@@ -72,10 +74,13 @@
                                     <tr>
                                         <td>{{ item.sku }}</td>
                                         <td>{{ item.product }}</td>
-                                        <td>{{ item.qty }}</td>
+                                        <td>{{ item.qty }}
+                                            {% if item.storage %}<br> {{ item.storage }}{% endif %}
+                                        </td>
+                                        <td>{{ item.value }}</td>
                                         <td>{{ item.discount }}</td>
                                         <td>{{ item.taxes_modifier }}</td>
-                                        <td><button type='button' class='btn btn-warning'><i class='fa fa-edit'></i> </td>
+                                        <td><button data-href="{% url 'warehouse:ajax_modify_order_item' item.id %}" type='button' class='btn btn-warning edit_button'><i class='fa fa-edit'></i> </button></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -83,7 +88,98 @@
 
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Συνολικα Στοιχεια</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Ημερομηνια</li>
+                                    <li class="list-group-item">Κωδικος Τιμ.</li>
+                                    <li class="list-group-item">Αξια Προϊόντων</li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Προμηθευτης</li>
+                                    <li class="list-group-item">Αξια</li>
+                                    <li class="list-group-item">Κστασταση</li>
+                                </ul>
+                            </div>
+                            <div class="col-12">
+                                <hr>
+                                <button class="card-link btn btn-info pull-right editInvoice"><i class="fa fa-edit"></i> Επεξεργασια</button>
+                                <a href="#" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        $('.add_button').click(function(evt){
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const myBtn = $(this);
+            const url = myBtn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function(data){
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $('.edit_button').click(function (evt) {
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const myBtn = $(this);
+            const url = myBtn.attr('data-href');
+            $.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: url,
+
+                success: function (data) {
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show')
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $('.editInvoice').click(function (evt) {
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const url = '{% url "warehouse:ajax_modify_invoice" object.id %}';
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function (data) {
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+            })
+        })
+    </script>
+
 {% endblock %}
