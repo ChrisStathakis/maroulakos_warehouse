@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, ProductStorage, ProductIngredient
+from .models import Product, ProductStorage, ProductIngredient, ProductClass
 from dal import autocomplete
 
 
@@ -21,6 +21,13 @@ class ProductForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Product
+        fields = '__all__'
+
+
+class ProductClassForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = ProductClass
         fields = '__all__'
 
 

@@ -25,6 +25,7 @@ def create_product_from_invoice(request, pk):
     invoice = get_object_or_404(Invoice, id=pk)
     form = InvoiceProductForm(request.POST or None, initial={'vendor': instance.vendor})
     if form.is_valid():
+        qty = form.cleaned_data.get('qty', 1)
         product = form.save()
         InvoiceItem.object.create(
             order_code=product.order_sku,

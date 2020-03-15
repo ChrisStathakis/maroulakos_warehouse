@@ -10,7 +10,8 @@ from decimal import Decimal
 
 from project_settings.models import PaymentMethod
 from project_settings.tools import initial_date
-from catalogue.models import Product
+from catalogue.models import Product, ProductStorage
+
 
 CURRENCY = ''
 TAXES_CHOICES = (
@@ -172,7 +173,7 @@ class InvoiceItem(models.Model):
     order_code = models.CharField(max_length=50, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='product_items')
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
@@ -186,17 +187,18 @@ class InvoiceItem(models.Model):
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
+    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value
         self.discount_value = self.clean_value * Decimal(self.discount / 100)
-
         self.total_clean_value = self.clean_value - self.discount_value
         self.taxes_value = self.total_clean_value * Decimal(self.taxes_modifier / 100)
         self.total_value = self.total_clean_value + self.taxes_value
 
         super().save(*args, **kwargs)
         self.invoice.save()
+        self.product.save()
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')

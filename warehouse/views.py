@@ -259,3 +259,4 @@ def delete_invoice_view(request, pk):
     instance.delete()
     return redirect(reverse('warehouse:invoice_list'))
 
+

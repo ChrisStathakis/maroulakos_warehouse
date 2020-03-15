@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (HomepageView, ProductClassListView,
+from .views import (HomepageView, ProductClassListView, ProductClassCreateView,
                     ProductListView, ProductCreateView, ProductUpdateView, delete_product_view
                     )
 from .action_views import (create_storage_form_view, create_product_ingredient_view)
@@ -9,6 +9,7 @@ app_name = 'catalogue'
 urlpatterns = [
     path('', HomepageView.as_view(), name='homepage'),
     path('product-class-list/', ProductClassListView.as_view(), name='product_class_list_view'),
+    path('product-class-create/', ProductClassCreateView.as_view(), name='product_class_create'),
 
     path('edit-views/product/list/', ProductListView.as_view(), name='product_list'),
     path('edit-views/product/create/', ProductCreateView.as_view(), name='product_create'),

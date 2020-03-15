@@ -92,6 +92,16 @@ class Product(models.Model):
     def filters_data(request, qs):
         return qs
     
+    def estimate_qty(self):
+        product_class = self.product_class
+        if product_class.have_storage:
+            return 0
+        elif product_class.support_transcations:
+            invoices = self.product_items.all()
+            return 0
+        else:
+            return 0
+
 
 class ProductStorage(models.Model):
     priority = models.BooleanField(default=False)

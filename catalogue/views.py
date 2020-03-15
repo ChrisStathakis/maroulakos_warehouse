@@ -9,7 +9,7 @@ from django.db.models import Sum
 
 from .models import ProductClass, Product
 from .tables import ProductClassTable, ProductTable
-from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm
+from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
@@ -29,7 +29,26 @@ class ProductClassListView(ListViewMixin, ListView):
         qs_table = ProductClassTable(self.object_list)
         RequestConfig(self.request, {'per_page': self.paginate_by}).configure(qs_table)
         context['queryset_table'] = qs_table
+        context['create_url'] = reverse('catalogue:product_class_create')
         return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class ProductClassCreateView(CreateView):
+    model = ProductClass
+    template_name = 'catalogue/form_view.html'
+    form_class = ProductClassForm
+    success_url = reverse_lazy('catalogue:product_class_list_view')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 @method_decorator(staff_member_required, name='dispatch')

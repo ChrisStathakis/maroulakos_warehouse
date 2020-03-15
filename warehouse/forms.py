@@ -74,4 +74,7 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['order_sku', 'title', 'unit', 'order_discount', 'product_class', 'vendor', 'price_buy']
+        fields = ['order_sku', 'title', 'unit', 'taxes_modifier', 
+                  'order_discount', 'product_class', 'vendor', 'price_buy',
+                  
+                  ]
