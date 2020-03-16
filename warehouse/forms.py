@@ -1,5 +1,6 @@
 from django import forms
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, InvoiceTransformation
+
 
 class BaseForm(forms.Form):
 
@@ -89,3 +90,10 @@ class InvoiceItemForm(BaseForm, forms.ModelForm):
         fields = ['order_code', 'unit', 'qty', 'value', 'discount',
                   'taxes_modifier', 'storage', 'vendor', 'invoice', 'product'
                   ]
+
+
+class InvoiceTransformationForm(forms.ModelForm):
+
+    class Meta:
+        model = InvoiceTransformation
+        fields = '__all__'

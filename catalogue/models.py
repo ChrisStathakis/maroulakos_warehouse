@@ -130,6 +130,7 @@ class ProductStorage(models.Model):
         remove_qty = remove_invoices.aggregate(Sum('qty'))['qty__sum'] if remove_invoices.exists() else 0
         self.qty = add_qty - remove_qty
         super().save(*args, **kwargs)
+        self.product.save()
 
     class Meta:
         unique_together = ['product', 'storage']

@@ -10,12 +10,13 @@
                         <h4>Συστατικα</h4>
                     </div>
                     <div class="card-body">
+                        <form method='post' class='form'> {% csrf_token %}
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Προϊον</th>
                                     <th>Υπολοιπο</th>
-                                    <th>Αποθηκη</th>
+                                    <th>Τιμη</th>
                                     <th>Κοστολόγηση</th>
                                 </tr>
                             </thead>
@@ -23,20 +24,25 @@
                                 {% for product in object.ingredients.all %}
                                     <tr>
                                         <td>{{ product }}</td>
-                                        <td>{{ product.qty }} * {{ product.product.qty }}</td>
-                                        <td>--</td>
-                                        <td>{{ product.product.price_buy }}</td>
+                                        <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                                        <td><input required name="product_{{ product.id }}"
+                                                   class='form-control' type='number'
+                                                   placeholder='{{ product.ingredient.price_buy }}'
+                                                   value="{{ product.ingredient.price_buy }}"
+                                        >
+                                        </td>
+                                        <td></td>
                                     </tr>
                                 {% endfor %}
                                 <tr>
-                                    <td>Επιλογη Ποσοτητας Μετασχηματισμου</td>
-                                    <td>Μεγιστη Ποσοτητα ==> </td>
-                                    <td><input type="number" class="form-control" placeholder="0"></td>
-                                    <td><button class="btn btn-warning info_button"><i class="fa fa-save"></i> </button> </td>
+                                    <td>Μεγιστη Ποσοτητας Μετασχηματισμου ==> {{ max_items }} {{ object.get_unit_display }}.</td>
+                                    <td>Επιλογη Ποσοτητα ==> </td>
+                                    <td><input name="qty"  type="number" class="form-control" placeholder="0" required></td>
+                                    <td><button type='submit' class="btn btn-warning info_button"><i class="fa fa-save"></i> </button> </td>
                                 </tr>
                             </tbody>
                         </table>
-
+                        </form>
                     </div>
                 </div>
             </div>
@@ -62,3 +68,4 @@
         </div>
     </div>
 {% endblock %}
+

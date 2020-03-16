@@ -187,6 +187,20 @@ class ProductTransformationPrepareView(DetailView):
     model = Product
     template_name = 'warehouse/prepare_view.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        max_per_ind = []
+        for ele in self.object.ingredients.all():
+            max_per_ind.append(ele.ingredient.qty/ele.qty if ele.qty != 0 else 0)
+        context['max_items'] = min(max_per_ind)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        print('post worked!')
+        print(request.POST)
+        return self.render_to_response(context={})
+    
 
 @method_decorator(staff_member_required, name='dispatch')
 class InvoiceListView(ListView):
