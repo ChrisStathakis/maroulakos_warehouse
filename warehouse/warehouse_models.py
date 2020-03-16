@@ -1,7 +1,11 @@
 from django.db import models
+from django.shortcuts import reverse
 from django.db.models import Sum
+
 from catalogue.models import Product, ProductStorage
 from costumers.models import Costumer
+
+from decimal import Decimal
 
 
 class InvoiceTransformation(models.Model):
@@ -11,6 +15,12 @@ class InvoiceTransformation(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE)
     value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+
+    def __str__(self):
+        return self.title
+
+    def get_edit_url(self):
+        return reverse('warehouse:invoice_trans_detail', kwargs={'pk': self.id})
 
 
 class InvoiceTransformationItem(models.Model):
@@ -28,12 +38,15 @@ class InvoiceTransformationItem(models.Model):
     def save(self, *args, **kwargs):
         qs = self.transf_ingre.all()
         self.total_cost = qs.aggregate(Sum('total_cost'))['total_cost_sum'] if qs.exists() else 0
-        self.total_value = self.qty * self.value
+        self.total_value = Decimal(self.qty) * Decimal(self.value)
         super().save(*args, **kwargs)
-        if self.product.product_class.have_storage:
+        if self.storage:
             self.storage.save()
         else:
             self.product.save()
+
+    def __str__(self):
+        return self.product.title
 
 
 class InvoiceTransformationIngredient(models.Model):

@@ -11,11 +11,12 @@ from .forms import (VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendo
                     InvoiceProductForm, InvoiceTransformationForm
                     )
 from catalogue.models import Product, ProductStorage
-from .tables import ProductTransTable, VendorTable, InvoiceTable
+from .tables import ProductTransTable, VendorTable, InvoiceTable, InvoiceTransformationTable
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
 
+from decimal import Decimal
 
 @method_decorator(staff_member_required, name='dispatch')
 class VendorListView(ListView):
@@ -186,14 +187,23 @@ class ProductTransformationListView(ListView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
-class InvoiceTrasformationListView(ListView):
+class InvoiceTransformationListView(ListView):
     template_name = 'warehouse/list_view.html'
     model = InvoiceTransformation
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        queryset_table =
+        queryset_table = InvoiceTransformationTable(self.object_list)
+
+        context['queryset_table'] = queryset_table
         return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class InvoiceTransformationDetailView(DetailView):
+    template_name = 'warehouse/transfo_detail.html'
+    model = InvoiceTransformation
+
 
 @method_decorator(staff_member_required, name='dispatch')
 class ProductTransformationPrepareView(DetailView):
@@ -211,39 +221,40 @@ class ProductTransformationPrepareView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        my_product = get_object_or_404(Product, id=self.kwargs['pk'])
         form = InvoiceTransformationForm(request.POST or None)
+        ids, storages_ids = [], []
+        print('product', my_product)
+        for ele in request.POST:
+            if str(ele).startswith('product_'):
+                product, id = ele.split('_')
+                ids.append([id, request.POST.get(ele)])
+            if str(ele).startswith('storage_'):
+                storage, id = ele.split('_')
+                storages_ids.append([id, request.POST.get(ele)])
+        qty = Decimal(request.POST.get('qty', 0))
         if form.is_valid():
-            ids = []
-            storages_ids = []
-            for ele in request.POST:
-                if str(ele).startswith('product_'):
-                    product, id = ele.split('_')
-                    ids.append([id, request.POST.get(ele)])
-                if str(ele).startswith('storage_'):
-                    storage, id = ele.split('_')
-                    storages_ids.append([id, request.POST.get(ele)])
-            create_form = request.POST.get('create_form', None)
-            qty = request.POST.get('qty', 0)
-            if create_form == 'added':
-                new_invoice = form.save()
-                new_item = InvoiceTransformationItem.objects.create(
-                    product=self.object,
-                    invoice=new_invoice,
-                    qty=qty
-                )
-                for id_list in ids:
-                    storage = None
-                    for ele in storages_ids:
-                        if ele[0] == id_list[0]:
-                            storage = get_object_or_404(ProductStorage, id=ele[1])
-                    product = get_object_or_404(Product, id=id_list[0])
-                    InvoiceTransformationIngredient.objects.create(
-                        invoice_item=new_item,
-                        product=product,
-                        qty=qty,
-                        cost=id_list[1],
-                        storage=storage
-                    )
+            new_invoice = form.save()
+        else:
+            new_invoice = get_object_or_404(InvoiceTransformation, id=request.POST.get('edit_form', None))
+        new_item = InvoiceTransformationItem.objects.create(
+            product=my_product,
+            invoice=new_invoice,
+            qty=qty
+        )
+        for id_list in ids:
+            storage = None
+            for ele in storages_ids:
+                if ele[0] == id_list[0]:
+                    storage = get_object_or_404(ProductStorage, id=ele[1])
+            product = get_object_or_404(Product, id=id_list[0])
+            InvoiceTransformationIngredient.objects.create(
+                invoice_item=new_item,
+                product=product,
+                qty=qty,
+                cost=id_list[1],
+                storage=storage
+            )
         return self.render_to_response(context={})
     
 

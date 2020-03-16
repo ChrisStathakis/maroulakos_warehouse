@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .warehouse_models import InvoiceTransformationItem
 
-# Register your models here.
+
+@admin.register(InvoiceTransformationItem)
+class Cderer(admin.ModelAdmin):
+    pass

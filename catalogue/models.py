@@ -24,6 +24,8 @@ class ProductClass(models.Model):
     def __str__(self):
         return self.title
 
+
+
     @staticmethod
     def filters_data(request, qs):
         return qs

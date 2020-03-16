@@ -3,7 +3,8 @@ from .views import (HomepageView,
                     ProductTransformationListView, ProductTransformationPrepareView,
                     VendorListView, CreateVendorView, UpdateVendorView, delete_vendor_view,
                     VendorCardView, VendorNotesView,
-                    InvoiceDetailView, InvoiceListView, delete_invoice_view, CreateInvoiceView
+                    InvoiceDetailView, InvoiceListView, delete_invoice_view, CreateInvoiceView,
+                    InvoiceTransformationListView, InvoiceTransformationDetailView
                     )
 from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_creation_view,
                            validate_invoice_edit_view
@@ -31,6 +32,9 @@ urlpatterns = [
     path('invoice-create/', CreateInvoiceView.as_view(), name='invoice_create'),
     path('invoice-detail/<int:pk>/', InvoiceDetailView.as_view(), name='invoice_update'),
     path('invoice-delete-<int:pk>/', delete_invoice_view, name='invoice_delete'),
+
+    path('invoice-transformation-list/', InvoiceTransformationListView.as_view(), name='invoice_trans_list'),
+    path('invoice-transformation/<int:pk>/', InvoiceTransformationDetailView.as_view(), name='invoice_trans_detail'),
 
     # actions
     path('action-invoice-validation/<int:pk>/', validate_invoice_form_view, name='invoice_validation'),

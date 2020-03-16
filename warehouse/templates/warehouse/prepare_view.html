@@ -3,6 +3,147 @@
 
 {% block content %}
     <div class="content">
+        <div class="row">
+            <div class="col-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Προσθηκη σε Τιμ.</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Προϊον</th>
+                                        <th>Υπολοιπο</th>
+                                        <th>Τιμη</th>
+                                        <th>Αποθηκη</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in object.ingredients.all %}
+                                        <tr>
+                                            <td>{{ product }}</td>
+                                            <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                                            <td><input required name="product_{{ product.id }}"
+                                                       class='form-control'
+                                                       type='number'
+                                                       step="any"
+                                                       placeholder='{{ product.ingredient.price_buy }}'
+                                                       value="{{ product.ingredient.price_buy }}"
+                                            >
+                                            </td>
+                                            <td>
+                                                {% if product.ingredient.product_class.have_storage %}
+                                                    <div class="input-group-prepend">
+                                                    </div>
+                                                      <select required name="storage_{{ product.id }}" class="custom-select" id="inputGroupSelect01">
+
+                                                          {% for ele in product.ingredient.storages.all %}
+                                                              <option  value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                                          {% endfor %}
+                                                          </select>
+                                                {% else %} ---
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td>Μεγιστη Ποσοτητας Μετασχηματισμου ==> {{ max_items }} {{ object.get_unit_display }}.</td>
+                                        <td>Επιλογη Ποσοτητα ==> </td>
+                                        <td colspan="2"><input name="qty" type="number" class="form-control" placeholder="0" required></td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Ημερομηνια</th>
+                                                <th>Τιτλος</th>
+                                                <th>Πελατης</th>
+                                                <th>--</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for invoice in invoices %}
+                                                <tr>
+                                                    <td>{{ invoice.date }}</td>
+                                                    <td>{{ invoice.title }}</td>
+                                                    <td>{{ invoice.costumer }}</td>
+                                                    <td><button name='edit_form' value="{{ invoice.id }}" type="submit" class="btn btn-info">Επιλογη</button> </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                    <div class="card-header">
+                        <h4>Συστατικα</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Υπολοιπο</th>
+                                    <th>Τιμη</th>
+                                    <th>Αποθηκη</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in object.ingredients.all %}
+                                    <tr>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                                        <td><input required name="product_{{ product.id }}"
+                                                   class='form-control'
+                                                   type='number'
+                                                   step="any"
+                                                   placeholder='{{ product.ingredient.price_buy }}'
+                                                   value="{{ product.ingredient.price_buy }}"
+                                        >
+                                        </td>
+                                        <td>
+                                            {% if product.ingredient.product_class.have_storage %}
+                                                <div class="input-group-prepend">
+                                                </div>
+                                                  <select required name="storage_{{ product.id }}" class="custom-select" id="inputGroupSelect01">
+
+                                                      {% for ele in product.ingredient.storages.all %}
+                                                          <option  value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                                      {% endfor %}
+                                                      </select>
+                                            {% else %} ---
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>Μεγιστη Ποσοτητας Μετασχηματισμου ==> {{ max_items }} {{ object.get_unit_display }}.</td>
+                                    <td>Επιλογη Ποσοτητα ==> </td>
+                                    <td colspan="2"><input name="qty" type="number" class="form-control" placeholder="0" required></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        {{ create_form }}
+                        <button name="create_form"  value="added" type="submit" class="btn btn-success">Δημιουργια</button>
+
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
         <form method='post' class='form'> {% csrf_token %}
         <div class="row">
             <div class="col-6">
@@ -52,7 +193,7 @@
                                 <tr>
                                     <td>Μεγιστη Ποσοτητας Μετασχηματισμου ==> {{ max_items }} {{ object.get_unit_display }}.</td>
                                     <td>Επιλογη Ποσοτητα ==> </td>
-                                    <td colspan="2"><input name="qty"  type="number" class="form-control" placeholder="0" required></td>
+                                    <td colspan="2"><input name="qty" type="number" class="form-control" placeholder="0" required></td>
 
                                 </tr>
                             </tbody>
@@ -88,7 +229,7 @@
                                                 <td>{{ invoice.date }}</td>
                                                 <td>{{ invoice.title }}</td>
                                                 <td>{{ invoice.costumer }}</td>
-                                                <td><button type="submit" class="btn btn-info">Επιλογη</button> </td>
+                                                <td><button name='edit_form' value="{{ invoice.id }}" type="submit" class="btn btn-info">Επιλογη</button> </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
