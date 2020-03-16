@@ -1,5 +1,6 @@
 from django import forms
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, InvoiceTransformation
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem
+from .warehouse_models import InvoiceTransformation
 
 
 class BaseForm(forms.Form):
@@ -92,8 +93,9 @@ class InvoiceItemForm(BaseForm, forms.ModelForm):
                   ]
 
 
-class InvoiceTransformationForm(forms.ModelForm):
+class InvoiceTransformationForm(BaseForm, forms.ModelForm):
+    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = InvoiceTransformation
-        fields = '__all__'
+        fields = ['date', 'title', 'costumer']

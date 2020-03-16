@@ -5,8 +5,12 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import reverse, get_object_or_404, redirect
 
 from .models import Vendor, Note, VendorBankingAccount, Invoice
-from .forms import VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendorDetailForm, InvoiceProductForm
-from catalogue.models import Product
+from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, InvoiceTransformationIngredient
+
+from .forms import (VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendorDetailForm,
+                    InvoiceProductForm, InvoiceTransformationForm
+                    )
+from catalogue.models import Product, ProductStorage
 from .tables import ProductTransTable, VendorTable, InvoiceTable
 from .mixins import ListViewMixin
 
@@ -171,8 +175,7 @@ class ProductTransformationListView(ListView):
     model = Product
 
     def get_queryset(self):
-        qs = Product.objects.all()
-
+        qs = Product.objects.filter(product_class__have_ingredient=True)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -181,6 +184,16 @@ class ProductTransformationListView(ListView):
         context['queryset_table'] = qs_table
         return context
 
+
+@method_decorator(staff_member_required, name='dispatch')
+class InvoiceTrasformationListView(ListView):
+    template_name = 'warehouse/list_view.html'
+    model = InvoiceTransformation
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset_table =
+        return context
 
 @method_decorator(staff_member_required, name='dispatch')
 class ProductTransformationPrepareView(DetailView):
@@ -193,12 +206,44 @@ class ProductTransformationPrepareView(DetailView):
         for ele in self.object.ingredients.all():
             max_per_ind.append(ele.ingredient.qty/ele.qty if ele.qty != 0 else 0)
         context['max_items'] = min(max_per_ind)
-
+        context['create_form'] = InvoiceTransformationForm()
+        context['invoices'] = InvoiceTransformation.objects.filter(locked=False)
         return context
 
     def post(self, request, *args, **kwargs):
-        print('post worked!')
-        print(request.POST)
+        form = InvoiceTransformationForm(request.POST or None)
+        if form.is_valid():
+            ids = []
+            storages_ids = []
+            for ele in request.POST:
+                if str(ele).startswith('product_'):
+                    product, id = ele.split('_')
+                    ids.append([id, request.POST.get(ele)])
+                if str(ele).startswith('storage_'):
+                    storage, id = ele.split('_')
+                    storages_ids.append([id, request.POST.get(ele)])
+            create_form = request.POST.get('create_form', None)
+            qty = request.POST.get('qty', 0)
+            if create_form == 'added':
+                new_invoice = form.save()
+                new_item = InvoiceTransformationItem.objects.create(
+                    product=self.object,
+                    invoice=new_invoice,
+                    qty=qty
+                )
+                for id_list in ids:
+                    storage = None
+                    for ele in storages_ids:
+                        if ele[0] == id_list[0]:
+                            storage = get_object_or_404(ProductStorage, id=ele[1])
+                    product = get_object_or_404(Product, id=id_list[0])
+                    InvoiceTransformationIngredient.objects.create(
+                        invoice_item=new_item,
+                        product=product,
+                        qty=qty,
+                        cost=id_list[1],
+                        storage=storage
+                    )
         return self.render_to_response(context={})
     
 

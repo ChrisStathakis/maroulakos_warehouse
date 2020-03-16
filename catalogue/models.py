@@ -128,7 +128,14 @@ class ProductStorage(models.Model):
                                         invoices.filter(invoice__order_type__in=NEGATIVE_INVOICES)
         add_qty = add_invoices.aggregate(Sum('qty'))['qty__sum'] if add_invoices.exists() else 0
         remove_qty = remove_invoices.aggregate(Sum('qty'))['qty__sum'] if remove_invoices.exists() else 0
-        self.qty = add_qty - remove_qty
+
+        trans_items = self.trans_items.all()
+        add_qty_2 = trans_items.aggregate(Sum('qty'))['qty__sum'] if trans_items.exists() else 0
+
+        ingre_items = self.storage_ingre.all()
+        remove_qty_2 = ingre_items.aggregate(Sum('qty'))['qty__sum'] if ingre_items.exists() else 0
+        self.qty = add_qty + add_qty_2 - remove_qty - remove_qty_2
+
         super().save(*args, **kwargs)
         self.product.save()
 

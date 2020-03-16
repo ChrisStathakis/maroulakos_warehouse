@@ -283,13 +283,4 @@ def update_vendor_invoice_on_delete(sender, instance, **kwargs):
     instance.vendor.update_value()
 
 
-class InvoiceTransformation(models.Model):
-    date = models.DateField()
-    title = models.CharField(max_length=200)
-    costumer = models.ForeignKey()
-    qty = models.DecimalField(decimal_places=2, max_digits=17)
-    value = models.DecimalField(decimal_places=2, max_digits=17)
-    cost = models.DecimalField(decimal_places=2, max_digits=17)
 
-    total_value = models.DecimalField(decimal_places=2, max_digits=17)
-    total_cost = models.DecimalField(decimal_places=2, max_digits=17)

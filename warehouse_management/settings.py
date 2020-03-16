@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'project_settings',
     'warehouse',
     'dashboard',
+    'costumers',
 
     'django_tables2',
 ]
@@ -126,5 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CURRENCY = 'EURO'
 
 

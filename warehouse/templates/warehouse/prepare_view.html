@@ -3,6 +3,7 @@
 
 {% block content %}
     <div class="content">
+        <form method='post' class='form'> {% csrf_token %}
         <div class="row">
             <div class="col-6">
                 <div class="card">
@@ -10,14 +11,14 @@
                         <h4>Συστατικα</h4>
                     </div>
                     <div class="card-body">
-                        <form method='post' class='form'> {% csrf_token %}
+
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Προϊον</th>
                                     <th>Υπολοιπο</th>
                                     <th>Τιμη</th>
-                                    <th>Κοστολόγηση</th>
+                                    <th>Αποθηκη</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -26,23 +27,37 @@
                                         <td>{{ product }}</td>
                                         <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
                                         <td><input required name="product_{{ product.id }}"
-                                                   class='form-control' type='number'
+                                                   class='form-control'
+                                                   type='number'
+                                                   step="any"
                                                    placeholder='{{ product.ingredient.price_buy }}'
                                                    value="{{ product.ingredient.price_buy }}"
                                         >
                                         </td>
-                                        <td></td>
+                                        <td>
+                                            {% if product.ingredient.product_class.have_storage %}
+                                                <div class="input-group-prepend">
+                                                </div>
+                                                  <select required name="storage_{{ product.id }}" class="custom-select" id="inputGroupSelect01">
+
+                                                      {% for ele in product.ingredient.storages.all %}
+                                                          <option  value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                                      {% endfor %}
+                                                      </select>
+                                            {% else %} ---
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 <tr>
                                     <td>Μεγιστη Ποσοτητας Μετασχηματισμου ==> {{ max_items }} {{ object.get_unit_display }}.</td>
                                     <td>Επιλογη Ποσοτητα ==> </td>
-                                    <td><input name="qty"  type="number" class="form-control" placeholder="0" required></td>
-                                    <td><button type='submit' class="btn btn-warning info_button"><i class="fa fa-save"></i> </button> </td>
+                                    <td colspan="2"><input name="qty"  type="number" class="form-control" placeholder="0" required></td>
+
                                 </tr>
                             </tbody>
                         </table>
-                        </form>
+
                     </div>
                 </div>
             </div>
@@ -56,16 +71,41 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-6">
-                                <h6>ΚΟΣΤΟΛΟΓΗΣΗ</h6>
+                            <div class="col-8">
+                                <h6>Προσθηκη σε Τιμ.</h6>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Ημερομηνια</th>
+                                            <th>Τιτλος</th>
+                                            <th>Πελατης</th>
+                                            <th>--</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for invoice in invoices %}
+                                            <tr>
+                                                <td>{{ invoice.date }}</td>
+                                                <td>{{ invoice.title }}</td>
+                                                <td>{{ invoice.costumer }}</td>
+                                                <td><button type="submit" class="btn btn-info">Επιλογη</button> </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                                 
                             </div>
-                            <div class="col-6">Stoixaia</div>
+                            <div class="col-4">
+                                <h6>Δημιουργια</h6>
+                                {{ create_form }}
+                                <button name="create_form"  value="added" type="submit" class="btn btn-success">Δημιουργια</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 {% endblock %}
 
