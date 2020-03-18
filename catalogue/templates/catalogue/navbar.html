@@ -19,41 +19,30 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li>
-            <a href="{% url 'catalogue:product_list' %}">
-              <i class="nc-icon nc-user-run"></i>
-              <p>Προϊόντα</p>
-            </a>
-            <a href="{% url 'catalogue:product_class_list_view' %}">
-              <i class="nc-icon nc-user-run"></i>
-              <p>Ειδος Προϊόντων</p>
-            </a>
-          </li>
             <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Κατηγοριες</p>
-            </a>
+                <a href="{% url 'catalogue:homepage' %}">
+                    <i class="nc-icon nc-bell-55"></i>
+                    <p>Αρχικη Σελιδα</p>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'catalogue:product_list' %}">
+                    <i class="nc-icon nc-user-run"></i>
+                    <p>Προϊόντα</p>
+                </a>
+                <a href="{% url 'catalogue:product_class_list_view' %}">
+                    <i class="nc-icon nc-user-run"></i>
+                    <p>Ειδος Προϊόντων</p>
+                </a>
             </li>
             <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Μισθοδοσια και Λογαριασμοι</p>
-            </a>
-          </li>
-          <hr>
-          <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Αναλυσεις</p>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>αναλυση</p>
-            </a>
-          </li>
+                <a href="{% url 'catalogue:category_list' %}">
+                    <i class="nc-icon nc-bell-55"></i>
+                    <p>Κατηγοριες</p>
+                </a>
+            </li>
+
         </ul>
       </div>
     </div>

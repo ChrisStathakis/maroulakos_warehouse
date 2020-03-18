@@ -3,25 +3,127 @@
 {% block content %}
     <div class="content">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header text-center">
                         <h4>{{ object }}</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>Ημερομηνια</td>
+                                            <th>{{ object.date|date }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Τιτλος</td>
+                                            <th>{{ object }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Πελάτης</td>
+                                            <th>{{ object.costumer }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Αξια</td>
+                                            <th>{{ object.value }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Συνολικο Κόστος</td>
+                                            <th>{{ object.value }}</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <br>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-info">Επεξεργασια</button>
+                                    <button type="button" class="btn btn-success">Μετατροπη σε πωληση</button>
+                                    <button type="button" class="btn btn-danger">Διαγραφη</button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <a href="" class="btn btn-warning pull-right">Επιστροφη</a>
+                                <br><hr>
+                                <h4>Προσθηκη Νέου Προϊόντος</h4>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Προϊόν</th>
+                                            <th>Υπόλοιπο</th>
+                                            <th>Aξία Μοναδας</th>
+                                            <th>Επιλογή</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                            <tr>
+                                                <td>{{ product }}</td>
+                                                <td>{{ product.qty }}</td>
+                                                <td>{{ product.final_price }}</td>
+                                                <td><a href="{% url 'warehouse:add_product_to_trans_invoice' object.id product.id %}" class="btn btn-success"><i class="fa fa-eye"></i> </a> </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card-body">
 
                     </div>
                 </div>
             </div>
-            <div class="col-6"></div>
             {% for item in object.invoicetransformationitem_set.all %}
                 <div class="col-4">
                     <div class="card">
                         <div class="card-header">
-                            <h4>{{ item }}</h4>
+                            <div class="row">
+                                <div class="col"><h4>{{ item }}</h4></div>
+                                <div class="col"><a href="" class="btn btn-warning pull-right"><i class="fa fa-remove"></i> </a></div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Αξια Προϊόντος ==></li>
+                                        <li class="list-group-item">Ποσοτητα ==></li>
+                                    </ul>
+                                </div>
+                                <div class="col">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Συνολικη Αξια ==></li>
+                                        <li class="list-group-item">Συνολικό Κόστος</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <br> <hr>
+                            <button type="button" class="btn btn-info"><i class="fa fa-edit"></i> </button>
                         </div>
                         <div class="card-body">
-
+                            <h6>Συστατικα</h6>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Προϊον</th>
+                                        <th>Αποθηκη</th>
+                                        <th>Ποσοτητα</th>
+                                        <th>Αξια Μον.</th>
+                                        <th>κοστος</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ingr in item.transf_ingre.all %}
+                                        <tr>
+                                            <td>{{ ingr.product.title }}</td>
+                                            <td>{{ ingr.storage }}</td>
+                                            <td>{{ ingr.qty }}</td>
+                                            <td>{{ ingr.cost }}</td>
+                                            <td>{{ ingr.total_cost }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

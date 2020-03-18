@@ -1,0 +1,37 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Συστατικα</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Προϊον</th>
+                    <th>Μεγιστο</th>
+                    <th>Τιμη</th>
+                    <th>Αποθηκη</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in product_.ingredients.all %}
+                    <tr>
+                        <td>{{ product }}</td>
+                        <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                        <td>{{ product.ingredient.price_buy }}</td>
+                        <td>
+                            {% if product.ingredient.product_class.have_storage %}
+                                <div class="input-group-prepend"></div>
+                                <select required name="storage_{{ product.id }}" class="custom-select" id="inputGroupSelect01">
+                                    {% for ele in product.ingredient.storages.all %}
+                                        <option  value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %} ---
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+</div>

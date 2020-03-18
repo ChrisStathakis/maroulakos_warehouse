@@ -40,7 +40,7 @@ def ajax_modify_order_item_modal(request, pk):
                                       context={
                                           'form': form,
                                           'title': f'Επεξεργασια {instance}',
-                                          'action_url': reverse('warehouse:validate_order_item_creation', kwargs={'pk': instance.id})
+                                          'action_url': reverse('warehouse:validate_order_item_update', kwargs={'pk': instance.id})
 
                                       }
                                       )

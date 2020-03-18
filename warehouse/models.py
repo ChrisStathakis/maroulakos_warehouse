@@ -47,7 +47,7 @@ class Vendor(models.Model):
         return f'{self.title}'
 
     def save(self, *args, **kwargs):
-        self.balance = self.value - self.paid_value
+        self.balance = Decimal(self.value) - Decimal(self.paid_value)
         self.title = self.title.upper()
         super().save(*args, **kwargs)
 
@@ -132,8 +132,8 @@ class Invoice(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
-    value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια')
-    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία')
+    value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
+    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
 
@@ -193,18 +193,18 @@ class InvoiceItem(models.Model):
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value
-        self.discount_value = self.clean_value * Decimal(self.discount / 100)
-        self.total_clean_value = self.clean_value - self.discount_value
-        self.taxes_value = self.total_clean_value * Decimal(self.taxes_modifier / 100)
-        self.total_value = self.total_clean_value + self.taxes_value
+        self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
+        self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
+        self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
+        self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
 
         super().save(*args, **kwargs)
         if self.storage:
+            self.storage.update_product(self.value, self.discount, )
             self.storage.save()
         else:
             self.product.save()
         self.invoice.save()
-
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')

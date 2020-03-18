@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Sum
 
+from mptt.models import MPTTModel, TreeForeignKey
 # Create your models here.
 from project_settings.models import Storage
 from project_settings.constants import POSITIVE_INVOICES, NEGATIVE_INVOICES
@@ -12,6 +13,36 @@ UNIT = (
         ('b', 'Κιβώτιο'),
         ('c', 'Κιλό'),
     )
+
+
+class Category(MPTTModel):
+    name = models.CharField(max_length=240, unique=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+
+    def __str__(self):
+        full_path = [self.name]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.name)
+            k = k.parent
+        return ' -> '.join(full_path[::-1])
+
+    def get_edit_url(self):
+        return reverse('catalogue:category_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('catalogue:category_delete', kwargs={'pk': self.id})
+
+    def get_card_url(self):
+        return reverse('vendors:category_card', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, qs):
+        search_name = request.GET.get('search_name', None)
+        q = request.GET.get('q', None)
+        qs = qs.filter(name__icontains=q) if q else qs
+        qs = qs.filter(name__contains=search_name) if search_name else qs
+        return qs
 
 
 class ProductClass(models.Model):
@@ -24,8 +55,6 @@ class ProductClass(models.Model):
     def __str__(self):
         return self.title
 
-
-
     @staticmethod
     def filters_data(request, qs):
         return qs
@@ -37,7 +66,7 @@ class Product(models.Model):
     is_offer = models.BooleanField(default=True)
     title = models.CharField(max_length=120, verbose_name="'Ονομα προιόντος")
     # color = models.ForeignKey(Color, blank=True, null=True, verbose_name='Χρώμα', on_delete=models.CASCADE)
-    # category = models.ManyToManyField(Category, blank=True, null=True)
+    category = models.ManyToManyField(Category, blank=True, null=True)
     # brand = models.ForeignKey(Brand, blank=True, null=True, verbose_name='Brand Name', on_delete=models.SET_NULL)
 
     sku = models.CharField(max_length=150, blank=True, null=True)
@@ -97,6 +126,9 @@ class Product(models.Model):
     def get_prepare_url(self):
         return reverse('warehouse:transform_prepare', kwargs={'pk': self.id})
 
+    def favorite_storage(self):
+        return self.storages.filter(priority=True).first() if self.storages.filter(priority=True).exists() else None
+
     def update_product_from_invoice(self, item):
         self.price_buy = item.value
         self.order_discount = item.discount
@@ -136,9 +168,14 @@ class ProductStorage(models.Model):
 
         ingre_items = self.storage_ingre.all()
         remove_qty_2 = ingre_items.aggregate(Sum('qty'))['qty__sum'] if ingre_items.exists() else 0
-        self.qty = add_qty + add_qty_2 - remove_qty - remove_qty_2
 
+        self.qty = add_qty + add_qty_2 - remove_qty - remove_qty_2
         super().save(*args, **kwargs)
+        self.product.save()
+
+    def update_product(self, value, discount):
+        self.product.price_buy = value
+        self.product.order_discount = discount
         self.product.save()
 
     class Meta:

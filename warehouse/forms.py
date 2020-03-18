@@ -1,6 +1,6 @@
 from django import forms
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem
-from .warehouse_models import InvoiceTransformation
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage
+from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem
 
 
 class BaseForm(forms.Form):
@@ -36,7 +36,7 @@ class InvoiceVendorDetailForm(BaseForm, forms.ModelForm):
 
 
 class InvoiceForm(BaseForm, forms.ModelForm):
-    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
+    # vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True, label='Ημερομηνία')
 
     class Meta:
@@ -99,3 +99,13 @@ class InvoiceTransformationForm(BaseForm, forms.ModelForm):
     class Meta:
         model = InvoiceTransformation
         fields = ['date', 'title', 'costumer']
+
+
+class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
+    storage = forms.ModelChoiceField(queryset=ProductStorage.objects.all(), widget=forms.HiddenInput(), required=False)
+    invoice = forms.ModelChoiceField(queryset=InvoiceTransformation.objects.all(), widget=forms.HiddenInput())
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = InvoiceTransformationItem
+        fields = ['invoice', 'product', 'storage', 'qty', 'value']

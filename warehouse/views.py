@@ -10,13 +10,14 @@ from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, 
 from .forms import (VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendorDetailForm,
                     InvoiceProductForm, InvoiceTransformationForm
                     )
-from catalogue.models import Product, ProductStorage
-from .tables import ProductTransTable, VendorTable, InvoiceTable, InvoiceTransformationTable
+from catalogue.models import Product, ProductStorage, Category
+from .tables import ProductTransTable, VendorTable, InvoiceTable, InvoiceTransformationTable, VendorProductTable
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
 
 from decimal import Decimal
+
 
 @method_decorator(staff_member_required, name='dispatch')
 class VendorListView(ListView):
@@ -152,15 +153,20 @@ def delete_note_view(request, pk):
 @method_decorator(staff_member_required, name='dispatch')
 class VendorCardView(ListView):
     model = Product
-    template_name = 'vendors/vendor_card.html'
+    template_name = 'warehouse/vendor_card.html'
     paginate_by = 500
+
+    def get_queryset(self):
+        self.vendor = vendor = get_object_or_404(Vendor, id=self.kwargs['pk'])
+        qs = Product.objects.filter(vendor=vendor)
+        qs = Product.filters_data(self.request, qs)
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["vendor"] = self.vendor
-
+        context['create_form'] = InvoiceProductForm(initial={'taxes_modifier': self.vendor.taxes_modifier})
         context['search_filter'], context['category_filter'] = [True] * 2
-        cate_ids = self.object_list.values_list('product__categories').distinct()
 
         return context
 
@@ -194,15 +200,40 @@ class InvoiceTransformationListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset_table = InvoiceTransformationTable(self.object_list)
-
+        context['create_url'] = reverse('warehouse:invoice_trans_create')
         context['queryset_table'] = queryset_table
         return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class InvoiceTransformationCreateView(CreateView):
+    model = InvoiceTransformation
+    form_class = InvoiceTransformationForm
+    template_name = 'warehouse/form_view.html'
+
+    def get_success_url(self):
+        return self.new_product.get_edit_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = 'Δημιουργια Προϊόντος'
+        context["back_url"] = reverse('warehouse:invoice_trans_list')
+        return context
+
+    def form_valid(self, form):
+        self.new_product = form.save()
+        return super().form_valid(form)
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class InvoiceTransformationDetailView(DetailView):
     template_name = 'warehouse/transfo_detail.html'
     model = InvoiceTransformation
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.filter(product_class__have_ingredient=True)
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -221,10 +252,15 @@ class ProductTransformationPrepareView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        my_product = get_object_or_404(Product, id=self.kwargs['pk'])
         form = InvoiceTransformationForm(request.POST or None)
+        my_product = get_object_or_404(Product, id=self.kwargs['pk'])
+        qty = Decimal(request.POST.get('qty', 0))
+        if form.is_valid():
+            new_invoice = form.save()
+        else:
+            new_invoice = get_object_or_404(InvoiceTransformation, id=request.POST.get('edit_form', None))
+        new_item = InvoiceTransformationItem.create_from_view(new_invoice, my_product, qty)
         ids, storages_ids = [], []
-        print('product', my_product)
         for ele in request.POST:
             if str(ele).startswith('product_'):
                 product, id = ele.split('_')
@@ -232,30 +268,10 @@ class ProductTransformationPrepareView(DetailView):
             if str(ele).startswith('storage_'):
                 storage, id = ele.split('_')
                 storages_ids.append([id, request.POST.get(ele)])
-        qty = Decimal(request.POST.get('qty', 0))
-        if form.is_valid():
-            new_invoice = form.save()
-        else:
-            new_invoice = get_object_or_404(InvoiceTransformation, id=request.POST.get('edit_form', None))
-        new_item = InvoiceTransformationItem.objects.create(
-            product=my_product,
-            invoice=new_invoice,
-            qty=qty
-        )
         for id_list in ids:
-            storage = None
-            for ele in storages_ids:
-                if ele[0] == id_list[0]:
-                    storage = get_object_or_404(ProductStorage, id=ele[1])
-            product = get_object_or_404(Product, id=id_list[0])
-            InvoiceTransformationIngredient.objects.create(
-                invoice_item=new_item,
-                product=product,
-                qty=qty,
-                cost=id_list[1],
-                storage=storage
-            )
-        return self.render_to_response(context={})
+            InvoiceTransformationIngredient.create_from_view(id_list, storages_ids, new_item, qty)
+
+        return self.render_to_response(context={'object': my_product})
     
 
 @method_decorator(staff_member_required, name='dispatch')

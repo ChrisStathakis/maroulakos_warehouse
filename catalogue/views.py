@@ -7,9 +7,9 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth import logout
 from django.db.models import Sum
 
-from .models import ProductClass, Product
-from .tables import ProductClassTable, ProductTable
-from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm
+from .models import ProductClass, Product, Category
+from .tables import ProductClassTable, ProductTable, CategoryTable
+from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm, CategoryForm
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
@@ -39,7 +39,6 @@ class ProductClassCreateView(CreateView):
     template_name = 'catalogue/form_view.html'
     form_class = ProductClassForm
     success_url = reverse_lazy('catalogue:product_class_list_view')
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -119,3 +118,62 @@ def copy_product_view(request, pk):
     instance.save()
     messages.success(request, 'Το Προιόν αντιγραφηκε επιτυχώς.')
     return redirect(instance.get_edit_url())
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryListView(ListViewMixin, ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['create_url'] = reverse('catalogue:category_create')
+        context['back_url'] = reverse('catalogue:homepage')
+        qs_table = CategoryTable(self.object_list)
+        context['queryset_table'] =  RequestConfig(self.request, {'per_page': self.paginate_by}).configure(qs_table)
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'catalogue/form_view.html'
+    success_url = reverse_lazy('catalogue:category_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = self.success_url
+        context['form_title'] = 'Δημιουργια κατηγοριας'
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Η Κατηγορια Αποθηκευτηκε.')
+        return super().form_valid(form)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryUpdateView(UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'catalogue/form_view.html'
+    success_url = reverse_lazy('catalogue:category_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = self.success_url
+        context['delete_url'] = self.object.get_delete_url()
+        context['form_title'] = 'Επεξεργασια κατηγοριας'
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Η Κατηγορια Επεξεργαστηκε.')
+        return super().form_valid(form)
+
+
+@staff_member_required
+def category_delete_view(request, pk):
+    instance = get_object_or_404(Category, id=pk)
+    instance.delete()
+    return redirect(reverse('catalogue:category_list'))

@@ -4,10 +4,10 @@ from .views import (HomepageView,
                     VendorListView, CreateVendorView, UpdateVendorView, delete_vendor_view,
                     VendorCardView, VendorNotesView,
                     InvoiceDetailView, InvoiceListView, delete_invoice_view, CreateInvoiceView,
-                    InvoiceTransformationListView, InvoiceTransformationDetailView
+                    InvoiceTransformationListView, InvoiceTransformationDetailView, InvoiceTransformationCreateView
                     )
-from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_creation_view,
-                           validate_invoice_edit_view
+from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_update_view,
+                           validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal, ajax_modify_invoice_view,
 
@@ -35,16 +35,22 @@ urlpatterns = [
 
     path('invoice-transformation-list/', InvoiceTransformationListView.as_view(), name='invoice_trans_list'),
     path('invoice-transformation/<int:pk>/', InvoiceTransformationDetailView.as_view(), name='invoice_trans_detail'),
+    path('invoice-trans-create/', InvoiceTransformationCreateView.as_view(), name='invoice_trans_create'),
 
     # actions
     path('action-invoice-validation/<int:pk>/', validate_invoice_form_view, name='invoice_validation'),
     path('action-create-product-from-invoice/<int:pk>/', create_product_from_invoice, name='create_product_from_invoice'),
-    path('validate-order-item-creation/<int:pk>/', validate_order_item_creation_view, name='validate_order_item_creation'),
+    path('validate-order-item-creation/<int:pk>/', validate_order_item_update_view, name='validate_order_item_update'),
     path('validate-invoice-edit/<int:pk>/', validate_invoice_edit_view, name='validate_invoice_edit'),
+    path('validate-order-item_creation/<int:pk>/', validate_create_invoice_order_item_view, name='validate_order_item_creation'),
+
+    path('add-product-to-trans-invoice/<int:pk>/<int:dk>/', add_product_to_invoice_trans_view, name='add_product_to_trans_invoice'),
 
     # ajax 
     path('ajax-create-product-from-invoice/<int:pk>/<int:dk>/', ajax_create_product_modal, name='ajax_create_product'),
     path('ajax-modify-order-item-modal/<int:pk>/', ajax_modify_order_item_modal, name='ajax_modify_order_item'),
     path('ajax-modify-invoice/<int:pk>/', ajax_modify_invoice_view, name='ajax_modify_invoice'),
+
+
     
 ]

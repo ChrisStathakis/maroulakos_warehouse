@@ -14,6 +14,13 @@ class ProductTransTable(tables.Table):
         fields = ['title', ]
 
 
+class VendorProductTable(tables.Table):
+
+    class Meta:
+        model = Product
+        fields = ['order_sku', 'title', 'price_buy', 'order_discount', 'taxes_modifier', 'qty']
+
+
 class VendorTable(tables.Table):
     title = tables.TemplateColumn("<a href='{{ record.get_edit_url}}'>{{ record }}</a>",
             orderable=False, verbose_name='-')

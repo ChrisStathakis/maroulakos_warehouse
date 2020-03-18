@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, ProductStorage, ProductIngredient, ProductClass
+from .models import Product, ProductStorage, ProductIngredient, ProductClass, Category
 from dal import autocomplete
 
 
@@ -52,3 +52,11 @@ class ProductIngredientForm(BaseForm, forms.ModelForm):
     class Meta:
         model = ProductIngredient
         fields = '__all__'
+
+
+class CategoryForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ['name', 'parent']
+
