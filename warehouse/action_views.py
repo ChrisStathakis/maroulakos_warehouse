@@ -96,14 +96,12 @@ def add_product_to_invoice_trans_view(request, pk, dk):
             new_ingre = InvoiceTransformationIngredient.objects.create(
                 invoice_item=item,
                 product=pro,
-                qty=form.cleaned_data['qty']/ingre.qty if ingre.qty != 0 else 0,
+                qty=form.cleaned_data['qty']*ingre.qty if ingre.qty != 0 else 0,
                 cost=pro.price_buy
             )
             if pro.favorite_storage():
                 new_ingre.storage = pro.favorite_storage()
                 new_ingre.save()
-
-
         return redirect(instance.get_edit_url())
     return render(request, 'warehouse/form_view.html', context=locals())
 
