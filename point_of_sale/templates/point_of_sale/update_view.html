@@ -1,0 +1,113 @@
+{% extends 'point_of_sale/homepage.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ back_url }}" class="btn btn-warning pull-right"><i class="fa fa-align-left"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Προϊοντα
+                    </div>
+                    <div class="card-body">
+                        <form class="form">
+                            <input name="q" type="text" class="form-control" placeholder="Αναζητηση" />
+                        </form>
+                    <br> <hr>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sku</th>
+                                    <th>Προϊον</th>
+                                    <th>Τιμή</th>
+                                    <th>---</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.sku }}</td>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.price }}</td>
+                                        <td>
+
+                                            <div class="dropdown">
+                                                 <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> </button>
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="#">Action</a>
+                                                    <a class="dropdown-item" href="#">Another action</a>
+                                                    <a class="dropdown-item" href="#">Something else here</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+             <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Στοιχεια Παραστατικου</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <ul class="list-group">
+                                  <li class="list-group-item">Ημερομηνία... {{ object.date|date }}</li>
+                                  <li class="list-group-item">Είδος... {{ object.get_order_type_display }}</li>
+                                  <li class="list-group-item">Τιτλος... {{ object }}</li>
+                                  <li class="list-group-item">Porta ac consectetur ac</li>
+                                  <li class="list-group-item">Vestibulum at eros</li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <ul class="list-group">
+                                  <li class="list-group-item">Πελατης... {{ object.costumer }}</li>
+                                  <li class="list-group-item">Αξία Εμπορευματων... {{ object.value }} </li>
+                                  <li class="list-group-item">Εκπτωση... {{ object }}</li>
+                                  <li class="list-group-item">Αξία... {{ object.final_value }}</li>
+                                  <li class="list-group-item">Vestibulum at eros</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <br> <hr>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊόν</th>
+                                    <th>Τιμή Μοναδας</th>
+                                    <th>Ποσότητα</th>
+                                    <th>Αξία</th>
+                                    <th>Εκπτωση</th>
+                                    <th>Τελική Αξία</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_item in object.order_items.all %}
+                                    <tr>
+                                        <td>{{ order_item }}</td>
+                                        <td>{{ order_item.value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

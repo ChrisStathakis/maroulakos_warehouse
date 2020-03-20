@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 
 from project_settings.constants import SALE_INVOICE_TYPES
 from project_settings.models import PaymentMethod
@@ -11,11 +11,11 @@ from decimal import Decimal
 
 class SalesInvoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
-    order_type = models.CharField(max_length=1, choices=SALE_INVOICE_TYPES, default='a')
+    order_type = models.CharField(max_length=1, choices=SALE_INVOICE_TYPES, default='a', verbose_name='Ειδος')
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
-    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
+    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='invoices', verbose_name='Πελάτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
@@ -24,8 +24,14 @@ class SalesInvoice(models.Model):
     def __str__(self):
         return self.title
 
+    def get_edit_url(self):
+        return reverse('point_of_sale:sales_update', kwargs={'pk': self.id})
 
-class SaleInvoiceItem(models.Model):
+    def get_delete_url(self):
+        return reverse('point_of_sale:sales_delete', kwargs={'pk': self.id})
+
+
+class SalesInvoiceItem(models.Model):
     UNITS = (
         ('a', 'Τεμάχιο'),
         ('b', 'Κιβώτιο'),
@@ -49,7 +55,7 @@ class SaleInvoiceItem(models.Model):
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
-    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE, related_name='storage_invoices')
+    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value
