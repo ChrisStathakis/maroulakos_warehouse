@@ -1,9 +1,10 @@
 from django.db import models
 from django.urls import reverse
-
+from django.db.models import Sum
 from project_settings.constants import SALE_INVOICE_TYPES
 from project_settings.models import PaymentMethod
 from catalogue.models import Product, ProductStorage
+
 from costumers.models import Costumer
 
 from decimal import Decimal
@@ -20,6 +21,13 @@ class SalesInvoice(models.Model):
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
+
+    def save(self, *args, **kwargs):
+        qs = self.order_items.all()
+        self.value = qs.aggregate(Sum('total_value'))['total_value__sum'] if qs.exists() else 0
+
+        self.final_value = self.value + self.extra_value
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -41,7 +49,7 @@ class SalesInvoiceItem(models.Model):
     order_code = models.CharField(max_length=50, blank=True)
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='product_items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='product_items', verbose_name='Προϊον')
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')

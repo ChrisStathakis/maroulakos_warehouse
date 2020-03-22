@@ -1,0 +1,60 @@
+ <div class="card">
+    <div class="card-header">
+        <h4>Στοιχεια Παραστατικου</h4>
+        <div class="row">
+            <div class="col-6">
+                <ul class="list-group">
+                    <li class="list-group-item">Ημερομηνία... {{ object.date|date }}</li>
+                    <li class="list-group-item">Είδος... {{ object.get_order_type_display }}</li>
+                    <li class="list-group-item">Τιτλος... {{ object }}</li>
+                    <li class="list-group-item">Porta ac consectetur ac</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <ul class="list-group">
+                    <li class="list-group-item">Πελατης... {{ object.costumer }}</li>
+                    <li class="list-group-item">Αξία Εμπορευματων... {{ object.value }} </li>
+                    <li class="list-group-item">Εκπτωση... {{ object }}</li>
+                    <li class="list-group-item">Αξία... {{ object.final_value }}</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+            </div>
+        </div>
+        <br> <hr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Προϊόν</th>
+                    <th>Τιμή Μοναδας</th>
+                    <th>Ποσότητα</th>
+                    <th>Αξία</th>
+                    <th>Εκπτωση</th>
+                    <th>Τελική Αξία</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for order_item in object.order_items.all %}
+                <tr>
+                    <td>{{ order_item.product.title }}</td>
+                    <td>{{ order_item.value }}</td>
+                    <td>{{ order_item.storage }} ==> {{ order_item.qty }}</td>
+                    <td>{{ order_item.final_value }}</td>
+                    <td>{{ order_item.discount }} %</td>
+                    <td>{{ order_item.total_value }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item editOrderITem" data-href="{% url 'point_of_sale:ajax_order_item_modal' order_item.id %}"><i class="fa fa-edit"></i> Επεξεργασια </a>
+                                <a class="dropdown-item deleteOrderItem" data-href="#"><i class="fa fa-remove"></i> Διαγραφη</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

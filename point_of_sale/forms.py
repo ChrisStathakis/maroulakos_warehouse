@@ -1,7 +1,7 @@
 from django import forms
 
-from .models import SalesInvoice, SalesInvoiceItem
-
+from .models import SalesInvoice, SalesInvoiceItem, Costumer
+from catalogue.models import Product
 from project_settings.forms import BaseForm
 
 
@@ -12,3 +12,23 @@ class SalesInvoiceForm(BaseForm, forms.ModelForm):
         model = SalesInvoice
         fields = ['date', 'order_type', 'title', 'costumer', 'payment_method', 'extra_value',
                 'description']
+
+
+class SalesInvoiceItemForm(BaseForm, forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+    invoice = forms.ModelChoiceField(queryset=SalesInvoice.objects.all(), widget=forms.HiddenInput())
+    costumer = forms.ModelChoiceField(queryset=Costumer.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = SalesInvoiceItem
+        fields = ['product', 'invoice', 'order_code', 'unit', 'qty',
+                  'value', 'discount', 'taxes_modifier', 'storage', 'costumer'
+                  ]
+
+
+class SaleInvoiceItemForm(BaseForm, forms.ModelForm):
+
+
+    class Meta:
+        model = SalesInvoiceItem
+        fields = '__all__'
