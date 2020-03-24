@@ -40,7 +40,7 @@
                                         <td>{{ igre }}</td>
                                         <td>{{ igre.qty }}</td>
                                         <td>{{ igre.cost }}</td>
-                                        <td>--</td>
+                                        <td><a href="" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -103,7 +103,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Στοιχεια Προϊόντος</h4>
-                        <a href="{{ back_url }}" class="btn btn-warning"><i class="fa fa-backward"></i> </a>
+                        <a href="{{ back_url }}" class="btn btn-warning pull-right"><i class="fa fa-backward"></i> </a>
+                        <br><br>
+                        <hr>
+                        <a href="{% url 'catalogue:copy_product' object.id %}" class="btn btn-info pull-left"><i class="fa fa-copy"></i> </a>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">

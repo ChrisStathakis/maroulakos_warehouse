@@ -19,41 +19,48 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li>
-            <a href="{% url 'catalogue:homepage' %}">
-              <i class="nc-icon nc-user-run"></i>
-              <p>Καταλογος</p>
-            </a>
-            <a href="{% url 'warehouse:homepage' %}">
-              <i class="nc-icon nc-user-run"></i>
-              <p>Αποθηκη</p>
-            </a>
-          </li>
             <li>
-            <a href="{% url 'point_of_sale:homepage' %}">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Πωλησεις</p>
-            </a>
+                <a href="{% url 'catalogue:homepage' %}">
+                  <i class="nc-icon nc-user-run"></i>
+                  <p>Καταλογος</p>
+                </a>
+                <a href="{% url 'warehouse:homepage' %}">
+                  <i class="nc-icon nc-user-run"></i>
+                  <p>Αποθηκη</p>
+                </a>
             </li>
             <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Μισθοδοσια και Λογαριασμοι</p>
-            </a>
-          </li>
-          <hr>
-          <li>
-            <a href="">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Αναλυσεις</p>
-            </a>
-          </li>
-          <li>
-              <a href="{% url 'settings:homepage' %}">
-              <i class="nc-icon nc-bell-55"></i>
-              <p>Επιλογες</p>
-            </a>
-          </li>
+                <a href="{% url 'payroll_bills:home' %}">
+                  <i class="nc-icon nc-bell-55"></i>
+                  <p>Μισθοδοσια και Λογαριασμοι</p>
+                </a>
+            </li>
+            <hr>
+             <li>
+                 <a href="{% url 'point_of_sale:homepage' %}">
+                     <i class="nc-icon nc-bell-55"></i>
+                     <p>Πωλησεις</p>
+                 </a>
+            </li>
+             <li>
+                 <a href="{% url 'costumers:homepage' %}">
+                     <i class="nc-icon nc-bell-55"></i>
+                     <p>Πελατες</p>
+                 </a>
+            </li>
+            <hr>
+            <li>
+                <a href="">
+                  <i class="nc-icon nc-bell-55"></i>
+                  <p>Αναλυσεις</p>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'settings:homepage' %}">
+                    <i class="nc-icon nc-bell-55"></i>
+                    <p>Επιλογες</p>
+                </a>
+            </li>
         </ul>
       </div>
-    </div>
+</div>

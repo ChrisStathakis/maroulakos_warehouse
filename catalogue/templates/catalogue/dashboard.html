@@ -11,6 +11,62 @@
                     <div class="card-header">
                         <h4>Τελευταιες Καταχωρισεις</h4>
                     </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Ειδος</th>
+                                    <th> --- </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.vendor }}</td>
+                                        <td>{{ product.product_class }}</td>
+                                        <td><a href="{{ product.get_edit_url }}" class="btn btn-info"><i class="fa fa-eye"></i> </a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Τελευταιες Καταχωρισεις σε Κατηγοριες</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Κατηγορία</th>
+                                    <th> --- </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                    <tr>
+                                        <td>{{ category }}</td>
+                                        <td><a href="{{ category.get_edit_url }}" class="btn btn-info"><i class="fa fa-eye"></i> </a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Στατιστικα Αποθήκης</h4>
+                    </div>
                 </div>
             </div>
         </div>

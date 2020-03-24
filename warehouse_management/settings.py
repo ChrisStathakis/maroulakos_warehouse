@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'dashboard',
     'costumers',
     'point_of_sale',
+    'payroll',
 
     'django_tables2',
 ]

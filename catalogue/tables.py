@@ -13,6 +13,9 @@ class ProductClassTable(tables.Table):
 
 class ProductTable(tables.Table):
     title = tables.TemplateColumn("<a href='{{ record.get_edit_url }}'>{{ record }} </a>")
+    final_price = tables.Column(verbose_name='Αξια Πωλησης')
+    price_buy = tables.Column(verbose_name='Αξια Αγορας')
+    product_class__title = tables.Column(verbose_name='Ειδος')
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'

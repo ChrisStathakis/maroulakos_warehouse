@@ -1,0 +1,49 @@
+{% extends 'dashboard.html' %}
+
+{% block navbar %} {% include 'costumers/navbar.html' %} {% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Υπολοιπα Πελατων</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Πελάτης</th>
+                                    <th>Υπολοιπο</th>
+                                    <th> - </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for costumer in costumers %}
+                                    <tr>
+                                        <td>{{ costumer }}</td>
+                                        <td>{{ costumer.tag_balance }}</td>
+                                        <td><a href="{{ costumer.get_edit_url }}" class="btn btn-info"><i class="fa fa-eye"></i> </a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Πληρωμες Πελατων</h4>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

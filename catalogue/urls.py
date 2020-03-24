@@ -4,7 +4,9 @@ from .views import (HomepageView, ProductClassListView, ProductClassCreateView,
                     ProductListView, ProductCreateView, ProductUpdateView, delete_product_view,
                     CategoryListView, CategoryCreateView, CategoryUpdateView, category_delete_view
                     )
-from .action_views import (create_storage_form_view, create_product_ingredient_view)
+from .action_views import (create_storage_form_view, create_product_ingredient_view, class_copy_product_view,
+
+                           )
 app_name = 'catalogue'
 
 urlpatterns = [
@@ -25,5 +27,6 @@ urlpatterns = [
     # action views
     path('product-storage-create/<int:pk>/', create_storage_form_view, name='action_product_storage_create'),
     path('product-ingredient-create/<int:pk>/', create_product_ingredient_view, name='action_product_ingredient_create'),
+    path('copy-product/<int:pk>/', class_copy_product_view, name='copy_product'),
 
 ]

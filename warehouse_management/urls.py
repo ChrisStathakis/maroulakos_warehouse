@@ -9,4 +9,7 @@ urlpatterns = [
     path('project-settings/', include('project_settings.urls')),
     path('warehouse/', include('warehouse.urls')),
     path('point-of-sale/', include('point_of_sale.urls')),
+    path('costumers/', include('costumers.urls')),
+    path('payroll/', include('payroll.urls')),
+
 ]

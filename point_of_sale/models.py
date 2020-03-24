@@ -16,7 +16,7 @@ class SalesInvoice(models.Model):
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
-    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='invoices', verbose_name='Πελάτης')
+    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='sale_invoices', verbose_name='Πελάτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)

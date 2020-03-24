@@ -1,0 +1,34 @@
+{% load static %}
+
+<div class="sidebar" data-color="white" data-active-color="danger">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+      <div class="logo">
+        <a href="/" class="simple-text logo-mini">
+          <div class="logo-image-small">
+            <img src="{% static 'assets/img/logo.png' %}">
+          </div>
+        </a>
+        <a href="{% url 'homepage' %}" class="simple-text logo-normal">
+         Αποθηκη
+          <!-- <div class="logo-image-big">
+            <img src="../assets/img/logo-big.png">
+          </div> -->
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li>
+            <a href="{% url 'catalogue:homepage' %}">
+              <i class="nc-icon nc-user-run"></i>
+              <p>Αρχικη Σελιδα</p>
+            </a>
+            <a href="{% url 'costumers:costumer_list' %}">
+              <i class="nc-icon nc-user-run"></i>
+              <p>Πελάτες</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>

@@ -8,6 +8,7 @@ from django.contrib.auth import logout
 from django.db.models import Sum
 
 from .models import ProductClass, Product, Category
+from warehouse.models import Vendor
 from .tables import ProductClassTable, ProductTable, CategoryTable
 from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm, CategoryForm
 from .mixins import ListViewMixin
@@ -18,6 +19,12 @@ from django_tables2 import RequestConfig
 @method_decorator(staff_member_required, name='dispatch')
 class HomepageView(TemplateView):
     template_name = 'catalogue/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.all()[:10]
+        context['categories'] = Category.objects.all()[:10]
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -30,6 +37,7 @@ class ProductClassListView(ListViewMixin, ListView):
         RequestConfig(self.request, {'per_page': self.paginate_by}).configure(qs_table)
         context['queryset_table'] = qs_table
         context['create_url'] = reverse('catalogue:product_class_create')
+
         return context
 
 
@@ -53,13 +61,20 @@ class ProductClassCreateView(CreateView):
 @method_decorator(staff_member_required, name='dispatch')
 class ProductListView(ListViewMixin, ListView):
     model = Product
+    paginate_by = 50
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset_table = ProductTable(self.object_list)
-        RequestConfig(self.request).configure(queryset_table)
+        RequestConfig(self.request, {'per_page': self.paginate_by}).configure(queryset_table)
         context['queryset_table'] = queryset_table
         context['create_url'] = reverse('catalogue:product_create')
+        context['search_filter'], context['brand_filter'], context['category_filter'], context['product_class_filter']=\
+            [True] * 4
+        context['vendor_filter'] = True
+        context['vendors'] = Vendor.objects.filter(active=True)
+        context['product_class_categories'] = ProductClass.objects.all()
+        context['categories'] = Category.objects.all()
         return context
 
 

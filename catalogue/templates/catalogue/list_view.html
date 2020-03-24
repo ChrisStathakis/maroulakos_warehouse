@@ -17,8 +17,7 @@
                         <div class="collapse" id="collapseExample">
                             <form method="get" class="form">
                                  <div class="row">
-                                      {% if search_filter %}{% include 'filters/search_filter.html' %} {% endif %}
-                                      {% if balance_filter %} {% include 'filters/balance_filter.html' %}{% endif %}
+                                      {% include 'filters/my_filters.html' %}
                                  </div>
                                  <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
                             </form>

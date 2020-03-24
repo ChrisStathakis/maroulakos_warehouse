@@ -35,8 +35,8 @@
                 <h4 class="card-title"> {{ table_title }}</h4>
                   <a href="{{ create_url }}" class="btn btn-success btn-round btn-move-right">Δημιουργια</a>
                     {% if extra_buttons %}
-                        <a href="{% url 'print_list' %}" target="_blank" class="btn btn-info pull-right "><i class="fa fa-print"> </i></a>
-                        <button data-href="{% url 'ajax_calculate_balance' %}" class='btn btn-primary pull-right calculate_button'>Υπολογισμος</button>
+                        <a href="{% url 'costumers:print_list' %}" target="_blank" class="btn btn-info pull-right "><i class="fa fa-print"> </i></a>
+                        <button data-href="{% url 'costumers:ajax_calculate_balance' %}" class='btn btn-primary pull-right calculate_button'>Υπολογισμος</button>
 
                     {% endif %}
                     {% if report_button %}

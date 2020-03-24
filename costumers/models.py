@@ -8,7 +8,7 @@ from django.db.models.signals import post_save, post_delete
 from django.shortcuts import get_object_or_404
 
 from tinymce.models import HTMLField
-
+from datetime import datetime
 from project_settings.models import PaymentMethod
 
 from decimal import Decimal
@@ -40,7 +40,7 @@ class Costumer(models.Model):
     destination = models.CharField(blank=True, null=True, max_length=240, default='Εδρα του,', verbose_name='Προορισμος')
     afm = models.CharField(blank=True, null=True, max_length=10, verbose_name='ΑΦΜ')
     doy = models.CharField(blank=True, null=True, max_length=240, default='Σπαρτη', verbose_name='ΔΟΥ')
-    destination_city =  models.CharField(blank=True, null=True, max_length=240 , verbose_name='Πολη')
+    destination_city = models.CharField(blank=True, null=True, max_length=240 , verbose_name='Πολη')
     transport = models.CharField(blank=True, null=True, max_length=10, verbose_name='Μεταφορικο Μεσο')
 
     first_name = models.CharField(max_length=200, verbose_name='Ονομα', blank=True)
@@ -93,16 +93,13 @@ class Costumer(models.Model):
         return f'{self.cellphone} {self.phone}'
 
     def get_edit_url(self):
-        return reverse('costumer_detail', kwargs={'pk': self.id})
-
-    def get_order_url(self):
-        return reverse('create_order_costumer_view', kwargs={'pk': self.id})
+        return reverse('costumers:costumer_detail_view', kwargs={'pk': self.id})
 
     def get_payment_url(self):
-        return reverse('create_payment_costumer_view', kwargs={'pk': self.id})
+        return reverse('costumers:create_payment_costumer_view', kwargs={'pk': self.id})
 
     def get_quick_view_url(self):
-        return reverse('costumer_quick_view', kwargs={'pk': self.id})
+        return reverse('costumers:costumer_quick_view', kwargs={'pk': self.id})
 
     @staticmethod
     def filters_data(request, queryset):
@@ -169,6 +166,9 @@ class PaymentInvoice(models.Model):
     class Meta:
         unique_together = ['number', 'series', 'order_type']
         ordering = ['-id']
+
+    def tag_order_type(self):
+        return 'Πληρωμή'
 
     def __str__(self):
         return f'{self.get_series_display()} | {self.number}'
@@ -304,3 +304,73 @@ def create_costumer_profile(sender, instance, **kwargs):
 @receiver(post_delete, sender=InvoiceItem)
 def delete_invoice_item(sender, instance, **kwargs):
     instance.invoice.save()
+
+
+class CostumerPayment(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='payments', verbose_name='Πελάτης')
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
+    date = models.DateField(verbose_name='Ημερομηνία')
+    title = models.CharField(max_length=200, blank=True, verbose_name='Τίτλος')
+    description = models.TextField(blank=True, verbose_name='Περιγραφή')
+    value = models.DecimalField(decimal_places=2, max_digits=20, default=0.00, verbose_name='Ποσό')
+
+    class Meta:
+        ordering = ['-date']
+
+    def tag_order_type(self):
+        return 'Πληρωμή'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            self.title = f'Πληρωμή {self.id}' if len(self.title) == 0 else self.title
+        super().save(*args, **kwargs)
+        self.customer.update_payments()
+
+    def tag_value(self):
+        return f'{self.value} {CURRENCY}'
+
+    def tag_final_value(self):
+        return self.tag_value()
+
+    def get_edit_url(self):
+        return reverse('costumers:payment_update', kwargs={'pk': self.id})
+
+    def get_edit_costumer_url(self):
+        return reverse('edit_payment_from_costumer', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('orders:payment_delete', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, qs):
+        q = request.GET.get('q', None)
+        if q:
+            qs = qs.filter(Q(customer__first_name__icontains=q) |
+                      Q(customer__last_name__icontains=q) |
+                      Q(customer__amka__icontains=q) |
+                      Q(customer__cellphone__icontains=q) |
+                      Q(customer__phone__icontains=q)
+                      ).distinct()
+        date_range = request.GET.get('date_range', None)
+        if date_range:
+            date_range = date_range.split('-')
+            date_range[0] = date_range[0].replace(' ', '')
+            date_range[1] = date_range[1].replace(' ', '')
+            try:
+                date_start = datetime.datetime.strptime(date_range[0], '%m/%d/%Y')
+                date_end = datetime.datetime.strptime(date_range[1], '%m/%d/%Y')
+            except:
+                date_start = datetime.datetime.now()
+                date_end = datetime.datetime.now()
+            qs = qs.filter(date__range=[date_start, date_end])
+        return qs
+
+
+@receiver(post_delete, sender=CostumerPayment)
+def update_costumer_payment_value(sender, instance, **kwargs):
+    customer = instance.customer
+    customer.update_payments()
