@@ -1,12 +1,13 @@
 from django.db import models
 from django.urls import reverse
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from project_settings.constants import SALE_INVOICE_TYPES
 from project_settings.models import PaymentMethod
 from catalogue.models import Product, ProductStorage
 
 from costumers.models import Costumer
-
+from project_settings.tools import initial_date
+from project_settings.constants import CURRENCY
 from decimal import Decimal
 
 
@@ -19,8 +20,12 @@ class SalesInvoice(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='sale_invoices', verbose_name='Πελάτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
+    etxra_discount = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Εκπτωση', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
+
+    class Meta:
+        ordering = ['date']
 
     def save(self, *args, **kwargs):
         qs = self.order_items.all()
@@ -28,15 +33,43 @@ class SalesInvoice(models.Model):
 
         self.final_value = self.value + self.extra_value
         super().save(*args, **kwargs)
+        self.costumer.update_orders()
 
     def __str__(self):
         return self.title
+
+    def tag_final_value(self):
+        return f'{self.final_value} {CURRENCY}'
+
+    def tag_order_type(self):
+        return f'{self.get_order_type_display()}'
 
     def get_edit_url(self):
         return reverse('point_of_sale:sales_update', kwargs={'pk': self.id})
 
     def get_delete_url(self):
         return reverse('point_of_sale:sales_delete', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, qs):
+        search_name = request.GET.get('search_name', None)
+        q = request.GET.get('q', None)
+        costumer_name = request.GET.getlist('costumer_name', None)
+
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(date__range=[date_start, date_end])
+
+        qs = qs.filter(costumer_id__in=costumer_name) if costumer_name else qs
+        if search_name:
+            qs = qs.filter(Q(title__icontains=search_name) |
+                           Q(costumer__title__icontains=search_name)
+                           ).distinct()
+        if q:
+            qs = qs.filter(Q(title__icontains=q) |
+                           Q(costumer__title__icontains=q)
+                           ).distinct()
+        return qs
 
 
 class SalesInvoiceItem(models.Model):
@@ -79,6 +112,8 @@ class SalesInvoiceItem(models.Model):
         else:
             self.product.save()
         self.invoice.save()
+
+
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')

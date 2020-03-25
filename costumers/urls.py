@@ -1,12 +1,12 @@
 from django.urls import path
 
 from .views import (PaymentInvoiceListView, PaymentInvoiceCreateView, PaymentInvoiceUpdateView, print_invoice_view,
-                    PaymentInvoiceCreateFromOrderView, CostumerHomepageView
+                    PaymentInvoiceCreateFromOrderView, CostumerHomepageView, pdf_costumer_movements_view
                     )
 from .ajax_views import (ajax_create_item, update_costumer_detail_view, ajax_delete_order_item)
 
 from .views import (CostumerListView, CostumerDetailView, CostumerCreateView,
-                    empty_costumer_log_view, CreatePaymentFromCostumerDetailView, EditPaymentFromCostumerView,
+                    CreatePaymentFromCostumerDetailView, EditPaymentFromCostumerView,
                     delete_payment_from_costumer, PrintListView, CostumerHomepageView
                     )
 from .ajax_views import (quick_view_costumer_view, quick_pay_costumer_view, ajax_calculate_balance, ajax_analysis_view,
@@ -28,6 +28,7 @@ urlpatterns = [
     path('ajax/delete/<int:pk>/', ajax_delete_order_item, name='ajax_delete_order_item'),
     path('print/<int:pk>/', print_invoice_view, name='print_invoice'),
     path('update-invoice-profile/<int:pk>/', update_costumer_detail_view, name='update_invoice_profile'),
+    path('pdf-analysis/<int:pk>/', pdf_costumer_movements_view, name='pdf_costumer_analysis'),
 
 
 
@@ -38,18 +39,10 @@ urlpatterns = [
 
     path('costumer/create/payment/<int:pk>/', CreatePaymentFromCostumerDetailView.as_view(),
          name='create_payment_costumer_detail'),
+    path('costumer/update-payment/<int:pk>', EditPaymentFromCostumerView.as_view(), name='payment_update'),
+    path('costumer/delete-payment/<int:pk>',delete_payment_from_costumer, name='payment_delete'),
+
     path('costumer/detail/<int:pk>/', CostumerDetailView.as_view(), name='costumer_detail'),
-
-
-    path('costumer/empty/log/<int:pk>/', empty_costumer_log_view, name='costumer_empty_log'),
-
-
-
-    path('payment/order/edit/<int:pk>/', EditPaymentFromCostumerView.as_view(), name='edit_payment_from_costumer'),
-    path('payment/order/delete/<int:pk>/', delete_payment_from_costumer, name='delete_payment_from_costumer'),
-
-
-
 
     # ajax
     path('costumer/quick_view/<int:pk>/', quick_view_costumer_view, name='costumer_quick_view'),

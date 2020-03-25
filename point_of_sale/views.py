@@ -9,6 +9,7 @@ from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 from .forms import SalesInvoiceForm
 from .models import SalesInvoice, SalesInvoiceItem
 from .tables import SalesInvoiceItemTable, SalesInvoiceTable, SalesInvoiceListTable
+from costumers.models import Costumer
 from catalogue.models import Product
 from django_tables2 import RequestConfig
 
@@ -30,11 +31,18 @@ class SalesListView(ListView):
     model = SalesInvoice
     paginate_by = 50
 
+    def get_queryset(self):
+        qs = SalesInvoice.objects.all()
+        qs = SalesInvoice.filters_data(self.request, qs)
+        return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['costumers'] = Costumer.objects.filter(active=True)
         context['page_title'] = 'Πωλησεις'
         context['create_url'] = reverse('point_of_sale:sales_create')
         context['back_url'] = reverse('point_of_sale:homepage')
+        context['date_filter'], context['search_filter'], context['costumer_filter'] = [True] * 3
         qs_table = SalesInvoiceListTable(self.object_list)
         RequestConfig(self.request).configure(qs_table)
         context['queryset_table'] = qs_table
@@ -86,4 +94,5 @@ class SalesUpdateView(UpdateView):
 def delete_sales_invoice_view(request, pk):
     instance = get_object_or_404(SalesInvoice, id=pk)
     instance.delete()
-    return redirect(reverse(''))
+    messages.success(request, 'Το Παραστατικο Διαγραφηκε!.')
+    return redirect(reverse('point_of_sale:sales_list'))

@@ -24,6 +24,7 @@
 
 <script>
     $('.submit_data').click(function (evt) {
+        console.log('worked!');
         evt.preventDefault();
         const myBtn = $(this);
         const url = myBtn.attr('data-href');
@@ -34,7 +35,7 @@
             url: url,
 
             success: function (data) {
-                $('')
+                $('.order_container').html(data.result)
             }
         })
     })

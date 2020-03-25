@@ -1,0 +1,50 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Sku</th>
+        <th>Προϊον</th>
+        <th>Τιμή</th>
+        <th>---</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product.sku }}</td>
+            <td>{{ product }}</td>
+            <td>{{ product.price }}</td>
+            <td>
+                <div class="dropdown">
+                    <a href="{% url 'point_of_sale:create_order_item_view' object.id product.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script type="application/javascript">
+    $('.modal_button').click(function (evt) {
+        evt.preventDefault();
+        $('.modal_area').empty();
+        const myBtn = $(this);
+        const url = myBtn.attr('data-href');
+        $.ajax({
+            method: 'GET',
+            dataType: 'json',
+            url: url,
+
+            success: function (data) {
+                $('.modal_area').html(data.modal);
+                $('#myModal').modal('show')
+            }
+        })
+    })
+</script>

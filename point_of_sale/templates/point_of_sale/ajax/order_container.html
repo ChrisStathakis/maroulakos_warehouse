@@ -1,23 +1,50 @@
  <div class="card">
     <div class="card-header">
         <h4>Στοιχεια Παραστατικου</h4>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          <i class="fa fa-edit"></i> Επεξεργασια
+        </button>
+        <a onclick="return confirm('Are you sure?')" href="{{ object.get_delete_url }}" class="btn btn-danger pull-right"><i class="fa fa-remove"></i> Διαγραφή </a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {{ form }}
+                    <button type="submit" class="btn btn-info"><i class="fa fa-save"></i> Αποθηκευση </button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
             <div class="col-6">
                 <ul class="list-group">
                     <li class="list-group-item">Ημερομηνία... {{ object.date|date }}</li>
                     <li class="list-group-item">Είδος... {{ object.get_order_type_display }}</li>
                     <li class="list-group-item">Τιτλος... {{ object }}</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
+                    <li class="list-group-item">Τροπος Πληρωμης.. {{ object.payment_method }}</li>
                 </ul>
             </div>
             <div class="col-6">
                 <ul class="list-group">
                     <li class="list-group-item">Πελατης... {{ object.costumer }}</li>
                     <li class="list-group-item">Αξία Εμπορευματων... {{ object.value }} </li>
-                    <li class="list-group-item">Εκπτωση... {{ object }}</li>
+                    <li class="list-group-item">Εκπτωση... {{ object.extra_discount }}</li>
                     <li class="list-group-item">Αξία... {{ object.final_value }}</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
                 </ul>
             </div>
         </div>
@@ -48,7 +75,7 @@
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item editOrderITem" data-href="{% url 'point_of_sale:ajax_order_item_modal' order_item.id %}"><i class="fa fa-edit"></i> Επεξεργασια </a>
-                                <a class="dropdown-item deleteOrderItem" data-href="#"><i class="fa fa-remove"></i> Διαγραφη</a>
+                                <a class="dropdown-item deleteOrderItem" data-href="{% url 'point_of_sale:validate_order_item_delete' order_item.id %}"><i class="fa fa-remove"></i> Διαγραφη</a>
                             </div>
                         </div>
                     </td>

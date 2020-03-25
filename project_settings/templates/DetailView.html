@@ -7,7 +7,7 @@
                  <div class="card">
                      <div class="card-header">
                          <div class="card-title"><h4 class="text-center">{{ object }}, Υπόλοιπο {{ object.tag_balance }}</h4> </div>
-                          <a href="{{ back_url }}" class="btn btn-sm btn-outline-warning btn-round text-right">Επιστροφη</a>
+                          <a href="{{ back_url }}" class="btn btn-sm btn-outline-warning btn-round text-right pull-right">Επιστροφη</a>
                      </div>
                  </div>
              </div>
@@ -116,10 +116,14 @@
             <div class="card">
               <div class="card-header">
                   <h4 class="card-title"> Παραστατικα</h4>
-                  {% include 'filters/my_filters.html' %}
-
+                  <form  class="form" method="get">
+                    {% include 'filters/my_filters.html' %}
+                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> </button>
+                      <a href="{{ request.path }}" class="btn btn-warning"><i class="fa fa-remove"></i> </a>
+                  </form>
               </div>
               <div class="card-body">
+                <a target="_blank" href="{{ print_url }}"><i class="fa fa-download"></i> </a>
                 <div class="table-responsive" style="height: 400px;">
                     <table class="table table-bordered">
                         <thead>
@@ -140,7 +144,7 @@
                                     <td>{{ ele.title }}</td>
                                     <td>{{ ele.tag_final_value }}</td>
                                     <td>{{ ele.payment_method }}</td>
-                                    <td><a href="" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
+                                    <td><a href="{{ ele.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

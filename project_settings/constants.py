@@ -1,4 +1,4 @@
-
+CURRENCY = '€'
 
 INVOICE_TYPES = (
     ('a', 'Τιμολογιο'),

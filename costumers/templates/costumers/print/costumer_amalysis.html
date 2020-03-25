@@ -1,0 +1,58 @@
+<!DOCTYPE html> {% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ instance.costumer }} | {{ instance.get_series_display }} | {{ instance.number }}</title>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="row p-5">
+                                <div class="col-md-12">
+                                    <h4>{{ instance.eponimia }}</h4>
+                                    <p>Επιλεγμενο Διαστημα==> {{ date }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row p-5">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Ημερομηνια</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Τιτλος</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Τροπος Πληρωμής</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Ειδος</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΣΥΝΟΛΙΚΗ ΑΞΙΑ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ele in data_qs %}
+                                                <tr>
+                                                    <td>{{ ele.date }}</td>
+                                                    <td>{{ ele.title }}</td>
+                                                    <td>{{ ele.payment_method }}</td>
+                                                    <td>{{ ele.tag_order_type }}</td>
+                                                    <td>{{ ele.tag_final_value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+  </body>
+</html>

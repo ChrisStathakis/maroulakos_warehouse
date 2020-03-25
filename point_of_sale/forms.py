@@ -14,7 +14,7 @@ class SalesInvoiceForm(BaseForm, forms.ModelForm):
                 'description']
 
 
-class SalesInvoiceItemForm(BaseForm, forms.ModelForm):
+class SaleInvoiceItemForm(BaseForm, forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
     invoice = forms.ModelChoiceField(queryset=SalesInvoice.objects.all(), widget=forms.HiddenInput())
     costumer = forms.ModelChoiceField(queryset=Costumer.objects.all(), widget=forms.HiddenInput())
@@ -26,9 +26,4 @@ class SalesInvoiceItemForm(BaseForm, forms.ModelForm):
                   ]
 
 
-class SaleInvoiceItemForm(BaseForm, forms.ModelForm):
 
-
-    class Meta:
-        model = SalesInvoiceItem
-        fields = '__all__'

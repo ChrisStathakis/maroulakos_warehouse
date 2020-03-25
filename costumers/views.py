@@ -3,15 +3,19 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse_lazy
-
+from  django.contrib import messages
 from operator import attrgetter
 from itertools import chain
 
 from .models import PaymentInvoice, MyCard, Costumer, CostumerPayment
+from point_of_sale.models import SalesInvoice
 from .tables import PaymentInvoiceTable, CostumerTable
 from .forms import PaymentInvoiceForm, CostumerDetailsForm, CreateInvoiceItemForm, PaymentInvoiceEditForm, CostumerForm, CostumerPaymentForm
+
 from .mixins import MyFormMixin
 from reportlab.pdfgen import canvas
+import io
+from django.http import FileResponse
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -81,11 +85,13 @@ class CostumerDetailView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(CostumerDetailView, self).get_context_data(**kwargs)
-        context['back_url'] = self.get_success_url()
-        payments = self.object.payments.all()
-        invoices = self.object.sale_invoices.all()
-        context['data_qs'] = sorted(chain(payments, invoices), key=attrgetter('date'))
+        context['back_url'] = reverse('costumers:costumer_list')
+        payments = CostumerPayment.filters_data(self.request, self.object.payments.all())
+        invoices = SalesInvoice.filters_data(self.request, self.object.sale_invoices.all())
+        context['data_qs'] = sorted(chain(payments, invoices), key=attrgetter('date'), reverse=True)
         context['date_filter'] = True
+        get_params = self.request.get_full_path().split('?', 1)[1] if '?' in self.request.get_full_path() else ''
+        print_url = reverse('costumers:pdf_costumer_analysis', kwargs={'pk': self.object.id}) + '?' + get_params
         context.update(locals())
         return context
 
@@ -99,16 +105,6 @@ def delete_costumer_view(request, pk):
     costumer = get_object_or_404(Costumer, id=pk)
     costumer.delete()
     return redirect(reverse('costumer_list'))
-
-
-@staff_member_required
-def empty_costumer_log_view(request, pk):
-    costumer = get_object_or_404(Costumer, id=pk)
-    orders = costumer.orders.all()
-    payments = costumer.payments.all()
-    orders.delete()
-    payments.delete()
-    return redirect(costumer.get_edit_url())
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -138,8 +134,8 @@ class CreatePaymentFromCostumerDetailView(MyFormMixin, CreateView):
 @method_decorator(staff_member_required, name='dispatch')
 class EditPaymentFromCostumerView(UpdateView):
     model = CostumerPayment
-    template_name = 'form_view.html'
-    form_class = ''
+    template_name = 'costumers/form_view.html'
+    form_class = CostumerPaymentForm
 
     def get_success_url(self):
         return self.object.customer.get_edit_url()
@@ -147,9 +143,14 @@ class EditPaymentFromCostumerView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form_title, back_url = f'Επεξεργασία {self.object}', self.get_success_url()
-        delete_url = reverse('delete_payment_from_costumer', kwargs={'pk': self.object.id})
+        delete_url = self.object.get_delete_url()
         context.update(locals())
         return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Η Πληρωμη επξεργαστηκε')
+        return super().form_valid(form)
 
 
 @staff_member_required
@@ -157,25 +158,6 @@ def delete_payment_from_costumer(request, pk):
     payment = get_object_or_404(CostumerPayment, id=pk)
     payment.delete()
     return redirect(payment.customer.get_edit_url())
-
-
-'''
-@staff_member_required
-def analysis_view(request):
-    date_range = request.GET.get('daterange')
-    orders = Order.filters_data(request, Order.objects.all())
-    payments = Payment.filters_data(request, Payment.objects.all())
-    costumers_orders = orders.values('customer__first_name', 'customer__last_name').annotate(
-        total=Sum('value')).order_by('-total')
-    costumers_payments = payments.values('customer__first_name', 'customer__last_name').annotate(
-        total=Sum('value')).order_by('-total')
-    total_value = orders.aggregate(Sum('value'))['value__sum'] if orders else 0
-    total_payment = payments.aggregate(Sum('value'))['value__sum'] if payments else 0
-    difference = total_value - total_payment
-    currency = CURRENCY
-    context = locals()
-    return render(request, 'analysis.html', context)
-'''
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -301,8 +283,23 @@ def print_invoice_view(request, pk):
                                                           })
 
 
-import io
-from django.http import FileResponse
+@staff_member_required
+def pdf_costumer_movements_view(request, pk):
+    instance = get_object_or_404(Costumer, id=pk)
+    date = request.GET.get('date_range', 'None')
+    payments = CostumerPayment.filters_data(request,instance.payments.all())
+    invoices = SalesInvoice.filters_data(request,instance.sale_invoices.all())
+    data_qs = sorted(chain(payments, invoices), key=attrgetter('date'))
+    return render(request, 'costumers/print/costumer_amalysis.html', context=locals())
+
+
+@staff_member_required
+def costumer_analysis_view(request, pk):
+    costumer = get_object_or_404(Costumer, id=pk)
+    order_items = costumer.salesinvoiceitem_set.all()
+
+    return render(request, '', context=locals())
+
 
 
 def test_pdf(request):

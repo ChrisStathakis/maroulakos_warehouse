@@ -22,45 +22,17 @@
                     </div>
                     <div class="card-body">
                         <form class="form">
-                            <input name="q" type="text" class="form-control" placeholder="Αναζητηση" />
+                            <input data-href="{% url 'point_of_sale:ajax_search_products' object.id %}" name="q" type="text" class="form-control searchProducts" placeholder="Αναζητηση" />
                         </form>
-                    <br> <hr>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Sku</th>
-                                    <th>Προϊον</th>
-                                    <th>Τιμή</th>
-                                    <th>---</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in products %}
-                                    <tr>
-                                        <td>{{ product.sku }}</td>
-                                        <td>{{ product }}</td>
-                                        <td>{{ product.price }}</td>
-                                        <td>
+                        <br> <hr>
+                        <div class="product_container">
+                            {% include 'point_of_sale/ajax/product_container.html' %}
+                        </div>
 
-                                            <div class="dropdown">
-                                                 <button  data-href="{% url 'point_of_sale:ajax_product_modal' object.id product.id %}" type="button" class="btn btn-success modal_button"><i class="fa fa-plus"></i> </button>
-                                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" href="#">Action</a>
-                                                    <a class="dropdown-item" href="#">Another action</a>
-                                                    <a class="dropdown-item" href="#">Something else here</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
-             <div class="col-6">
+             <div class="col-6 .order_container">
                 {% include 'point_of_sale/ajax/order_container.html' %}
             </div>
         </div>
@@ -103,6 +75,42 @@
                 success : function (data) {
                     $('.modal_area').html(data.modal);
                     $('#myModal').modal('show')
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $('.deleteOrderItem').click(function (evt) {
+          evt.preventDefault();
+          const myBtn = $(this);
+          const url = myBtn.attr('data-href');
+          $.ajax({
+              method: 'GET',
+              dataType: 'json',
+              url: url,
+
+              success : function (data) {
+                  $('.order_container').html(data.result)
+              }
+          })
+        })
+    </script>
+
+    <script>
+        $('.searchProducts').keyup(function (evt) {
+            evt.preventDefault();
+            const myInput = $(this);
+            const url = myInput.attr('data-href');
+            const q_value = myInput.val();
+            
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url + '?q=' + q_value,
+                
+                success: function (data) {
+                    $('.product_container').html(data.result)
                 }
             })
         })

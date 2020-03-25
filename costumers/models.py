@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from tinymce.models import HTMLField
 from datetime import datetime
 from project_settings.models import PaymentMethod
+from project_settings.tools import initial_date
 
 from decimal import Decimal
 CURRENCY = settings.CURRENCY
@@ -69,8 +70,8 @@ class Costumer(models.Model):
         return self.eponimia
 
     def update_orders(self):
-        qs = self.orders.all()
-        new_value = qs.aggregate(Sum('value'))['value__sum'] if qs.exists() else 0
+        qs = self.sale_invoices.all()
+        new_value = qs.aggregate(Sum('final_value'))['final_value__sum'] if qs.exists() else 0
         self.value = new_value
         self.save()
 
@@ -165,7 +166,7 @@ class PaymentInvoice(models.Model):
 
     class Meta:
         unique_together = ['number', 'series', 'order_type']
-        ordering = ['-id']
+        ordering = ['-date']
 
     def tag_order_type(self):
         return 'Πληρωμή'
@@ -343,11 +344,12 @@ class CostumerPayment(models.Model):
         return reverse('edit_payment_from_costumer', kwargs={'pk': self.id})
 
     def get_delete_url(self):
-        return reverse('orders:payment_delete', kwargs={'pk': self.id})
+        return reverse('costumers:payment_delete', kwargs={'pk': self.id})
 
     @staticmethod
     def filters_data(request, qs):
         q = request.GET.get('q', None)
+        date_start, date_end, date_range = initial_date(request, months=12)
         if q:
             qs = qs.filter(Q(customer__first_name__icontains=q) |
                       Q(customer__last_name__icontains=q) |
@@ -355,17 +357,7 @@ class CostumerPayment(models.Model):
                       Q(customer__cellphone__icontains=q) |
                       Q(customer__phone__icontains=q)
                       ).distinct()
-        date_range = request.GET.get('date_range', None)
         if date_range:
-            date_range = date_range.split('-')
-            date_range[0] = date_range[0].replace(' ', '')
-            date_range[1] = date_range[1].replace(' ', '')
-            try:
-                date_start = datetime.datetime.strptime(date_range[0], '%m/%d/%Y')
-                date_end = datetime.datetime.strptime(date_range[1], '%m/%d/%Y')
-            except:
-                date_start = datetime.datetime.now()
-                date_end = datetime.datetime.now()
             qs = qs.filter(date__range=[date_start, date_end])
         return qs
 

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from mptt.models import MPTTModel, TreeForeignKey
 # Create your models here.
@@ -112,6 +112,7 @@ class Product(models.Model):
         if self.product_class.have_storage:
             qs = self.storages.all()
             self.qty = qs.aggregate(Sum('qty'))['qty__sum'] if qs.exists() else 0
+        self.final_price = self.price_discount if self.price_discount > 0 else self.price
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -135,19 +136,29 @@ class Product(models.Model):
         self.taxes_modifier = item.taxes_modifier
         self.save()
 
+    def update_product_from_sale(self, item):
+        self.price = item.value
+        self.taxes_modifier = item.taxes_modifier
+        self.save()
+
     @staticmethod
     def filters_data(request, qs):
+        q = request.GET.get('q', None)
+        search_name = request.GET.get('search_name', q)
+
+        if q:
+            qs = qs.filter(Q(title__icontains=q) |
+                           Q(order_sku__icontains=q) |
+                           Q(sku__icontains=q)
+                           ).distinct()
+        if search_name:
+            qs = qs.filter(Q(title__icontains=search_name) |
+                           Q(order_sku__icontains=search_name) |
+                           Q(sku__icontains=search_name)
+                           ).distinct()
         return qs
     
-    def estimate_qty(self):
-        product_class = self.product_class
-        if product_class.have_storage:
-            return 0
-        elif product_class.support_transcations:
-            invoices = self.product_items.all()
-            return 0
-        else:
-            return 0
+
 
 
 class ProductStorage(models.Model):
