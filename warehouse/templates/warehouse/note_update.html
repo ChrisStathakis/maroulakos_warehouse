@@ -1,4 +1,4 @@
-{% extends "dashboard.html" %}
+{% extends "warehouse/dashboard.html" %}
 
 {% block extra_css %}
  {{ form.media }}
@@ -13,12 +13,15 @@
 {% block content %}
     <div class='content'>
             <div class='row'>
-                <div class='col-md-12'>
+                <div class='col-12'>
                     <div class='card'>
                         <div class='card-header'>
                             <h4>Σημειωσεις .... {{ object }} </h4>
-                            <a class='btn btn-danger pull-right' onclick='return confirm("Are you sure")' href="{% url 'vendors:note_delete' object.id %}">Διαγραφη </a>
-                            <a href='{{ back_url }}' class='btn btn-warning PULL-LEFT'>Επιστροφη </a>
+                            <a class='btn btn-danger pull-right' onclick='return confirm("Are you sure")' href="{% url 'warehouse:note_delete' object.id %}">Διαγραφη </a>
+                            <a href='{{ back_url }}' class='btn btn-warning pull-left'>Επιστροφη </a>
+                        </div>
+                        <div class="card-body">
+
                         </div>
                     </div>
                     

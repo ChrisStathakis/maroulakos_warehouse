@@ -10,11 +10,10 @@ from decimal import Decimal
 
 from project_settings.models import PaymentMethod
 from project_settings.tools import initial_date
-from project_settings.constants import INVOICE_TYPES
+from project_settings.constants import INVOICE_TYPES, CURRENCY
 from catalogue.models import Product, ProductStorage
 
 
-CURRENCY = ''
 TAXES_CHOICES = (
     ('a', 0),
     ('b', 13),
@@ -56,6 +55,9 @@ class Vendor(models.Model):
 
     def get_card_url(self):
         return reverse('warehouse:vendor_card', kwargs={'pk': self.id})
+
+    def get_note_url(self):
+        return reverse('warehouse:notes', kwargs={'pk': self.id})
 
     def get_delete_url(self):
         return reverse('warehouse:vendor_delete', kwargs={'pk': self.id})
@@ -133,6 +135,7 @@ class Invoice(models.Model):
                                        verbose_name='Τροπος Πληρωμης')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
+    taxes_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Φορος', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
@@ -141,7 +144,10 @@ class Invoice(models.Model):
         ordering = ['-date']
 
     def save(self, *args, **kwargs):
-        self.final_value = self.value + self.extra_value
+        qs = self.order_items.all()
+        self.value = qs.aggregate(Sum('total_clean_value'))['total_clean_value__sum'] if qs.exists() else 0.00
+        self.taxes_value = qs.aggregate(Sum('taxes_value'))['taxes_value__sum'] if qs.exists() else 0.00
+        self.final_value = self.value + self.extra_value + self.taxes_value
         super(Invoice, self).save(*args, **kwargs)
         if self.vendor:
             self.vendor.update_value()
@@ -153,6 +159,9 @@ class Invoice(models.Model):
         return reverse('warehouse:invoice_update', kwargs={'pk': self.id})
 
     def tag_value(self):
+        return f'{self.value} {CURRENCY}'
+
+    def tag_final_value(self):
         return f'{self.final_value} {CURRENCY}'
 
     @staticmethod
@@ -205,6 +214,9 @@ class InvoiceItem(models.Model):
         else:
             self.product.save()
         self.invoice.save()
+
+    def get_delete_url(self):
+        return reverse('warehouse:delete_invoice_item', kwargs={'pk': self.id})
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')
@@ -283,4 +295,10 @@ def update_vendor_invoice_on_delete(sender, instance, **kwargs):
     instance.vendor.update_value()
 
 
-
+@receiver(post_delete, sender=InvoiceItem)
+def update_anything_on_order_item_delete(sender, instance, **kwargs):
+    instance.invoice.save()
+    if instance.storage:
+        instance.storage.save()
+    else:
+        instance.product.save()

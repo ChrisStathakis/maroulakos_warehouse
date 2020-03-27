@@ -67,3 +67,20 @@ def class_copy_product_view(request, pk):
     object.save()
     messages.success(request, 'To Προϊόν Αντιγραφηκε!')
     return redirect(object.get_edit_url())
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class ProductStorageUpdateView(UpdateView):
+    template_name = 'catalogue/form_view.html'
+    model = ProductStorage
+    form_class = ProductStorageForm
+
+    def get_success_url(self):
+        return self.object.product.get_edit_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = f'Επεξεργασια {self.object.storage}'
+        context['back_url'] = self.get_success_url()
+
+        return context

@@ -14,23 +14,6 @@ from .forms import InvoiceItemForm, InvoiceForm
 
 @staff_member_required
 @csrf_exempt
-def ajax_modify_invoice_view(request, pk):
-    invoice = get_object_or_404(Invoice, id=pk)
-    form = InvoiceForm(instance=invoice)
-    data = dict()
-    data['result'] = render_to_string(template_name='warehouse/ajax/product_modal.html',
-                                      request=request,
-                                      context={
-                                          'form': form,
-                                          'title': f'Επεξεργασια {invoice}',
-                                          'action_url': reverse('warehouse:validate_invoice_edit', kwargs={'pk': invoice.id})
-                                      }
-                                      )
-    return JsonResponse(data)
-
-
-@staff_member_required
-@csrf_exempt
 def ajax_modify_order_item_modal(request, pk):
     instance = get_object_or_404(InvoiceItem, id=pk)
     form = InvoiceItemForm(instance=instance)
@@ -39,8 +22,9 @@ def ajax_modify_order_item_modal(request, pk):
                                       request=request,
                                       context={
                                           'form': form,
-                                          'title': f'Επεξεργασια {instance}',
-                                          'action_url': reverse('warehouse:validate_order_item_update', kwargs={'pk': instance.id})
+                                          'title': f'Επεξεργασια {instance.product}',
+                                          'action_url': reverse('warehouse:validate_order_item_update', kwargs={'pk': instance.id}),
+                                          'delete_url': instance.get_delete_url()
 
                                       }
                                       )
@@ -53,13 +37,15 @@ def ajax_create_product_modal(request, pk, dk):
     product = get_object_or_404(Product, id=dk)
     data = dict()
     action_url = reverse("warehouse:validate_order_item_creation", kwargs={'pk': invoice.id})
-    form = InvoiceItemForm(initial={'order_code': product.order_sku,
+    form = InvoiceItemForm(initial={
                                     'vendor': invoice.vendor,
                                     'invoice': invoice,
                                     'product': product,
                                     'unit': product.unit,
                                     'taxes_modifier': product.taxes_modifier,
                                     'discount': product.order_discount,
+                                    'value': product.price_buy,
+                                    'order_code': product.order_sku
                                     }
                            )
     if not product.product_class.have_storage:

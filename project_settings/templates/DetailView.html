@@ -7,6 +7,7 @@
                  <div class="card">
                      <div class="card-header">
                          <div class="card-title"><h4 class="text-center">{{ object }}, Υπόλοιπο {{ object.tag_balance }}</h4> </div>
+                         <a href="{% url 'costumers:costumer_analysis' object.id %}" class="btn btn-info"><i class="fa fa-file-text"></i> Report </a>
                           <a href="{{ back_url }}" class="btn btn-sm btn-outline-warning btn-round text-right pull-right">Επιστροφη</a>
                      </div>
                  </div>

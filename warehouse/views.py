@@ -101,7 +101,7 @@ def delete_vendor_view(request, pk):
 
 @method_decorator(staff_member_required, name='dispatch')
 class VendorNotesView(ListView):
-    template_name = 'vendors/NoteContainer.html'
+    template_name = 'warehouse/NoteContainer.html'
     model = Note
 
     def get_queryset(self):
@@ -121,7 +121,7 @@ class VendorNotesView(ListView):
 class NoteUpdateView(UpdateView):
     model = Note
     form_class = NoteForm
-    template_name = 'vendors/note_update.html'
+    template_name = 'warehouse/note_update.html'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -130,7 +130,7 @@ class NoteUpdateView(UpdateView):
 
     def get_success_url(self):
         vendor = self.object.vendor_related
-        return reverse('vendors:notes', kwargs={'pk': vendor.id})
+        return reverse('warehouse:notes', kwargs={'pk': vendor.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -147,7 +147,7 @@ class NoteUpdateView(UpdateView):
 def delete_note_view(request, pk):
     note = get_object_or_404(Note, id=pk)
     note.delete()
-    return redirect(reverse('vendors:notes', kwargs={'pk': note.vendor_related.id}))
+    return redirect(reverse('warehouse:notes', kwargs={'pk': note.vendor_related.id}))
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -330,6 +330,9 @@ class InvoiceDetailView(UpdateView):
     model = Invoice
     template_name = 'warehouse/invoice_detail.html'
     form_class = InvoiceForm
+
+    def get_success_url(self):
+        return self.object.get_edit_url()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

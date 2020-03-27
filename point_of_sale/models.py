@@ -103,7 +103,7 @@ class SalesInvoiceItem(models.Model):
         self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
         self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
-        self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
+        self.total_value = round(Decimal(self.total_clean_value) + Decimal(self.taxes_value), 2)
 
         super().save(*args, **kwargs)
         if self.storage:
@@ -112,8 +112,6 @@ class SalesInvoiceItem(models.Model):
         else:
             self.product.save()
         self.invoice.save()
-
-
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')
@@ -127,3 +125,10 @@ class SalesInvoiceItem(models.Model):
 
     def tag_discount(self):
         return str(self.discount).replace('.', ',')
+
+    @staticmethod
+    def filter_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(invoice__date__range=[date_start, date_end])
+        return qs

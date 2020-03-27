@@ -4,9 +4,16 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from django.contrib import messages
 
-from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm
+from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm
 from .models import Vendor, Invoice, InvoiceItem, Product
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient
+
+
+@staff_member_required
+def delete_invoice_item_view(request, pk):
+    instance = get_object_or_404(InvoiceItem, id=pk)
+    instance.delete()
+    return redirect(instance.invoice.get_edit_url())
 
 
 @staff_member_required
@@ -53,8 +60,14 @@ def validate_create_invoice_order_item_view(request, pk):
     form = InvoiceItemForm(request.POST or None, initial={'invoice': instance,
                                                           'vendor': instance.vendor,
                                                           })
+
     if form.is_valid():
-        form.save()
+        data = form.save()
+        product = data.product
+        product.price_buy = data.value
+        product.order_sku = data.order_code
+        product.order_discount = data.discount
+        product.save()
     return redirect(instance.get_edit_url())
 
 
@@ -105,3 +118,12 @@ def add_product_to_invoice_trans_view(request, pk, dk):
         return redirect(instance.get_edit_url())
     return render(request, 'warehouse/form_view.html', context=locals())
 
+
+@staff_member_required
+def validate_note_creation_view(request, pk):
+    instance = get_object_or_404(Vendor, id=pk)
+    form = NoteForm(request.POST or None, initial={'vendor_related': instance})
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

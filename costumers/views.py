@@ -3,12 +3,13 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse_lazy
-from  django.contrib import messages
+from django.contrib import messages
+from django.db.models import Sum, Count
 from operator import attrgetter
 from itertools import chain
 
 from .models import PaymentInvoice, MyCard, Costumer, CostumerPayment
-from point_of_sale.models import SalesInvoice
+from point_of_sale.models import SalesInvoice, SalesInvoiceItem
 from .tables import PaymentInvoiceTable, CostumerTable
 from .forms import PaymentInvoiceForm, CostumerDetailsForm, CreateInvoiceItemForm, PaymentInvoiceEditForm, CostumerForm, CostumerPaymentForm
 
@@ -297,9 +298,15 @@ def pdf_costumer_movements_view(request, pk):
 def costumer_analysis_view(request, pk):
     costumer = get_object_or_404(Costumer, id=pk)
     order_items = costumer.salesinvoiceitem_set.all()
-
-    return render(request, '', context=locals())
-
+    order_items = SalesInvoiceItem.filter_data(request, order_items)
+    date_filter = [True]
+    total_incomes = round(order_items.aggregate(Sum('total_value'))['total_value__sum'] if order_items.exists() else 0, 2)
+    total_qty = order_items.aggregate(Sum('qty'))['qty__sum'] if order_items.exists() else 0
+    avg = total_incomes/total_qty if total_qty !=0 else 0.00
+    product_analysis = order_items.values('product__title').annotate(total_qty=Sum('qty'),
+                                                                     total_value=Sum('total_value')
+                                                                     ).order_by('product__title')
+    return render(request, 'costumers/costumer_analysis.html', context=locals())
 
 
 def test_pdf(request):

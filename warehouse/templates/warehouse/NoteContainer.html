@@ -1,4 +1,4 @@
-{% extends "dashboard.html" %}
+{% extends "warehouse/dashboard.html" %}
 
 {% block extra_css %}
  {{ form.media }}
@@ -12,16 +12,17 @@
 
 {% block content %}
     <div class='content'>
-            <div class='row'>
-                <div class='col-md-12'>
-                    <div class='card'>
-                        <div class='card-header'>
-                            <h4>Σημειωσεις .... {{ vendor }} </h4>
-                        </div>
+        <div class='row'>
+            <div class='col-md-12'>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>Σημειωσεις .... {{ vendor }} </h4>
+                        <a href='{{ vendor.get_edit_url }}' class='btn btn-warning pull-right'>Επιστροφη </a>
                     </div>
-                    <a href='{{ vendor.get_edit_url }}' class='btn btn-warning'>Επιστροφη </a>
                 </div>
             </div>
+        </div>
+
         <div class='row'>
             {% for note in object_list %}
                 <div class='col-md-4'>
@@ -34,7 +35,7 @@
                             {{ note.text|safe }}
                         </div>
                         <div class='card-footer'>
-                                <a href="{% url 'vendors:note_update' note.id  %}" class='btn btn-primary'><i class='fa fa-edit'></i> </a>
+                                <a href="{% url 'warehouse:note_update' note.id  %}" class='btn btn-primary'><i class='fa fa-edit'></i> </a>
                                 <br />
                             <p>Δημιουργία {{ note.date|date:'d M Y' }}</p>
                         </div>
@@ -48,7 +49,7 @@
                 <div class='card'>
                     <div class='card-header'><div class='card-title'>Δημιουργία</div></div>
                     <div class='card-body'>
-                        <form method='POST' action='{% url "vendors:note_create" vendor.id %}'>{% csrf_token %}
+                        <form method='POST' action='{% url "warehouse:note_create" vendor.id %}'>{% csrf_token %}
                             {{ form  }}
                             <button type='submit' class='btn btn-success'><i class='fa fa-save'></i> Αποθηκευση </button>
                         </form>

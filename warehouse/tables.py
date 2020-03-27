@@ -33,12 +33,14 @@ class VendorTable(tables.Table):
 
 class InvoiceTable(tables.Table):
     title = tables.TemplateColumn("<a href='{{ record.get_edit_url}}'>{{ record }}</a>",
-            orderable=False, verbose_name='-')
+             verbose_name='Κωδικος Τιμ.')
+    order_type = tables.Column(verbose_name='Ειδος')
+
 
     class Meta:
         model = Invoice
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'title', 'vendor',  'order_type', 'final_value']
+        fields = ['date', 'title', 'vendor',  'order_type', 'value', '','final_value']
 
 
 class InvoiceTransformationTable(tables.Table):

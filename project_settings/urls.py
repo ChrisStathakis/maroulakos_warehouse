@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (HomepageView,
                     StorageListView, StorageCreateView, StorageUpdateView, delete_storage_view,
-                    PaymentMethodListView, PaymentMethodCreateView, PaymentMethodUpdateView, delete_payment_view
+                    PaymentMethodListView, PaymentMethodCreateView, PaymentMethodUpdateView, delete_payment_view,
+
                     )
 app_name = 'settings'
 
@@ -16,5 +17,6 @@ urlpatterns = [
     path('payment-create/', PaymentMethodCreateView.as_view(), name='payment_create'),
     path('payment-update/<int:pk>/', PaymentMethodUpdateView.as_view(), name='payment_update'),
     path('payment-delete/<int:pk>/', delete_payment_view, name='payment_delete'),
+
 
 ]

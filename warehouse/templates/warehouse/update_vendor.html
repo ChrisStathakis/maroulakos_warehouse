@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %}
+{% extends 'warehouse/dashboard.html' %}
 
 {% block content %}
     <div class='content'>
@@ -50,7 +50,7 @@
                             </div>
                             </div>
                             <br /> <br/>
-                            <a href='' class='btn btn-info'>Σημειωσεις</a>
+                            <a href='{{ object.get_note_url }}' class='btn btn-info'>Σημειωσεις</a>
                             <a href='{{ object.get_card_url }}' class='btn btn-info pull-right'>Καρτελα</a>
                     </div>
                 </div>

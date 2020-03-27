@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import (PaymentInvoiceListView, PaymentInvoiceCreateView, PaymentInvoiceUpdateView, print_invoice_view,
-                    PaymentInvoiceCreateFromOrderView, CostumerHomepageView, pdf_costumer_movements_view
+from .views import (PaymentInvoiceCreateView, PaymentInvoiceUpdateView, print_invoice_view,
+                    PaymentInvoiceCreateFromOrderView, pdf_costumer_movements_view, costumer_analysis_view
                     )
 from .ajax_views import (ajax_create_item, update_costumer_detail_view, ajax_delete_order_item)
 
@@ -17,7 +17,6 @@ app_name = 'costumers'
 
 urlpatterns = [
 
-
     path('home/', CostumerHomepageView.as_view(), name='homepage'),
     path('payment-invoice-create/', PaymentInvoiceCreateView.as_view(), name='payment_invoice_create'),
     path('payment-invoice-create-from-costumer/<int:pk>', PaymentInvoiceCreateFromOrderView.as_view(),
@@ -29,6 +28,7 @@ urlpatterns = [
     path('print/<int:pk>/', print_invoice_view, name='print_invoice'),
     path('update-invoice-profile/<int:pk>/', update_costumer_detail_view, name='update_invoice_profile'),
     path('pdf-analysis/<int:pk>/', pdf_costumer_movements_view, name='pdf_costumer_analysis'),
+    path('costumer/analysis/<int:pk>/', costumer_analysis_view, name='costumer_analysis'),
 
 
 

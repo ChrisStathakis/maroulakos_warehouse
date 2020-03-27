@@ -97,21 +97,51 @@
                         <div class="row">
                             <div class="col-6">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Ημερομηνια</li>
-                                    <li class="list-group-item">Κωδικος Τιμ.</li>
-                                    <li class="list-group-item">Αξια Προϊόντων</li>
+                                    <li class="list-group-item">Ημερομηνια... {{ invoice.date }}</li>
+                                    <li class="list-group-item">Κωδικος Τιμ.. {{ invoice.title }}</li>
+                                    <li class="list-group-item">Αξια Προϊόντων... {{ invoice.tag_value }}</li>
+                                    <li class="list-group-item">Τροπος Πληρωμής... {{ invoice.payment_method }}</li>
                                 </ul>
                             </div>
                             <div class="col-6">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Προμηθευτης</li>
-                                    <li class="list-group-item">Αξια</li>
-                                    <li class="list-group-item">Κστασταση</li>
+                                    <li class="list-group-item">Ειδος Παραστατ... {{ invoice.get_order_type_display }}</li>
+                                    <li class="list-group-item">Προμηθευτης... {{ invoice.vendor }}</li>
+                                    <li class="list-group-item">Αξια... {{ invoice.tag_final_value }}</li>
+                                    <li class="list-group-item">Σημειωσεις.. {{ invoice.description }}</li>
                                 </ul>
                             </div>
                             <div class="col-12">
                                 <hr>
-                                <button class="card-link btn btn-info pull-right editInvoice"><i class="fa fa-edit"></i> Επεξεργασια</button>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#exampleModal">
+                                  <i class="fa fa-edit"></i> Επεξεργασια
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Επεξεργασια</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <form method="post" class="form">
+                                            {% csrf_token %}
+                                            {{ form }}
+                                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Αποθηκευση </button>
+                                        </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                                 <a href="#" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
                             </div>
                         </div>
@@ -164,22 +194,5 @@
         })
     </script>
 
-    <script>
-        $('.editInvoice').click(function (evt) {
-            evt.preventDefault();
-            $('.modal_area').empty();
-            const url = '{% url "warehouse:ajax_modify_invoice" object.id %}';
-            $.ajax({
-                method: 'GET',
-                dataType: 'json',
-                url: url,
-
-                success: function (data) {
-                    $('.modal_area').html(data.result);
-                    $('#quick_view_modal').modal('show');
-                }
-            })
-        })
-    </script>
 
 {% endblock %}

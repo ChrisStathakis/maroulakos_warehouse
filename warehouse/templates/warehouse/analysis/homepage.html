@@ -1,0 +1,20 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header"><h4>Αναλυση Παραστατικών</h4></div>
+                    <div class="card-body"><a href="{% url 'warehouse:invoice_analysis' %}" class="btn btn-info"><i class="fa fa-arrow-circle-o-right"></i> </a> </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header"><h4>Αναλυση Προϊόντων</h4></div>
+                    <div class="card-body"><a href="{% url 'warehouse:invoice_items_analysis' %}" class="btn btn-info"><i class="fa fa-arrow-circle-o-right"></i> </a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

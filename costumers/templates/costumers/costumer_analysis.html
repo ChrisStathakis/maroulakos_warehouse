@@ -1,1 +1,97 @@
-{%  %}
+{% extends 'costumers/homepage.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{ costumer }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Filters
+                        </a>
+                        <a href="{{ costumer.get_edit_url }}" class="btn btn-warning pull-right"><i class="fa fa-arrow-circle-left"></i> Επιστροφή</a>
+                        <div class="collapse" id="collapseExample">
+                            <form method="get" class="form">
+                                 <div class="row">
+                                      {% include 'filters/my_filters.html' %}
+                                 </div>
+                                 <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Συνολικά Δεδομενα</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                          <li class="list-group-item">Συνολική Αξία Προϊόντων.... {{ total_incomes }} </li>
+                          <li class="list-group-item">Συνολική Ποσότητα... {{ total_qty }}</li>
+                          <li class="list-group-item">Μεση Αξία... {{ avg }}</li>
+                        </ul>
+                        <br> <hr>
+                        <h5>Συνολικές Αξίες</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξια</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in  product_analysis %}
+                                    <tr>
+                                        <td>{{ ele.product__title }}</td>
+                                        <td>{{ ele.total_qty }}</td>
+                                        <td>{{ ele.total_value|floatformat:2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Κινήσεις</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Προϊόν</th>
+                                    <th>Πόσοτητα</th>
+                                    <th>Τιμη Μοναδας</th>
+                                    <th>Συνολική Αξία</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                    <td>{{ item.invoice.date }}</td>
+                                    <td>{{ item.product }}</td>
+                                    <td>{{ item.qty }} {{ item.get_unit_display }}</td>
+                                    <td>{{ item.tag_value }}</td>
+                                    <td>{{ item.tag_total_value }}</td>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
