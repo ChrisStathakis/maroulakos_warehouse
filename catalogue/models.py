@@ -16,8 +16,8 @@ UNIT = (
 
 
 class Category(MPTTModel):
-    name = models.CharField(max_length=240, unique=True)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    name = models.CharField(max_length=240, unique=True, verbose_name='Τίτλος')
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name='Γονεας')
 
     def __str__(self):
         full_path = [self.name]
@@ -61,15 +61,15 @@ class ProductClass(models.Model):
 
 
 class Product(models.Model):
-    active = models.BooleanField(default=True, verbose_name='Active')
-    product_class = models.ForeignKey(ProductClass, on_delete=models.PROTECT, null=True)
+    active = models.BooleanField(default=True, verbose_name='Κατασταση')
+    product_class = models.ForeignKey(ProductClass, on_delete=models.PROTECT, null=True, verbose_name='Ειδος')
     is_offer = models.BooleanField(default=True)
     title = models.CharField(max_length=120, verbose_name="'Ονομα προιόντος")
     # color = models.ForeignKey(Color, blank=True, null=True, verbose_name='Χρώμα', on_delete=models.CASCADE)
-    category = models.ManyToManyField(Category, blank=True, null=True)
+    category = models.ManyToManyField(Category, blank=True, null=True, verbose_name='Κατηγοριες')
     # brand = models.ForeignKey(Brand, blank=True, null=True, verbose_name='Brand Name', on_delete=models.SET_NULL)
 
-    sku = models.CharField(max_length=150, blank=True, null=True)
+    sku = models.CharField(max_length=150, blank=True, null=True, verbose_name='MPN')
     # site_text = HTMLField(blank=True, null=True)
     meta_description = models.CharField(max_length=300, null=True, blank=True)
     slug = models.SlugField(blank=True, null=True, allow_unicode=True)
@@ -96,9 +96,9 @@ class Product(models.Model):
     # warehouse_data
     vendor = models.ForeignKey('warehouse.Vendor', verbose_name="Προμηθευτής", blank=True, null=True, on_delete=models.SET_NULL)
     qty = models.DecimalField(default=0, verbose_name="Απόθεμα", max_digits=10, decimal_places=2)
-    unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True)
-    safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    order_sku = models.CharField(blank=True, null=True, max_length=50)
+    unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='ΜΜ')
+    safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Ασφαλη Αποθεμα')
+    order_sku = models.CharField(blank=True, null=True, max_length=50, verbose_name='Κωδικος Τιμολογιου')
     price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0,
                                     verbose_name="Τιμή Αγοράς")  # the price which you buy the product
     order_discount = models.IntegerField(default=0, verbose_name="'Εκπτωση Τιμολογίου σε %")
@@ -157,8 +157,6 @@ class Product(models.Model):
                            Q(sku__icontains=search_name)
                            ).distinct()
         return qs
-    
-
 
 
 class ProductStorage(models.Model):
@@ -196,6 +194,12 @@ class ProductStorage(models.Model):
     def __str__(self):
         return self.storage.title
 
+    def get_edit_url(self):
+        return reverse('catalogue:product_storage_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('catalogue:delete_product_storage', kwargs={'pk': self.id})
+
 
 class ProductIngredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredients')
@@ -208,6 +212,14 @@ class ProductIngredient(models.Model):
 
     def __str__(self):
         return self.ingredient.title
+
+    def get_edit_url(self):
+        return reverse('catalogue:update_ingredient', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('catalogue:delete_ingredient', kwargs={'pk': self.id})
+
+
 
 
 

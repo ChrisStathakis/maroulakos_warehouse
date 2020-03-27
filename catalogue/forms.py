@@ -21,7 +21,10 @@ class ProductForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['active', 'title', 'product_class', 'sku', 'category',
+                  'price', 'vendor', 'order_sku', 'price_buy', 'price_discount',
+                  'safe_stock', 'unit', 'taxes_modifier', 'qty_kilo'
+                  ]
 
 
 class ProductClassForm(BaseForm, forms.ModelForm):
@@ -43,7 +46,7 @@ class ProductStorageForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = ProductStorage
-        fields = '__all__'
+        fields = ['product', 'storage', 'priority']
 
 
 class ProductIngredientForm(BaseForm, forms.ModelForm):

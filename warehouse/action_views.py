@@ -94,12 +94,14 @@ def validate_invoice_edit_view(request, pk):
 def add_product_to_invoice_trans_view(request, pk, dk):
     instance = get_object_or_404(InvoiceTransformation, id=pk)
     product_ = get_object_or_404(Product, id=dk)
-    form_title = 'Create'
+    form_title = f'Δημιουργια {product_}'
     info_trans = True
 
     back_url = instance.get_edit_url()
     form = InvoiceTransformationItemForm(request.POST or None, initial={'product': product_,
-                                                                        'invoice': instance}
+                                                                        'invoice': instance,
+                                                                        'value': product_.final_price
+                                                                        }
                                          )
     if form.is_valid():
         item = form.save()

@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
+from django.db.models.functions import TruncMonth
 from django.contrib.auth import logout
 from django.db.models import Sum
 
@@ -192,3 +193,42 @@ def category_delete_view(request, pk):
     instance = get_object_or_404(Category, id=pk)
     instance.delete()
     return redirect(reverse('catalogue:category_list'))
+
+
+@staff_member_required
+def product_analysis_view(request, pk):
+    instance = get_object_or_404(Product, id=pk)
+    invoice_items = instance.invoiceitem_set.all()
+    sell_items = instance.product_items.all()
+    ingre_items = instance.invoicetransformationingredient_set.all()
+    ingre_created = instance.invoicetransformationitem_set.all()
+
+    # totals
+    total_invoices = invoice_items.aggregate(Sum('qty'))['qty__sum'] if invoice_items.exists() else 0
+    total_ingre_items = ingre_items.aggregate(Sum('qty'))['qty__sum'] if ingre_items.exists() else 0
+    total_ingre_items_created = ingre_created.aggregate(Sum('qty'))['qty__sum'] if ingre_created.exists() else 0
+    total_sells = sell_items.aggregate(Sum('qty'))['qty__sum'] if sell_items.exists() else 0
+
+    # movements
+    invoice_items_movements = invoice_items.annotate(month=TruncMonth('invoice__date')).values('month')\
+        .annotate(total_qty=Sum('qty'),
+                  total_value=Sum('total_value')
+            ).values('month', 'total_qty', 'total_value').order_by('month')
+
+    sell_items_movements = sell_items.annotate(month=TruncMonth('invoice__date')).values('month') \
+        .annotate(total_qty=Sum('qty'),
+                  total_value=Sum('total_value')
+                  ).values('month', 'total_qty', 'total_value').order_by('month')
+
+    ingre_items_movements = ingre_items.annotate(month=TruncMonth('invoice_item__invoice__date')).values('month') \
+        .annotate(total_qty=Sum('qty'),
+                  total_value=Sum('total_cost')
+                  ).values('month', 'total_qty', 'total_value').order_by('month')
+
+    ingre_created_movements = ingre_created.annotate(month=TruncMonth('invoice__date')).values('month') \
+        .annotate(total_qty=Sum('qty'),
+                  total_value=Sum('total_value')
+                  ).values('month', 'total_qty', 'total_value').order_by('month')
+    return render(request, 'catalogue/product_analysis.html', context=locals())
+
+

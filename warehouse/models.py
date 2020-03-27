@@ -134,9 +134,9 @@ class Invoice(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
-    value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
+    value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0.00)
     taxes_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Φορος', default=0)
-    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
+    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0.00)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
 
@@ -147,7 +147,7 @@ class Invoice(models.Model):
         qs = self.order_items.all()
         self.value = qs.aggregate(Sum('total_clean_value'))['total_clean_value__sum'] if qs.exists() else 0.00
         self.taxes_value = qs.aggregate(Sum('taxes_value'))['taxes_value__sum'] if qs.exists() else 0.00
-        self.final_value = self.value + self.extra_value + self.taxes_value
+        self.final_value = Decimal(self.value) + Decimal(self.extra_value) + Decimal(self.taxes_value)
         super(Invoice, self).save(*args, **kwargs)
         if self.vendor:
             self.vendor.update_value()
@@ -198,7 +198,7 @@ class InvoiceItem(models.Model):
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
-    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE, related_name='storage_invoices')
+    storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.PROTECT, related_name='storage_invoices')
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value

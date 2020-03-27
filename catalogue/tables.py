@@ -20,7 +20,7 @@ class ProductTable(tables.Table):
     class Meta:
         template_name = 'django_tables2/bootstrap.html'
         model = Product
-        fields = ['sku', 'title', 'product_class__title', 'qty', 'price_buy', 'final_price']
+        fields = ['sku', 'order_sku', 'title', 'product_class__title', 'vendor','qty', 'price_buy', 'final_price']
 
 
 class CategoryTable(tables.Table):

@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
+from django.db.models import ProtectedError
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, reverse
 from .models import Product, ProductStorage, ProductIngredient
@@ -82,5 +83,48 @@ class ProductStorageUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['form_title'] = f'Επεξεργασια {self.object.storage}'
         context['back_url'] = self.get_success_url()
-
+        context['delete_url'] = self.object.get_delete_url()
         return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+@staff_member_required
+def delete_product_storage_view(request, pk):
+    instance = get_object_or_404(ProductStorage, id=pk)
+    try:
+        instance.delete()
+    except ProtectedError:
+        messages.warning(request, 'Η αποθηκη χρησιμοποιειτε')
+    return redirect(instance.product.get_edit_url())
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class ProductIngredientUpdateView(UpdateView):
+    template_name = 'catalogue/form_view.html'
+    model = ProductIngredient
+    form_class = ProductIngredientForm
+
+    def get_success_url(self):
+        return self.object.product.get_edit_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = f'Επεξεργασια {self.object.product}'
+        context['back_url'] = self.get_success_url()
+        context['delete_url'] = self.object.get_delete_url()
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Το Συστατικο επεξεργαστικε')
+        return super().form_valid(form)
+
+
+@staff_member_required
+def ingredient_delete_view(request, pk):
+    instance = get_object_or_404(ProductIngredient, id=pk)
+    instance.delete()
+    return redirect(instance.product.get_edit_url())

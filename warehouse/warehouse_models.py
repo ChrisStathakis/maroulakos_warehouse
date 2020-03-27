@@ -35,8 +35,8 @@ class InvoiceTransformationItem(models.Model):
                                 related_name='trans_items'
                                 )
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    qty = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Ποσοτητσ')
+    value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
 
     total_value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)

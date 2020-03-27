@@ -20,6 +20,7 @@
                 </div>
             </div>
             <div class="col-4">
+                {% if object.product_class.have_ingredient %}
                 <div class="card">
                     <div class="card-header">
                         <div class="title">Επιλογή Συστατικών</div>
@@ -40,7 +41,7 @@
                                         <td>{{ igre }}</td>
                                         <td>{{ igre.qty }}</td>
                                         <td>{{ igre.cost }}</td>
-                                        <td><a href="" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
+                                        <td><a href="{{ igre.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -58,6 +59,8 @@
                     </div>
 
                 </div>
+                {% endif %}
+                {% if product.product_class.have_storage %}
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
@@ -80,7 +83,7 @@
                                             <td>{{ storage }}</td>
                                             <td>{{ storage.qty }}</td>
                                             <td>{% if storage.priority %} Επιλεγμενη {% else %} -- {% endif %}</td>
-                                            <td><a href="" class="btn btn-info"><i class="fa fa-edit"></i> </a></td>
+                                            <td><a href="{{ storage.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i> </a></td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -93,11 +96,12 @@
                             </form>
                         </div>
                         {% else %}
-                            <p>Δε υποστηρίζεται η αποηθηκη</p>
+                            <p>Δε υποστηρίζεται η αποθηκη</p>
                         {% endif %}
 
                     </div>
                 </div>
+                {% endif %}
             </div>
             <div class="col-4">
                 <div class="card">
@@ -107,6 +111,8 @@
                         <br><br>
                         <hr>
                         <a href="{% url 'catalogue:copy_product' object.id %}" class="btn btn-info pull-left"><i class="fa fa-copy"></i> </a>
+                        <a href="{% url 'catalogue:product_analysis' object.id %}" class="btn btn-info pull-right"><i class="fa fa-file"></i> </a>
+
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">

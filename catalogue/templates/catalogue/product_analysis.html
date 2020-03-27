@@ -1,0 +1,142 @@
+{% extends 'catalogue/dashboard.html' %} {% load static %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h6>Report {{ instance }}</h6>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h6>Συνολα</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="totalChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h6>Κινησεις</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lineChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-title text-center">
+                        <h4>Συνολα</h4>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Παραστατικα</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'Chart.bundle.min.js' %}"  crossorigin="anonymous"></script>
+    <script>
+    var ctx = document.getElementById('totalChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Αγορες', 'Μετασχηματισμοι', 'Παραχθεντα', 'Πωλησεις'],
+            datasets: [{
+                label: '# Ποσοτητες',
+                data: [{{ total_invoices }}, {{ total_ingre_items }}, {{ total_ingre_items_created }}, {{ total_sells }}],
+                backgroundColor: [
+                    'green',
+                    'blue',
+                    'red',
+                    'yellow',
+                    'purple'
+
+                ],
+                borderColor: [
+                    'red',
+                    'blue',
+                    'teal',
+                    'green'
+
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+
+    <script>
+    var ctx = document.getElementById('lineChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+
+        data: {
+            labels: [{% for ele in invoice_items_movements %} {% if forloop.last %} '{{ ele.month }}'{% else %} '{{ele.month}}', {% endif %} {% endfor %}],
+            datasets: [
+                {
+                    label: 'Εσοδα',
+                    backgroundColor: 'green',
+                    borderColor: 'green',
+                    fill: false,
+                    data:[{% for ele in invoice_items_movements %} {% if forloop.last %} {{ ele.total_qty }}{% else %} {{ele.total_qty}}, {% endif %} {% endfor %}],
+                }
+                ]
+
+            },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+
+{% endblock %}
