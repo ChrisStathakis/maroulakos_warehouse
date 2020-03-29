@@ -98,6 +98,7 @@ class Product(models.Model):
     qty = models.DecimalField(default=0, verbose_name="Απόθεμα", max_digits=10, decimal_places=2)
     unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='ΜΜ')
     safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Ασφαλη Αποθεμα')
+    safe_warning = models.BooleanField(default=False)
     order_sku = models.CharField(blank=True, null=True, max_length=50, verbose_name='Κωδικος Τιμολογιου')
     price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0,
                                     verbose_name="Τιμή Αγοράς")  # the price which you buy the product
@@ -109,6 +110,7 @@ class Product(models.Model):
     # my_query = ProductManager()
 
     def save(self, *args, **kwargs):
+        self.safe_warning = False if self.safe_stock == 0 else False if self.qty > self.safe_stock else True
         if self.product_class.have_storage:
             qs = self.storages.all()
             self.qty = qs.aggregate(Sum('qty'))['qty__sum'] if qs.exists() else 0

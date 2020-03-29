@@ -1,12 +1,15 @@
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView, CreateView
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.contrib import messages
 from django.db.models import ProtectedError
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, reverse
 from .models import Product, ProductStorage, ProductIngredient
-
-from .forms import ProductStorageForm, ProductIngredientForm
+from warehouse.forms import VendorForm
+from .forms import ProductStorageForm, ProductIngredientForm, CategoryForm
+from project_settings.forms import StorageForm
 
 
 @staff_member_required
@@ -128,3 +131,73 @@ def ingredient_delete_view(request, pk):
     instance = get_object_or_404(ProductIngredient, id=pk)
     instance.delete()
     return redirect(instance.product.get_edit_url())
+
+
+@staff_member_required
+def popup_vendor(request):
+    form = VendorForm(request.POST or None)
+    form_title = 'Δημιουργία Προμηθευτή'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_vendor");</script>' % (instance.pk, instance))
+    return render(request, "catalogue/form_view.html", locals())
+
+
+@staff_member_required
+def popup_storage(request):
+    form = StorageForm(request.POST or None)
+    form_title = 'Δημιουργια Αποθηκης'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_storage");</script>' % (instance.pk, instance))
+    return render(request, "catalogue/form_view.html", locals())
+
+
+@staff_member_required
+def popup_category(request):
+    form = CategoryForm(request.POST or None)
+    form_title = 'Δημιουργία Κατηγορίας'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_category");</script>' % (instance.pk, instance))
+    return render(request, "catalogue/form_view.html", {"form": form, 'form_title': form_title})
+
+'''
+@staff_member_required
+def popup_category(request):
+    form = WarehouseCategoryForm(request.POST or None)
+    form_title = 'Δημιουργία Κατηγορίας'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_category");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/form.html", {"form": form, 'form_title': form_title})
+
+
+@staff_member_required
+def popup_brand(request):
+    form = BrandForm(request.POST or None)
+    form_title = 'Δημιουργία Brand'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_brand");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/form.html", locals())
+
+
+
+
+
+@staff_member_required
+def popup_color(request):
+    form = ColorForm(request.POST or None)
+    form_title = 'Δημιουργία Χρώματος'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_color");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/form.html", locals())
+'''

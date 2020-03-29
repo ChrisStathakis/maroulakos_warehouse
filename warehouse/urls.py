@@ -4,11 +4,12 @@ from .views import (HomepageView,
                     VendorListView, CreateVendorView, UpdateVendorView, delete_vendor_view,
                     VendorCardView, VendorNotesView, NoteUpdateView, delete_note_view,
                     InvoiceDetailView, InvoiceListView, delete_invoice_view, CreateInvoiceView,
-                    InvoiceTransformationListView, InvoiceTransformationDetailView, InvoiceTransformationCreateView
+                    InvoiceTransformationListView, InvoiceTransformationDetailView, InvoiceTransformationCreateView,
+                    InvoiceItemTransformationUpdateView, create_sale_invoice_transformation_view
                     )
 from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_update_view,
                            validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view,
-                           validate_note_creation_view, delete_invoice_item_view
+                           validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
 
@@ -22,13 +23,14 @@ urlpatterns = [
     path('', HomepageView.as_view(), name='homepage'),
     path('product-trans/', ProductTransformationListView.as_view(), name='transform_list'),
     path('product-prepare/<int:pk>/', ProductTransformationPrepareView.as_view(), name='transform_prepare'),
-
+    path('create/copy-trans-to-sale/<int:pk>/', create_sale_invoice_transformation_view, name='create_sale_from_trans'),
 
     path('vendor-list/', VendorListView.as_view(), name='vendor_list'),
     path('vendor-create/', CreateVendorView.as_view(), name='vendor_create'),
     path('vendor-update/<int:pk>/', UpdateVendorView.as_view(), name='vendor_update'),
     path('vendor-delelte/vendor/<int:pk>/', delete_vendor_view, name='vendor_delete'),
     path('vendor-kartela/<int:pk>/', VendorCardView.as_view(), name='vendor_card'),
+
 
     path('invoice-list/', InvoiceListView.as_view(), name='invoice_list'),
     path('invoice-create/', CreateInvoiceView.as_view(), name='invoice_create'),
@@ -38,6 +40,7 @@ urlpatterns = [
     path('invoice-transformation-list/', InvoiceTransformationListView.as_view(), name='invoice_trans_list'),
     path('invoice-transformation/<int:pk>/', InvoiceTransformationDetailView.as_view(), name='invoice_trans_detail'),
     path('invoice-trans-create/', InvoiceTransformationCreateView.as_view(), name='invoice_trans_create'),
+    path('invoice-trans-item-update/<int:pk>/', InvoiceItemTransformationUpdateView.as_view(), name='invoice_item_trans_update'),
 
     #  notes
     path('notes/<int:pk>/', VendorNotesView.as_view(), name='notes'),
@@ -53,6 +56,8 @@ urlpatterns = [
     path('validate-invoice-edit/<int:pk>/', validate_invoice_edit_view, name='validate_invoice_edit'),
     path('validate-order-item_creation/<int:pk>/', validate_create_invoice_order_item_view, name='validate_order_item_creation'),
     path('delete-invoice-item/<int:pk>/', delete_invoice_item_view, name='delete_invoice_item'),
+    path('delete-transformation-item/<int:pk>/', delete_transformation_item_view, name='delete_transformation_item'),
+    path('aciton-validate-payment-creation/<int:pk>/', validate_payment_form_view, name='validate_payment'),
 
     path('add-product-to-trans-invoice/<int:pk>/<int:dk>/', add_product_to_invoice_trans_view, name='add_product_to_trans_invoice'),
 

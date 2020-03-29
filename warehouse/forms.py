@@ -98,11 +98,11 @@ class InvoiceTransformationForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = InvoiceTransformation
-        fields = ['date', 'title', 'costumer']
+        fields = ['date', 'title', 'costumer', 'payment_method']
 
 
 class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
-    storage = forms.ModelChoiceField(queryset=ProductStorage.objects.all(), widget=forms.HiddenInput(), required=False)
+    # storage = forms.ModelChoiceField(queryset=ProductStorage.objects.all(), widget=forms.HiddenInput(), required=False)
     invoice = forms.ModelChoiceField(queryset=InvoiceTransformation.objects.all(), widget=forms.HiddenInput())
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
 

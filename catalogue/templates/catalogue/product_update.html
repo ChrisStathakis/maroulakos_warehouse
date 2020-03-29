@@ -108,9 +108,18 @@
                     <div class="card-header">
                         <h4>Στοιχεια Προϊόντος</h4>
                         <a href="{{ back_url }}" class="btn btn-warning pull-right"><i class="fa fa-backward"></i> </a>
+                        <div class="dropdown-secondary dropdown">
+                            <button class="btn btn-sm btn-primary dropdown-toggle waves-light" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Δημιουργία</button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                <button class="dropdown-item"  data-href="{% url 'catalogue:popup_vendor' %}" id="add_vendor" onclick="return addData(this);">Προμηθευτή</button>
+                                 <button class="dropdown-item"  data-href="{% url 'catalogue:popup_storage' %}" id="add_vendor" onclick="return addData(this);">Αποθηκη</button>
+                                <button class="dropdown-item"  data-href="{% url 'catalogue:popup_category' %}" id="add_vendor" onclick="return addData(this);">Κατηγορια</button>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                                                <!-- end of dropdown menu -->
+                        </div>
                         <br><br>
                         <hr>
-                        <a href="{% url 'catalogue:copy_product' object.id %}" class="btn btn-info pull-left"><i class="fa fa-copy"></i> </a>
                         <a href="{% url 'catalogue:product_analysis' object.id %}" class="btn btn-info pull-right"><i class="fa fa-file"></i> </a>
 
                     </div>
@@ -118,30 +127,60 @@
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <td>Sku</td>
-                                    <th></th>
+                                    <td>Ειδος</td>
+                                    <th>{{ object.product_class }}</th>
                                 </tr>
                                 <tr>
-                                    <td>Barcode</td>
-                                    <th></th>
+                                    <td>Sku | Κωδικος</td>
+                                    <th>{{ object.sku }} | {{ object.order_sku }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Ποσοτητα</td>
+                                    <th>{{ object.qty }} {{ object.unit }}</th>
                                 </tr>
                                 <tr>
                                     <td>Προμηθευτης</td>
-                                    <th></th>
+                                    <th>{{ object.vendor }}</th>
                                 </tr>
                                 <tr>
                                     <td>Τιμη Αγορας</td>
-                                    <th></th>
+                                    <th>{{ object.price_buy }}</th>
                                 </tr>
                                 <tr>
                                     <td>Τιμη Πωλησης</td>
-                                    <th></th>
+                                    <th>{{ object.final_price }}</th>
                                 </tr>
                             </tbody>
                         </table>
+                        <br>
+                        <a href="{% url 'catalogue:copy_product' object.id %}" class="btn btn-success pull-left"><i class="fa fa-copy"></i> </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        function showEditPopup(url) {
+            var win = window.open(url, "Edit",
+                'height=500,width=800,resizable=yes,scrollbars=yes');
+            return false;
+        }
+        function addData(triggeringLink) {
+            const name = triggeringLink.id.replace(/^add_/, '');
+            const btn = $(triggeringLink);
+            href = btn.attr('data-href');
+            var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+            win.focus();
+            return false
+        }
+        function closePopup(win, newID, newRepr, id) {
+            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>');
+            win.close();
+        }
+    </script>
+
+
 {% endblock %}

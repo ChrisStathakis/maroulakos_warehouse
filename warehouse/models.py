@@ -231,6 +231,16 @@ class InvoiceItem(models.Model):
     def tag_discount(self):
         return str(self.discount).replace('.', ',')
 
+    @property
+    def date(self):
+        return self.invoice.date
+
+    def transcation_type(self):
+        return self.invoice.get_order_type_display()
+
+    def transcation_person(self):
+        return self.invoice.vendor
+
 
 class Payment(models.Model):
     date = models.DateField(verbose_name='Ημερομηνία')

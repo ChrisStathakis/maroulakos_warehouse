@@ -3,15 +3,16 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import reverse, get_object_or_404, redirect
-
-from .models import Vendor, Note, VendorBankingAccount, Invoice
+from django.utils import timezone
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, InvoiceTransformationIngredient
 
 from .forms import (VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendorDetailForm,
-                    InvoiceProductForm, InvoiceTransformationForm
+                    InvoiceProductForm, InvoiceTransformationForm, InvoiceTransformationItemForm
                     )
 from catalogue.models import Product, ProductStorage, Category
 from .tables import ProductTransTable, VendorTable, InvoiceTable, InvoiceTransformationTable, VendorProductTable
+from point_of_sale.models import SalesInvoiceItem, SalesInvoice
 from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
@@ -86,8 +87,8 @@ class UpdateVendorView(UpdateView):
         # context['employer_form'] = EmployerForm(initial={'vendor': self.object})
         # context['page_title'] = f'{self.object.title}'
         # context['notes'] = Note.objects.filter(vendor_related=self.object, status=True)
-        # context['invoices'] = Invoice.filters_data(self.request, self.object.invoices.all())
-        # context['payments'] = Payment.filters_data(self.request, self.object.payments.all())
+        context['invoices'] = Invoice.filters_data(self.request, self.object.invoices.all())
+        context['payments'] = Payment.filters_data(self.request, self.object.payments.all())
         # context['action_url'] = reverse('vendors:list')
         return context
 
@@ -226,14 +227,47 @@ class InvoiceTransformationCreateView(CreateView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
-class InvoiceTransformationDetailView(DetailView):
+class InvoiceTransformationDetailView(UpdateView):
     template_name = 'warehouse/transfo_detail.html'
     model = InvoiceTransformation
+    form_class = InvoiceTransformationForm
+
+    def get_success_url(self):
+        return self.object.get_edit_url()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['products'] = Product.objects.filter(product_class__have_ingredient=True)
         return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class InvoiceItemTransformationUpdateView(UpdateView):
+    model = InvoiceTransformationItem
+    form_class = InvoiceTransformationItemForm
+    template_name = 'warehouse/form_view.html'
+
+    def get_success_url(self):
+        return self.object.invoice.get_edit_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = f'Παραστατικο ==> {self.object}'
+        context['trans_info'] = True
+        context['back_url'] = self.get_success_url()
+        return context
+
+    def form_valid(self, form):
+        data = form.save()
+        for item in self.object.transf_ingre.all():
+            item.qty = data.qty*item.qty_ratio
+            item.save()
+        messages.success(self.request, 'Επιτυχής επεξεργασία')
+        return super().form_valid(form)
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -349,3 +383,25 @@ def delete_invoice_view(request, pk):
     return redirect(reverse('warehouse:invoice_list'))
 
 
+@staff_member_required()
+def create_sale_invoice_transformation_view(request, pk):
+    instance = get_object_or_404(InvoiceTransformation, id=pk)
+    instance.locked = True
+    instance.save()
+    sale_invoice = SalesInvoice.objects.create(
+        costumer=instance.costumer,
+        order_type='a',
+        payment_method=instance.payment_method,
+        date=timezone.now()
+    )
+    for item in instance.invoicetransformationitem_set.all():
+        SalesInvoiceItem.objects.create(
+            invoice=sale_invoice,
+            product=item.product,
+            qty=item.qty,
+            value=item.value,
+            storage=item.storage,
+            costumer=instance.costumer
+        )
+
+    return redirect(sale_invoice.get_edit_url())

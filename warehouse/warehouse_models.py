@@ -2,9 +2,13 @@ from django.db import models
 from django.shortcuts import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from django.dispatch import receiver
+from django.db.models.signals import post_delete, post_save
+
 from catalogue.models import Product, ProductStorage, ProductIngredient
 from costumers.models import Costumer
-
+from project_settings.constants import CURRENCY
+from project_settings.models import PaymentMethod
 from decimal import Decimal
 
 
@@ -15,6 +19,7 @@ class InvoiceTransformation(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE)
     value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.title
@@ -55,6 +60,25 @@ class InvoiceTransformationItem(models.Model):
     def __str__(self):
         return self.product.title
 
+    def tag_value(self):
+        return f'{self.value} {CURRENCY}'
+
+    def tag_total_value(self):
+        return f'{self.total_value} {CURRENCY}'
+
+    def tag_total_cost(self):
+        return f'{self.total_cost} {CURRENCY}'
+
+    def get_delete_url(self):
+        return reverse('warehouse:delete_transformation_item', kwargs={'pk': self.id})
+
+    def get_edit_url(self):
+        return reverse('warehouse:invoice_item_trans_update', kwargs={'pk': self.id})
+
+    @property
+    def date(self):
+        return self.invoice.date
+
     @staticmethod
     def create_from_view(invoice, product, qty):
         new = InvoiceTransformationItem.objects.create(
@@ -69,11 +93,12 @@ class InvoiceTransformationItem(models.Model):
 
 class InvoiceTransformationIngredient(models.Model):
     invoice_item = models.ForeignKey(InvoiceTransformationItem, on_delete=models.CASCADE, related_name='transf_ingre')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, )
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT,
                                 blank=True, null=True, related_name='storage_ingre'
                                 )
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    qty_ratio = models.DecimalField(decimal_places=3, max_digits=17, default=0)
     cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
 
@@ -84,9 +109,18 @@ class InvoiceTransformationIngredient(models.Model):
         if self.storage:
             self.storage.save()
 
+    @property
+    def date(self):
+        return self.invoice_item.date
+
+    def transcation_type(self):
+        return 'Μετασχηματιζομενο Προϊον'
+
+    def transcation_person(self):
+        return 'Αφαιρεση Απο Αποθηκη'
+
     @staticmethod
     def create_from_view(id_list, storages_ids, item, qty):
-        print('cost', id_list[1])
         storage = None
         for ele in storages_ids:
             if ele[0] == id_list[0]:
@@ -106,3 +140,18 @@ class InvoiceTransformationIngredient(models.Model):
             instance.save()
 
 
+@receiver(post_delete, sender=InvoiceTransformationItem)
+def update_trans_invoice_on_delete(sender, instance, **kwargs):
+    instance.invoice.save()
+    if instance.storage:
+        instance.storage.save()
+    else:
+        instance.product.save()
+
+
+@receiver(post_delete,sender=InvoiceTransformationIngredient)
+def update_warehouse_on_delete(sender, instance, **kwargs):
+    if instance.storage:
+        instance.storage.save()
+    else:
+        instance.product.save()

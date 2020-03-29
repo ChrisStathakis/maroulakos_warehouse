@@ -75,7 +75,124 @@
 
   <canvas id="bigDashboardChart"></canvas>
         </div> -->
-       {% block content %}
+        {% block content %}
+           <div class="content">
+               <div class="row">
+                   <div class="col-4">
+                        <div class="card">
+                            <div class="card-header"><h5>Λογαριασμοι</h5></div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Ημερομηνια</th>
+                                            <th>Λογαριασμος</th>
+                                            <th>Ποσο</th>
+                                            <th>-</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ele in bills %}
+                                            <tr>
+                                                <td>{{ ele.date_expired|date }}</td>
+                                                <td>{{ ele.category }}</td>
+                                                <td>{{ ele.tag_final_value }}</td>
+                                                <td><a href="{{ ele.get_edit_url }}" class="btn btn-danger"><i class="fa fa-edit"></i> </a> </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                   </div>
+                   <div class="col-4">
+                        <div class="card">
+                            <div class="card-header"><h5>Μισθοδοσια</h5></div>
+                            <div class="card-body">
+                                 <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Ημερομηνια</th>
+                                            <th>Λογαριασμος</th>
+                                            <th>Ποσο</th>
+                                            <th>-</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ele in payroll %}
+                                            <tr>
+                                                <td>{{ ele.date_expired|date }}</td>
+                                                <td>{{ ele.category }}</td>
+                                                <td>{{ ele.tag_final_value }}</td>
+                                                <td><a href="{{ ele.get_edit_url }}" class="btn btn-danger"><i class="fa fa-edit"></i> </a> </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                   </div>
+                   <div class="col-4">
+                        <div class="card">
+                            <div class="card-header"><h5>Πληρωμές Προμηθευτών</h5></div>
+                            <div class="card-body">
+                                 <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Ημερομηνια</th>
+                                            <th>Λογαριασμος</th>
+                                            <th>Ποσο</th>
+                                            <th>-</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ele in vendor_payments %}
+                                            <tr>
+                                                <td>{{ ele.date|date }}</td>
+                                                <td>{{ ele.vendor }}</td>
+                                                <td>{{ ele.tag_value }}</td>
+                                                <td><a href="{{ ele.get_edit_url }}" class="btn btn-danger"><i class="fa fa-edit"></i> </a> </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                   </div>
+               </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-header"><h5>Αποθεματα</h5></div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Sku- Κωδικος</th>
+                                        <th>Προϊόν</th>
+                                        <th>Προμηθευτης</th>
+                                        <th>Ποσοτητα</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ele in warning_products %}
+                                            <tr>
+                                                <td>{{ ele.sku }} | {{ ele.order_code }}</td>
+                                                <td>{{ ele }}</td>
+                                                <td>{{ ele.vendor }}</td>
+                                                <td>{{ ele.qty }} {{ ele.get_unit_dispplay }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+           </div>
 
        {% endblock %}
 

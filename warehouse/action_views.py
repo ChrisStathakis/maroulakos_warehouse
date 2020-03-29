@@ -4,9 +4,19 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from django.contrib import messages
 
-from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm
+from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm
 from .models import Vendor, Invoice, InvoiceItem, Product
-from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient
+from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient, InvoiceTransformationItem
+
+
+@staff_member_required
+def validate_payment_form_view(request, pk):
+    vendor = get_object_or_404(Vendor, id=pk)
+    form = PaymentForm(request.POST or None, initial={'vendor': vendor})
+    if form.is_valid():
+        new_instance = form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @staff_member_required
@@ -96,7 +106,6 @@ def add_product_to_invoice_trans_view(request, pk, dk):
     product_ = get_object_or_404(Product, id=dk)
     form_title = f'Δημιουργια {product_}'
     info_trans = True
-
     back_url = instance.get_edit_url()
     form = InvoiceTransformationItemForm(request.POST or None, initial={'product': product_,
                                                                         'invoice': instance,
@@ -106,13 +115,17 @@ def add_product_to_invoice_trans_view(request, pk, dk):
     if form.is_valid():
         item = form.save()
         ingredients = product_.ingredients.all()
+        qty = item.qty
         for ingre in ingredients:
             pro = ingre.ingredient
+            product_qty = qty*ingre.qty
             new_ingre = InvoiceTransformationIngredient.objects.create(
                 invoice_item=item,
                 product=pro,
-                qty=form.cleaned_data['qty']*ingre.qty if ingre.qty != 0 else 0,
-                cost=pro.price_buy
+                qty=product_qty,
+                cost=ingre.cost,
+                qty_ratio=ingre.qty
+
             )
             if pro.favorite_storage():
                 new_ingre.storage = pro.favorite_storage()
@@ -129,3 +142,14 @@ def validate_note_creation_view(request, pk):
         form.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def delete_transformation_item_view(request, pk):
+    instance = get_object_or_404(InvoiceTransformationItem, id=pk)
+    instance.delete()
+    return redirect(instance.invoice.get_edit_url())
+
+
+
+

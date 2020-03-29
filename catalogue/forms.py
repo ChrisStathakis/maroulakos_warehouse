@@ -22,7 +22,7 @@ class ProductForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['active', 'title', 'product_class', 'sku', 'category',
-                  'price', 'vendor', 'order_sku', 'price_buy', 'price_discount',
+                  'price', 'vendor', 'order_sku', 'price_buy', 'order_discount',
                   'safe_stock', 'unit', 'taxes_modifier', 'qty_kilo'
                   ]
 

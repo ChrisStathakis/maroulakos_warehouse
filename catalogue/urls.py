@@ -6,7 +6,8 @@ from .views import (HomepageView, ProductClassListView, ProductClassCreateView,
                     product_analysis_view
                     )
 from .action_views import (create_storage_form_view, create_product_ingredient_view, class_copy_product_view,
-                           ProductIngredientUpdateView, ingredient_delete_view, ProductStorageUpdateView, delete_product_storage_view
+                           ProductIngredientUpdateView, ingredient_delete_view, ProductStorageUpdateView, delete_product_storage_view,
+                           popup_vendor, popup_storage, popup_category
                            )
 app_name = 'catalogue'
 
@@ -33,6 +34,10 @@ urlpatterns = [
     path('product-ingredient-create/<int:pk>/', create_product_ingredient_view, name='action_product_ingredient_create'),
     path('copy-product/<int:pk>/', class_copy_product_view, name='copy_product'),
     path('update/product-ingredient/<int:pk>/', ProductIngredientUpdateView.as_view(), name='update_ingredient'),
-    path('delete/product-ingredient/<int:pk>/', ingredient_delete_view, name='delete_ingredient',)
+    path('delete/product-ingredient/<int:pk>/', ingredient_delete_view, name='delete_ingredient',),
+
+    path('popup/add-vendor/', popup_vendor, name='popup_vendor'),
+    path('popup/add-storage/', popup_storage, name='popup_storage'),
+    path('popup/add-category/', popup_category, name='popup_category'),
 
 ]

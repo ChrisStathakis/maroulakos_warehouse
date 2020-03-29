@@ -83,6 +83,7 @@ class SalesInvoiceItem(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='product_items', verbose_name='Προϊον')
+    date = models.DateField(blank=True, null=True)
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
@@ -99,6 +100,7 @@ class SalesInvoiceItem(models.Model):
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
+        self.date = self.invoice.date
         self.clean_value = self.qty * self.value
         self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
         self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
@@ -125,6 +127,7 @@ class SalesInvoiceItem(models.Model):
 
     def tag_discount(self):
         return str(self.discount).replace('.', ',')
+
 
     @staticmethod
     def filter_data(request, qs):

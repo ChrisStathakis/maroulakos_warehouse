@@ -14,6 +14,8 @@ from .tables import ProductClassTable, ProductTable, CategoryTable
 from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm, CategoryForm
 from .mixins import ListViewMixin
 
+from operator import attrgetter
+from itertools import chain
 from django_tables2 import RequestConfig
 
 
@@ -208,6 +210,11 @@ def product_analysis_view(request, pk):
     total_ingre_items = ingre_items.aggregate(Sum('qty'))['qty__sum'] if ingre_items.exists() else 0
     total_ingre_items_created = ingre_created.aggregate(Sum('qty'))['qty__sum'] if ingre_created.exists() else 0
     total_sells = sell_items.aggregate(Sum('qty'))['qty__sum'] if sell_items.exists() else 0
+
+    movements = sorted(
+        chain(sell_items, invoice_items, ingre_items, ingre_created),
+        key=attrgetter('date'), reverse=True)
+
 
     # movements
     invoice_items_movements = invoice_items.annotate(month=TruncMonth('invoice__date')).values('month')\

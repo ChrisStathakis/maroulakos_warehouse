@@ -62,30 +62,12 @@
                         <div class='title'>Δημιουργία Τιμολογίου </div>
                     </div>
                     <div class='card-body'>
-                        <nav>
-                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Τιμολόγιο</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Πληρωμή</a>
-                            </div>
-                        </nav>
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                            <h4 >Δημιουργία Τιμολογίου</h4>
-                                <form method='post' action="{% url 'warehouse:invoice_validation' object.id %}">
-                                    {% csrf_token %}
-                                    {{ invoice_form }}
-                                    <button type='submit' class='btn btn-success'>Δημιουργία </button>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <h4 style='color:green;'>Δημιουργία Πληρωμής</h4>
-                                <form method='post' action="{">
-                                    {% csrf_token %}
-                                    {{ payment_form }}
-                                    <button type='submit' class='btn btn-success'>Δημιουργία </button>
-                                </form>
-                            </div>
-                        </div>
+                        <h4 style='color:green;'>Δημιουργία Πληρωμής</h4>
+                        <form method='post' action="{% url 'warehouse:validate_payment' object.id %}">
+                            {% csrf_token %}
+                            {{ payment_form }}
+                            <button type='submit' class='btn btn-success'>Δημιουργία </button>
+                        </form>
                     </div>
                 </div>
             </div>
