@@ -9,7 +9,8 @@ from .views import (HomepageView,
                     )
 from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_update_view,
                            validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view,
-                           validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view
+                           validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view,
+                           change_product_favorite_warehouse_view
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
 
@@ -60,6 +61,7 @@ urlpatterns = [
     path('aciton-validate-payment-creation/<int:pk>/', validate_payment_form_view, name='validate_payment'),
 
     path('add-product-to-trans-invoice/<int:pk>/<int:dk>/', add_product_to_invoice_trans_view, name='add_product_to_trans_invoice'),
+    path('action/change-favorite-product-storage/', change_product_favorite_warehouse_view, name='quick_favorite_storage'),
 
     # ajax 
     path('ajax-create-product-from-invoice/<int:pk>/<int:dk>/', ajax_create_product_modal, name='ajax_create_product'),

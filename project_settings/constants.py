@@ -13,5 +13,5 @@ NEGATIVE_INVOICES = ['d']
 
 SALE_INVOICE_TYPES = (
     ('a', 'Πωληση'),
-    ('b', 'Τιμολογιο')
+    ('b', 'Τιμολογιο'),
 )

@@ -34,21 +34,16 @@
               <div class="card-header">
                 <h4 class="card-title">
                     <div class='row'>
-                        <div class='col-md-4'>
-                            <canvas id="totalChart" width="400" height="400"></canvas>
-                        </div>
-                         <div class='col-md-8' >
+                        <div class="col-2"></div>
+                        <div class='col-8' >
                             <canvas id="lineChart" width="400" height="400"></canvas>
-                        </div>
+                         </div>
                     </div>
-                    
                 </h4>
-                 
-                    
               </div>
               <div class="card-body">
                 <div class='row'>
-                    <div class='col-6'>
+                    <div class='col-4'>
                         <h4>Αναλυση ανα μηνα </h4>
                         <table class='table table-bordered'>
                             <thead>
@@ -67,41 +62,47 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class='col-6'>
-                        <h4>Αναλυση ανα κατηγορια</h4>
+                    <div class='col-4'>
+                        <h4>Αναλυση ανα Πελατη</h4>
                         <table class='table table-bordered'>
                             <thead>
                                 <tr>
-                                    <th>Ειδος</th>
-                                    <th>Κερδη</th>
+                                    <th>Πελατης</th>
+                                    <th>Ποσο</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td  class="table-info">Συνολο Ζ</td>
-                                    <td  class="table-info">{{ total_z }} </td>
-                                </tr>
-                                <tr>
-                                    <td  class="table-warning">Συνολο POS </td>
-                                    <td  class="table-warning">{{ total_pos }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Συνολο Τιμολογιων </td>
-                                    <td>{{ total_order }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Συνολο Μετρητα </td>
-                                    <td class='table-light'>{{ total_cash }}</td>
-                                </tr>
-                                <tr>
-                                    <td class='table-success'>Συνολο</td>
-                                    <td class='table-success'>{{ total }}</td>
-                                </tr>
+                                {% for costumer in analysis_per_costumer %}
+                                    <tr>
+                                        <td>{{ costumer.costumer__eponimia }}</td>
+                                        <td>{{ costumer.total }}</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    
-                </div>
+
+                    <div class='col-4'>
+                            <h4>Αναλυση ανα Τροπο Πληρωμης</h4>
+                            <table class='table table-bordered'>
+                                <thead>
+                                    <tr>
+                                        <th>Τροπος Πληρωμής</th>
+                                        <th>Ποσο</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for costumer in analysis_per_payment %}
+                                        <tr>
+                                            <td>{{ costumer.payment_method__title }}</td>
+                                            <td>{{ costumer.total }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 <div class="row">
                     <div class="col-1"></div>
                     <div class="col-10">
@@ -109,27 +110,21 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th>-</th>
                                     <th>Ημερομηνια</th>
-                                    <th>Ζ Ημερας</th>
-                                    <th>POS</th>
-                                    <th>Μετρητα</th>
-                                    <th>Τιμολογια</th>
-                                    <th>Επιπλεον</th>
-                                    <th>Λογιστικο Συνολο</th>
-                                    <th>Συνολο</th>
+                                    <th>Πελατης</th>
+                                    <th>Ειδος Παραστ.</th>
+                                    <th>Αξια</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for income in object_list %}
                                     <tr>
-                                        <td>{{ income.date_expired }}</td>
-                                        <td>{{ income.tag_sum_z }}</td>
-                                        <td>{{ income.tag_pos }}</td>
-                                        <td>{{ income.tag_cash }}</td>
-                                        <td>{{ income.tag_order_cost }}</td>
-                                        <td>{{ income.tag_extra }}</td>
-                                        <td>{{ income.logistic_value }}</td>
-                                        <td>{{ income.tag_value }}</td>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ income.date }}</td>
+                                        <td>{{ income.costumer }}</td>
+                                        <td>{{ income.get_order_type_display }}</td>
+                                        <td>{{ income.tag_final_value }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -149,95 +144,37 @@
 
 {% block extra_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
+
+
     <script>
-var ctx = document.getElementById('totalChart');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Συνολο', 'Συνολο Ζ', 'Συνολο POS', 'Mετρητα', 'Συνολο Τιμ.'],
-        datasets: [{
-            label: '# Σε Ευρω',
-            data: [{{ total }}, {{ total_z }}, {{ total_pos }}, {{ total_cash }}, {{ total_order }}],
-            backgroundColor: [
-                'green',
-                'blue',
-                'red',
-                'yellow',
-                'purple'
-                
-            ],
-            borderColor: [
-                'green',
-                'blue',
-                'red',
-                'yellow',
-                'purple'
-                
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
+    var ctx = document.getElementById('lineChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+
+        data: {
+            labels: [{% for ele in analysis_per_month %} {% if forloop.last %} '{{ ele.month }}'{% else %} '{{ele.month}}', {% endif %} {% endfor %}],
+            datasets: [
+                {
+                    label: 'Εσοδα',
+                    backgroundColor: 'green',
+                    borderColor: 'green',
+                    fill: false,
+                    data:[{% for ele in analysis_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
                 }
-            }]
+
+                ]
+
+            },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
-    }
-});
-</script>
-
-<script>
-var ctx = document.getElementById('lineChart');
-var myChart = new Chart(ctx, {
-    type: 'line',
-
-    data: {
-        labels: [{% for ele in analysis_per_month %} {% if forloop.last %} '{{ ele.month }}'{% else %} '{{ele.month}}', {% endif %} {% endfor %}],
-        datasets: [
-            {
-				label: 'Εσοδα',
-				backgroundColor: 'green',
-				borderColor: 'green',
-				fill: false,
-				data:[{% for ele in analysis_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
-			},
-            {
-				label: 'Ζ Ημερας',
-				backgroundColor: 'blue',
-				borderColor: 'blue',
-				fill: false,
-				data:[{% for ele in analysis_z_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
-			},
-            {
-				label: 'POS',
-				backgroundColor: 'red',
-				borderColor: 'red',
-				fill: false,
-				data:[{% for ele in analysis_pos_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
-			},
-            {
-				label: 'Μετρητα',
-				backgroundColor: 'yellow',
-				borderColor: 'yellow',
-				fill: false,
-				data:[{% for ele in analysis_cash_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
-			}
-            ]
-
-		},
-    options: {
-        maintainAspectRatio: false,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
+    });
 </script>
 {% endblock %}

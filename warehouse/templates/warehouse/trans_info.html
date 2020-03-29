@@ -1,5 +1,6 @@
 <div class="card">
     <div class="card-header">
+        <h4>Κοστος Προϊόντος ==> {{ product_.price_buy }} {{ currency }}</h4>
         <h4>Συστατικα</h4>
         <table class="table table-bordered">
             <thead>
@@ -8,6 +9,7 @@
                     <th>Μεγιστο</th>
                     <th>Τιμη</th>
                     <th>Αποθηκη</th>
+                    <th> - </th>
                 </tr>
             </thead>
             <tbody>
@@ -18,20 +20,51 @@
                         <td>{{ product.ingredient.price_buy }}</td>
                         <td>
                             {% if product.ingredient.product_class.have_storage %}
-                                <div class="input-group-prepend"></div>
-                                <select required name="storage_{{ product.id }}" class="custom-select" id="inputGroupSelect01">
-                                    {% for ele in product.ingredient.storages.all %}
-                                        <option  value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
-                                    {% endfor %}
-                                </select>
+                                <p>{{ product.ingredient.favorite_storage }}==> {{ product.ingredient.favorite_storage.qty }}</p>
                             {% else %} ---
                             {% endif %}
+                        </td>
+                        <td>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_{{ product.id }}">
+                              <i class="fa fa-edit"></i>
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal_{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ product }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <h4>Επιλογη Αποθηκης</h4>
+                                    <form method="post" class="form" action="{% url 'warehouse:quick_favorite_storage' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group-prepend"></div>
+                                            <select required name="new_id" class="custom-select" id="inputGroupSelect01">
+                                                {% for ele in product.ingredient.storages.all %}
+                                                    <option   value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> </button>
+                                    </form>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
 
             </tbody>
-
         </table>
+        <h6>Μεγιστη παραχθεσα Ποσότητα ==> {{ maximum_uses }}</h6>
     </div>
 </div>

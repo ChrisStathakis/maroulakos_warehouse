@@ -120,7 +120,8 @@
                         </div>
                         <br><br>
                         <hr>
-                        <a href="{% url 'catalogue:product_analysis' object.id %}" class="btn btn-info pull-right"><i class="fa fa-file"></i> </a>
+                        <a href="{% url 'catalogue:product_analysis' object.id %}" class="btn btn-info pull-right"><i class="fa fa-file"></i> Report </a>
+                        <a href="{{ object.get_delete_url }}" class="btn btn-danger" onclick="return confirm('Are tou sure?')"><i class="fa fa-remove"></i> Διαγραφη Προϊοντος</a>
 
                     </div>
                     <div class="card-body">

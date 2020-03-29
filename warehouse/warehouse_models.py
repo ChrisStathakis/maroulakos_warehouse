@@ -37,10 +37,10 @@ class InvoiceTransformation(models.Model):
 class InvoiceTransformationItem(models.Model):
     invoice = models.ForeignKey(InvoiceTransformation, on_delete=models.CASCADE)
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT, blank=True, null=True,
-                                related_name='trans_items'
+                                related_name='trans_items', verbose_name='Αποθηκη'
                                 )
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    qty = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Ποσοτητσ')
+    qty = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Ποσοτητα')
     value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
 
     total_value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
@@ -78,6 +78,12 @@ class InvoiceTransformationItem(models.Model):
     @property
     def date(self):
         return self.invoice.date
+
+    def transcation_type(self):
+        return 'Δημιουργημενο Προϊον'
+
+    def transcation_person(self):
+        return 'Προσθηκη στην Αποθηκη'
 
     @staticmethod
     def create_from_view(invoice, product, qty):
@@ -118,6 +124,13 @@ class InvoiceTransformationIngredient(models.Model):
 
     def transcation_person(self):
         return 'Αφαιρεση Απο Αποθηκη'
+
+    def value(self):
+        # for analysis normalization
+        return self.cost
+
+    def total_value(self):
+        return self.total_cost
 
     @staticmethod
     def create_from_view(id_list, storages_ids, item, qty):

@@ -5,9 +5,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
 from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm
-from .models import Vendor, Invoice, InvoiceItem, Product
+from .models import Vendor, Invoice, InvoiceItem, Product, ProductStorage
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient, InvoiceTransformationItem
-
+from project_settings.constants import CURRENCY
 
 @staff_member_required
 def validate_payment_form_view(request, pk):
@@ -104,14 +104,23 @@ def validate_invoice_edit_view(request, pk):
 def add_product_to_invoice_trans_view(request, pk, dk):
     instance = get_object_or_404(InvoiceTransformation, id=pk)
     product_ = get_object_or_404(Product, id=dk)
-    form_title = f'Δημιουργια {product_}'
+    form_title, currency = f'Δημιουργια {product_}', CURRENCY
     info_trans = True
     back_url = instance.get_edit_url()
     form = InvoiceTransformationItemForm(request.POST or None, initial={'product': product_,
                                                                         'invoice': instance,
                                                                         'value': product_.final_price
-                                                                        }
-                                         )
+                                                                        })
+    form.fields['storage'].queryset = product_.storages.all()
+    maximum_uses = None
+    for ele in product_.ingredients.all():
+        new_qty = ele.ingredient.qty/ele.qty if ele.qty > 0 else 0
+        if not maximum_uses:
+            maximum_uses = new_qty
+        else:
+            if new_qty < maximum_uses:
+                maximum_uses = new_qty
+
     if form.is_valid():
         item = form.save()
         ingredients = product_.ingredients.all()
@@ -151,5 +160,12 @@ def delete_transformation_item_view(request, pk):
     return redirect(instance.invoice.get_edit_url())
 
 
-
-
+@staff_member_required
+def change_product_favorite_warehouse_view(request):
+    new_id = request.POST.get('new_id', None)
+    print('new_id', new_id)
+    if new_id:
+        product_storage = get_object_or_404(ProductStorage, id=new_id)
+        product_storage.priority = True
+        product_storage.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -28,7 +28,7 @@ def create_product_ingredient_view(request, pk):
     instance = get_object_or_404(Product, id=pk)
     form = ProductIngredientForm(request.POST or None, initial={'product': instance})
     if form.is_valid():
-        form.save()
+        data = form.save()
     else:
         print('errors', form.errors)
     return redirect(instance.get_edit_url())

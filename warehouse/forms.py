@@ -108,4 +108,4 @@ class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = InvoiceTransformationItem
-        fields = ['invoice', 'product', 'storage', 'qty', 'value']
+        fields = ['invoice', 'product', 'storage', 'qty', 'value', ]

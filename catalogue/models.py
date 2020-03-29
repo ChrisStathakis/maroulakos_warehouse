@@ -114,6 +114,9 @@ class Product(models.Model):
         if self.product_class.have_storage:
             qs = self.storages.all()
             self.qty = qs.aggregate(Sum('qty'))['qty__sum'] if qs.exists() else 0
+        if self.product_class.have_ingredient:
+            qs = self.ingredients.all()
+            self.price_buy = qs.aggregate(Sum('cost'))['cost__sum'] if qs.exists() else 0
         self.final_price = self.price_discount if self.price_discount > 0 else self.price
         super().save(*args, **kwargs)
 
@@ -130,6 +133,7 @@ class Product(models.Model):
         return reverse('warehouse:transform_prepare', kwargs={'pk': self.id})
 
     def favorite_storage(self):
+        print('here!')
         return self.storages.filter(priority=True).first() if self.storages.filter(priority=True).exists() else None
 
     def update_product_from_invoice(self, item):
@@ -164,7 +168,7 @@ class Product(models.Model):
 class ProductStorage(models.Model):
     priority = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='storages')
-    storage = models.ForeignKey(Storage, on_delete=models.PROTECT)
+    storage = models.ForeignKey(Storage, on_delete=models.PROTECT, verbose_name='Αποθηκη')
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
 
     def save(self, *args, **kwargs):
@@ -205,9 +209,15 @@ class ProductStorage(models.Model):
 
 class ProductIngredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredients')
-    ingredient = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredient_value')
-    qty = models.DecimalField(decimal_places=2, max_digits=17)
-    cost = models.DecimalField(decimal_places=2, max_digits=17)
+    ingredient = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredient_value', verbose_name='Συστατικο')
+    qty = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Αναλογια')
+    cost = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Κοστος')
+
+    def save(self, *args, **kwargs):
+        if self.cost == 0:
+            self.cost = self.ingredient.price_buy * (100-self.ingredient.order_discount)/100
+        super().save(*args, **kwargs)
+        self.product.save()
 
     class Meta:
         unique_together = ['product', 'ingredient']

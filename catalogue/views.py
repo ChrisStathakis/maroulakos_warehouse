@@ -1,6 +1,7 @@
 from django.views.generic import ListView, TemplateView, DetailView, CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.db.models import ProtectedError
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
@@ -124,8 +125,12 @@ class ProductUpdateView(UpdateView):
 @staff_member_required
 def delete_product_view(request, pk):
     instance = get_object_or_404(Product, id=pk)
-    instance.delete()
-    messages.success(request, f'Το Προϊον {instance.title} διαγραφηκε')
+    try:
+        instance.delete()
+        messages.success(request, f'Το Προϊον {instance.title} διαγραφηκε')
+    except ProtectedError:
+        messages.error(request, 'Το Προϊον Χρησιμοποιειται')
+
     return redirect(reverse('edit_product_list'))
 
 

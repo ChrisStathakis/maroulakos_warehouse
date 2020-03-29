@@ -29,6 +29,8 @@ class SalesInvoice(models.Model):
 
     def save(self, *args, **kwargs):
         qs = self.order_items.all()
+        if not self.title:
+            self.title = f'{self.get_order_type_display()} - {self.id}'
         self.value = qs.aggregate(Sum('total_value'))['total_value__sum'] if qs.exists() else 0
 
         self.final_value = self.value + self.extra_value

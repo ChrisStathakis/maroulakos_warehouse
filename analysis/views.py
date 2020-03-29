@@ -38,11 +38,14 @@ class AnalysisSaleIncomeView(ListView):
         context = super().get_context_data(**kwargs)
         date_filter, currency = True, settings.CURRENCY
         back_url = reverse('analysis:homepage')
+
         total = self.object_list.aggregate(Sum('final_value'))['final_value__sum'] if self.object_list.exists() else 0
         analysis_per_month = self.object_list.annotate(month=TruncMonth('date')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
         analysis_per_costumer = self.object_list.values('costumer__eponimia').annotate(
             total=Sum('final_value')).values('costumer__eponimia', 'total').order_by('total')
+        analysis_per_payment = self.object_list.values('payment_method__title').annotate(total=Sum('final_value'))\
+            .order_by('total')
         context.update(locals())
         return context
 
@@ -67,7 +70,7 @@ class AnalysisOutcomeView(TemplateView):
         total_payroll = payrolls.aggregate(Sum('final_value'))['final_value__sum'] if payrolls else 0
         total_invoices = invoices.aggregate(Sum('final_value'))['final_value__sum'] if invoices else 0
 
-        total_expenses = total_bills + total_payroll + total_invoices + total_generic
+        total_expenses = total_bills + total_payroll + total_invoices
         analysis_invoices = invoices.values('vendor__title').annotate(total=Sum('final_value')).order_by('-total')
         analysis_invoices_per_month = invoices.annotate(month=TruncMonth('date')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
@@ -115,12 +118,8 @@ class CashRowView(TemplateView):
         context = super().get_context_data(**kwargs)
         currency = settings.CURRENCY
         back_url = reverse('analysis:homepage')
-        incomes = SalesInvoice.filters_data(self.request, SalesInvoice.objects.all()).order_by('date_expired')
-        total_z = incomes.aggregate(Sum('sum_z'))['sum_z__sum'] if incomes.exists() else 0
-        total_pos = incomes.aggregate(Sum('pos'))['pos__sum'] if incomes.exists() else 0
-        total_cash = total_z - total_pos
-        total_order = incomes.aggregate(Sum('order_cost'))['order_cost__sum'] if incomes.exists() else 0
-        total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0
+        incomes = SalesInvoice.filters_data(self.request, SalesInvoice.objects.all()).order_by('date')
+        total = incomes.aggregate(Sum('final_value'))['final_value__sum'] if incomes.exists() else 0
 
         date_filter = True
 
@@ -133,13 +132,10 @@ class CashRowView(TemplateView):
 
         bills = Bill.filters_data(self.request, Bill.objects.filter(is_paid=True))
         bills_total = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills.exists() else 0
-
-
-
         total_expenses = vendor_payments_total + bills_total + payrolls_total
         expenses_query = sorted(
             chain(bills, vendor_payments, payrolls),
-            key=attrgetter('report_date'))
+            key=attrgetter('date'))
         diff = round(total - total_expenses, 2)
         context.update(locals())
         return context
@@ -155,19 +151,8 @@ class BalanceSheetView(TemplateView):
 
         # incomes
         incomes = SalesInvoice.filters_data(self.request, SalesInvoice.objects.all())
-        incomes_per_month = incomes.annotate(month=TruncMonth('date_expired')).values('month').annotate(
-            total=Sum('logistic_value')).values('month', 'total').order_by('month')
-        incomes_per_month_table = incomes.annotate(month=TruncMonth('date_expired')).values('month') \
-            .annotate(total_z=Sum('sum_z'),
-                      total_pos=Sum('pos'),
-                      total_order=Sum('order_cost'),
-                      total_cash=Sum('cash'),
-                      total=Sum('logistic_value')
-                      ).order_by('month')
-        total_z = incomes.aggregate(Sum('sum_z'))['sum_z__sum'] if incomes.exists() else 0
-        total_pos = incomes.aggregate(Sum('pos'))['pos__sum'] if incomes.exists() else 0
-        total_cash = total_z - total_pos
-        total_order = incomes.aggregate(Sum('order_cost'))['order_cost__sum'] if incomes.exists() else 0
+        incomes_per_month = incomes.annotate(month=TruncMonth('date')).values('month').annotate(
+            total=Sum('final_value')).values('month', 'total').order_by('month')
         incomes_total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0
 
         # vendors data

@@ -77,23 +77,19 @@
                         <table class='table table-hover table-bordered'>
                             <thead>
                                 <tr class='table-success'>
-                                    <th class>Ημερομηνια </th>
-                                    <th>Ζ Ημερας </th>
-                                    <th>Pos Ημερας </th>
-                                    <th>Μετρητα </th>  
-                                    <th>Τιμολογια </th>
-                                    <th>Συνολο </th>
+                                    <th>Ημερομηνια </th>
+                                    <th>Πελατης</th>
+                                    <th>Ειδος </th>
+                                    <th>Αξια </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for ele in incomes %}
                                     <tr>
-                                        <td>{{ ele.date_expired }}</td>
-                                        <td>{{ ele.sum_z }} {{ currency }}</td>
-                                        <td>{{ ele.pos }} {{ currency }}</td>
-                                        <td>{{ ele.cash }} {{ currency }}</td>
-                                        <td>{{ ele.order_cost }} {{ currency }}</td>
-                                        <td class="table-success">{{ ele.logistic_value }} {{ currency }}</td>
+                                        <td>{{ ele.date }}</td>
+                                        <td>{{ ele.costumer}}}</td>
+                                        <td>{{ ele.get_order_type_display}}</td>
+                                        <td>{{ ele.tag_final_value }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -119,10 +115,10 @@ var ctx = document.getElementById('totalChart');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Συνολο', 'Συνολο Ζ', 'Συνολο POS', 'Mετρητα', 'Συνολο Τιμ.'],
+        labels: ['Συνολο'],
         datasets: [{
             label: '# Σε Ευρω',
-            data: [{{ total }}, {{ total_z }}, {{ total_pos }}, {{ total_cash }}, {{ total_order }}],
+            data: [{{ total }}],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
