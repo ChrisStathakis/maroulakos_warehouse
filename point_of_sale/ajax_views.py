@@ -32,6 +32,7 @@ def ajax_order_item_edit_modal(request, pk):
     instance = get_object_or_404(SalesInvoiceItem, id=pk)
     form = SaleInvoiceItemForm(instance=instance)
     data = dict()
+
     data['modal'] = render_to_string(template_name='point_of_sale/ajax/modal.html',
                                      request=request,
                                      context={'form': form,

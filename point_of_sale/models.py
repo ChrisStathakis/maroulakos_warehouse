@@ -23,6 +23,7 @@ class SalesInvoice(models.Model):
     etxra_discount = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Εκπτωση', default=0)
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
+    total_taxes = models.DecimalField(default=0, max_digits=20, decimal_places=2)
 
     class Meta:
         ordering = ['date']
@@ -32,7 +33,7 @@ class SalesInvoice(models.Model):
         if not self.title:
             self.title = f'{self.get_order_type_display()} - {self.id}'
         self.value = qs.aggregate(Sum('total_value'))['total_value__sum'] if qs.exists() else 0
-
+        self.total_taxes = qs.aggregate(Sum('taxes_value'))['taxes_value__sum'] if qs.exists() else 0
         self.final_value = self.value + self.extra_value
         super().save(*args, **kwargs)
         self.costumer.update_orders()
@@ -42,6 +43,9 @@ class SalesInvoice(models.Model):
 
     def tag_final_value(self):
         return f'{self.final_value} {CURRENCY}'
+
+    def tag_total_taxes(self):
+        return f'{self.total_taxes} {CURRENCY}'
 
     def tag_order_type(self):
         return f'{self.get_order_type_display()}'

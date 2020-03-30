@@ -34,7 +34,9 @@
               <div class="card-header">
                 <h4 class="card-title">
                     <div class='row'>
-                        <div class="col-2"></div>
+                        <div class="col-4">
+                            <canvas id="barChart" width="400" height="400"></canvas>
+                        </div>
                         <div class='col-8' >
                             <canvas id="lineChart" width="400" height="400"></canvas>
                          </div>
@@ -114,6 +116,7 @@
                                     <th>Ημερομηνια</th>
                                     <th>Πελατης</th>
                                     <th>Ειδος Παραστ.</th>
+                                    <th>ΦΠΑ</th>
                                     <th>Αξια</th>
                                 </tr>
                             </thead>
@@ -124,6 +127,7 @@
                                         <td>{{ income.date }}</td>
                                         <td>{{ income.costumer }}</td>
                                         <td>{{ income.get_order_type_display }}</td>
+                                        <td>{{ income.tag_total_taxes }}</td>
                                         <td>{{ income.tag_final_value }}</td>
                                     </tr>
                                 {% endfor %}
@@ -145,7 +149,41 @@
 {% block extra_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
 
+    <script>
+    var ctx = document.getElementById('barChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Εσοδα' , 'ΦΠΑ', 'Καθαρα Εσοδα'],
+            datasets: [{
+                label: 'Σε Ευρώ',
+                data: [{{ total }}, {{ total_taxes }}, {{ diff }}],
+                backgroundColor: [
+                    'blue',
+                    'red',
+                    'green'
 
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+
+                ],
+                borderWidth: 1
+            }] },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
     <script>
     var ctx = document.getElementById('lineChart');
     var myChart = new Chart(ctx, {

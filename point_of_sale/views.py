@@ -60,6 +60,8 @@ class SalesCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['form_title'] = 'Νεα Πωληση'
         context['back_url'] = self.success_url
+        context['popup'] = True
+
         return context
 
     def form_valid(self, form):
@@ -79,7 +81,6 @@ class SalesUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form_title'] = ''
         context['back_url'] = self.success_url
         context['products'] = Product.objects.filter(active=True)
         return context

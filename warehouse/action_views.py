@@ -181,3 +181,5 @@ def popup_vendor(request):
         return HttpResponse()
 
     render(request, 'warehouse/form_view.html', context=locals())
+
+

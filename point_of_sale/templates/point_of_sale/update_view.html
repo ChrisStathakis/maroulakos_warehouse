@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-
+                        <h4>{{ object.date }} ==> {{ object.costumer }} => {{ object.tag_final_value }}</h4>
                     </div>
                     <div class="card-body">
                         <a href="{{ back_url }}" class="btn btn-warning pull-right"><i class="fa fa-align-left"></i> </a>
@@ -63,6 +63,7 @@
 
     <script>
         $('.editOrderITem').click(function (evt) {
+            evt.preventDefault()
             $('.modal_area').empty();
             evt.preventDefault();
             const myBtn = $(this);

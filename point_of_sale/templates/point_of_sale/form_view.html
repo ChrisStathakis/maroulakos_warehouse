@@ -30,11 +30,11 @@
                               </button>
                               {% if add_button %} <button name="add_button" value="works" class="btn btn-success btn-round">{{ button_title }}</button> {% endif %}
                           </div>
-                  </div>
-                </form>
+                      </div>
+                  </form>
               </div>
             </div>
-                </div>
+            </div>
             <div class="col-md-4 col-lg-4">
             <div class="card card-user">
               <div class="card-header">
@@ -50,8 +50,11 @@
                   {% if delete_url %}
                     <a href="{{ delete_url }}" onclick="return confirm('Εισαι σιγουρος;')" class="btn btn-danger">Διαγραφη</a>
                   {% endif %}
-
-                  
+                   {% if popup %}
+                        <button class="btn btn-info"  data-href="{% url 'point_of_sale:popup_costumer' %}" id="add_costumer"
+                                onclick="return addData(this);">Δημιουργια Πελατη
+                        </button>
+                    {% endif %}
               </div>
             </div>
             </div>
@@ -62,4 +65,25 @@
 {% block extra_js %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 {{ form.media }}
+    {% if popup %}
+        <script type="text/javascript">
+        function showEditPopup(url) {
+            var win = window.open(url, "Edit",
+                'height=500,width=800,resizable=yes,scrollbars=yes');
+            return false;
+        }
+        function addData(triggeringLink) {
+            const name = triggeringLink.id.replace(/^add_/, '');
+            const btn = $(triggeringLink);
+            href = btn.attr('data-href');
+            var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+            win.focus();
+            return false
+        }
+        function closePopup(win, newID, newRepr, id) {
+            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>');
+            win.close();
+        }
+    </script>
+    {% endif %}
 {% endblock %}

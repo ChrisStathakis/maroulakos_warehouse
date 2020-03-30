@@ -18,6 +18,7 @@ from payroll.models import Bill, Payroll
 from warehouse.models import Payment, Invoice, Vendor
 
 from .tools import sort_months
+from project_settings.constants import CURRENCY
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -38,8 +39,10 @@ class AnalysisSaleIncomeView(ListView):
         context = super().get_context_data(**kwargs)
         date_filter, currency = True, settings.CURRENCY
         back_url = reverse('analysis:homepage')
-
+        currency = CURRENCY
         total = self.object_list.aggregate(Sum('final_value'))['final_value__sum'] if self.object_list.exists() else 0
+        total_taxes = self.object_list.aggregate(Sum('total_taxes'))['total_taxes__sum'] if self.object_list.exists() else 0
+        diff = total - total_taxes
         analysis_per_month = self.object_list.annotate(month=TruncMonth('date')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
         analysis_per_costumer = self.object_list.values('costumer__eponimia').annotate(

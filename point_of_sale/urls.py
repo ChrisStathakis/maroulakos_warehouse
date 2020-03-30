@@ -4,7 +4,7 @@ from .views import (PointOfSaleHomepageView,
                     SalesListView, SalesCreateView, SalesUpdateView, delete_sales_invoice_view
                     )
 from .ajax_views import ajax_order_item_edit_modal, ajax_search_products
-from .action_views import create_order_item_view, validate_order_item_edit_view, validate_delete_order_item
+from .action_views import create_order_item_view, validate_order_item_edit_view, validate_delete_order_item, popup_costumer
 app_name = 'point_of_sale'
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
 
     path('validate/order-item/edit/<int:pk>/', validate_order_item_edit_view, name='validate_order_item_edit'),
     path('validadte/order-item-delete/<int:pk>/', validate_delete_order_item, name='validate_order_item_delete'),
+    path('popup-costumer/', popup_costumer, name='popup_costumer'),
 ]
