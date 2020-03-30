@@ -1,13 +1,14 @@
-from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect, redirect
+from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect, redirect, HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 
 from django.contrib import messages
 
-from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm
+from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm, VendorForm
 from .models import Vendor, Invoice, InvoiceItem, Product, ProductStorage
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient, InvoiceTransformationItem
 from project_settings.constants import CURRENCY
+
 
 @staff_member_required
 def validate_payment_form_view(request, pk):
@@ -169,3 +170,14 @@ def change_product_favorite_warehouse_view(request):
         product_storage.priority = True
         product_storage.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def popup_vendor(request):
+    form = VendorForm(request.POST or None)
+    form_title = 'Δημιουργια Προμηθευτη'
+    if form.is_valid():
+        form.save()
+        return HttpResponse()
+
+    render(request, 'warehouse/form_view.html', context=locals())
