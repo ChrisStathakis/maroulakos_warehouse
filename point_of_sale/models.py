@@ -94,12 +94,7 @@ class SalesInvoiceItem(models.Model):
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
     value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή')
-
-    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Εκπτωση')
-    discount_value = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Ποσο Εκπτωσης')
-
-    clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
-    total_clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Καθαρη Αξια')
+    clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Συνολικη Αξια Προ Φορου')
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
@@ -107,15 +102,13 @@ class SalesInvoiceItem(models.Model):
 
     def save(self, *args, **kwargs):
         self.date = self.invoice.date
-        self.clean_value = self.qty * self.value
-        self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
-        self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
-        self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
-        self.total_value = round(Decimal(self.total_clean_value) + Decimal(self.taxes_value), 2)
-
+        self.clean_value = Decimal(self.qty * self.value) * Decimal((100-self.taxes_modifier)/100)
+        self.total_value = self.qty * self.value
+        self.taxes_value = self.total_value * Decimal(self.taxes_modifier/100)
         super().save(*args, **kwargs)
+
         if self.storage:
-            self.storage.update_product(self.value, self.discount, )
+            self.storage.update_product(self.value, self.taxes_modifier, )
             self.storage.save()
         else:
             self.product.save()

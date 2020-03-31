@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import reverse, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView
-
+from django import forms
 from .forms import SalesInvoiceForm
 from .models import SalesInvoice, SalesInvoiceItem
 from .tables import SalesInvoiceItemTable, SalesInvoiceTable, SalesInvoiceListTable
@@ -72,23 +72,22 @@ class SalesCreateView(CreateView):
         return self.invoice.get_edit_url()
 
 
-@method_decorator(staff_member_required, name='dispatch')
-class SalesUpdateView(UpdateView):
-    model = SalesInvoice
-    form_class = SalesInvoiceForm
-    template_name = 'point_of_sale/update_view.html'
-    success_url = reverse_lazy('point_of_sale:sales_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = self.success_url
-        context['products'] = Product.objects.filter(active=True)
-        return context
-
-    def form_valid(self, form):
+@staff_member_required
+def update_sale_invoice_view(request, pk):
+    instance = get_object_or_404(SalesInvoice, id=pk)
+    form = SalesInvoiceForm(request.POST or None, instance=instance)
+    form.fields['costumer'].widget = forms.HiddenInput()
+    if form.is_valid():
         form.save()
-        messages.success(self.request, 'Το Παραστατικο Πωλήσης Επεξεργαστηκε!')
-        return super().form_valid(form)
+        return redirect(instance.get_edit_url())
+
+    back_url = instance.get_edit_url()
+    products = Product.filters_data(request, Product.objects.filter(active=True))[:10]
+    return render(request, 'point_of_sale/update_view.html', context={'form': form,
+                                                                      'object': instance,
+                                                                      'products': products,
+                                                                      'back_url': back_url
+                                                                    })
 
 
 @staff_member_required

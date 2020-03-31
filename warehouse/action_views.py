@@ -1,14 +1,14 @@
 from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect, redirect, HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
-
+from django import forms
 from django.contrib import messages
 
 from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm, VendorForm
 from .models import Vendor, Invoice, InvoiceItem, Product, ProductStorage
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient, InvoiceTransformationItem
 from project_settings.constants import CURRENCY
-
+from project_settings.models import Storage
 
 @staff_member_required
 def validate_payment_form_view(request, pk):
@@ -71,7 +71,8 @@ def validate_create_invoice_order_item_view(request, pk):
     form = InvoiceItemForm(request.POST or None, initial={'invoice': instance,
                                                           'vendor': instance.vendor,
                                                           })
-
+    form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(),
+                                                           widget=forms.Select(attrs={'class': 'form-control'}))
     if form.is_valid():
         data = form.save()
         product = data.product
@@ -79,6 +80,15 @@ def validate_create_invoice_order_item_view(request, pk):
         product.order_sku = data.order_code
         product.order_discount = data.discount
         product.save()
+        create_storage = form.cleaned_data.get('create_storage', None)
+        print(create_storage, form)
+        if create_storage:
+            new_storage = ProductStorage.objects.create(
+                product=product,
+                storage=create_storage,
+            )
+            data.storage = new_storage
+            data.save()
     return redirect(instance.get_edit_url())
 
 
@@ -164,7 +174,6 @@ def delete_transformation_item_view(request, pk):
 @staff_member_required
 def change_product_favorite_warehouse_view(request):
     new_id = request.POST.get('new_id', None)
-    print('new_id', new_id)
     if new_id:
         product_storage = get_object_or_404(ProductStorage, id=new_id)
         product_storage.priority = True
@@ -177,9 +186,10 @@ def popup_vendor(request):
     form = VendorForm(request.POST or None)
     form_title = 'Δημιουργια Προμηθευτη'
     if form.is_valid():
-        form.save()
-        return HttpResponse()
-
-    render(request, 'warehouse/form_view.html', context=locals())
+        print('for')
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_vendor");</script>' % (instance.pk, instance))
+    return render(request, 'warehouse/form_view.html', context=locals())
 
 

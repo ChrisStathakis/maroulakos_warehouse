@@ -205,6 +205,15 @@ class PaymentInvoice(models.Model):
     def tag_charges_cost(self):
         return str(self.charges_cost).replace('.', ',')
 
+    @staticmethod
+    def filters_data(request, qs):
+        search_name = request.GET.get('search_name', None)
+        costumer_name = request.GET.getlist('costumer_name', None)
+        date_start, date_end, date_range = initial_date(request, 6)
+        qs = qs.filter(date__range=[date_start, date_end]) if date_start and date_end else qs
+
+        return qs
+
 
 class CostumerDetails(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT)

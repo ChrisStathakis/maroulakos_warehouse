@@ -52,11 +52,12 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>Κωδικος</th>
                     <th>Προϊόν</th>
                     <th>Τιμή Μοναδας</th>
                     <th>Ποσότητα</th>
-                    <th>Αξία</th>
-                    <th>Εκπτωση</th>
+                    <th>ΜΜ</th>
+                    <th>Αξία Προ Φορου</th>
                     <th>ΦΠΑ</th>
                     <th>Τελική Αξία</th>
                     <th></th>
@@ -65,11 +66,12 @@
             <tbody>
             {% for order_item in object.order_items.all %}
                 <tr>
+                    <td>{{ order_item.order_code }}</td>
                     <td>{{ order_item.product.title }}</td>
                     <td>{{ order_item.value }}</td>
                     <td>{{ order_item.storage }} ==> {{ order_item.qty }}</td>
-                    <td>{{ order_item.final_value }}</td>
-                    <td>{{ order_item.discount }} %</td>
+                    <td>{{ order_item.get_unit_display }}</td>
+                    <td>{{ order_item.tag_clean_value }}</td>
                     <td>{{ order_item.taxes_modifier }} % | {{ order_item.taxes_value }}</td>
                     <td>{{ order_item.total_value }}</td>
                     <td>

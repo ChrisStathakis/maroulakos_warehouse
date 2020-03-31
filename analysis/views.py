@@ -12,6 +12,7 @@ from django_tables2 import RequestConfig
 from operator import attrgetter
 from itertools import chain
 
+from costumers.models import CostumerPayment
 from point_of_sale.models import SalesInvoice
 from catalogue.models import Product, ProductStorage
 from payroll.models import Bill, Payroll
@@ -62,35 +63,40 @@ class AnalysisOutcomeView(TemplateView):
         currency = settings.CURRENCY
         back_url = reverse('analysis:homepage')
         date_filter = True
+
+        # collect the data from database
         bills = Bill.filters_data(self.request, Bill.objects.all())
         payrolls = Payroll.filters_data(self.request, Payroll.objects.all())
         invoices = Invoice.filters_data(self.request, Invoice.objects.all())
+
+        # analyse bills
         total_bills = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills else 0
         analysis_bills = bills.values('category__title').annotate(total=Sum('final_value')).order_by('-total')
         analysis_bills_per_month = bills.annotate(month=TruncMonth('date_expired')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
 
-        total_payroll = payrolls.aggregate(Sum('final_value'))['final_value__sum'] if payrolls else 0
+        # analyse invoice payments
         total_invoices = invoices.aggregate(Sum('final_value'))['final_value__sum'] if invoices else 0
-
-        total_expenses = total_bills + total_payroll + total_invoices
         analysis_invoices = invoices.values('vendor__title').annotate(total=Sum('final_value')).order_by('-total')
         analysis_invoices_per_month = invoices.annotate(month=TruncMonth('date')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
+
+        # analyse payrolls
+        total_payroll = payrolls.aggregate(Sum('final_value'))['final_value__sum'] if payrolls else 0
         payroll_analysis = payrolls.values('person__title').annotate(total=Sum('final_value')).order_by('-total')
         payroll_analysis_per_month = payrolls.annotate(month=TruncMonth('date_expired')).values('month'). \
             annotate(total=Sum('final_value')).values('month', 'total').order_by('month')
 
-        # get unique months
-        months = sort_months([analysis_invoices_per_month, analysis_bills_per_month, payroll_analysis_per_month])
+        total_expenses = total_bills + total_payroll + total_invoices
 
+        # create unique months
+        months = sort_months([analysis_invoices_per_month, analysis_bills_per_month, payroll_analysis_per_month])
         result_per_months = []
         for month in months:
             data = {
                 'month': month,
                 'total': 0
             }
-            # data['invoice'] = ele['total'] for ele in analysis_invoices_per_month if ele['month'] == month else 0
             for ele in analysis_invoices_per_month:
                 if ele['month'] == month:
                     data['invoice'] = ele['total']
@@ -103,7 +109,7 @@ class AnalysisOutcomeView(TemplateView):
                 if ele['month'] == month:
                     data['payroll'] = ele['total']
                     data['total'] = data['total'] + ele['total']
-
+            # put the data together
             data['invoice'] = data['invoice'] if 'invoice' in data.keys() else 0
             data['bills'] = data['bills'] if 'bills' in data.keys() else 0
             data['payroll'] = data['payroll'] if 'payroll' in data.keys() else 0
@@ -119,14 +125,14 @@ class CashRowView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        currency = settings.CURRENCY
+        currency, date_filter = settings.CURRENCY, True
         back_url = reverse('analysis:homepage')
-        incomes = SalesInvoice.filters_data(self.request, SalesInvoice.objects.all()).order_by('date')
-        total = incomes.aggregate(Sum('final_value'))['final_value__sum'] if incomes.exists() else 0
 
-        date_filter = True
+        # get the incomes
+        incomes = CostumerPayment.filters_data(self.request, CostumerPayment.objects.all()).order_by('date')
+        total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0
 
-        # outcomes
+        # vendor_paymets
         vendor_payments = Payment.filters_data(self.request, Payment.objects.all())
         vendor_payments_total = vendor_payments.aggregate(Sum('value'))['value__sum'] if vendor_payments.exists() else 0
 
@@ -135,6 +141,7 @@ class CashRowView(TemplateView):
 
         bills = Bill.filters_data(self.request, Bill.objects.filter(is_paid=True))
         bills_total = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills.exists() else 0
+
         total_expenses = vendor_payments_total + bills_total + payrolls_total
         expenses_query = sorted(
             chain(bills, vendor_payments, payrolls),

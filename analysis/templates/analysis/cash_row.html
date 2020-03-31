@@ -79,7 +79,7 @@
                                 <tr class='table-success'>
                                     <th>Ημερομηνια </th>
                                     <th>Πελατης</th>
-                                    <th>Ειδος </th>
+                                    <th>Τροπος Πληρωμής </th>
                                     <th>Αξια </th>
                                 </tr>
                             </thead>
@@ -87,9 +87,9 @@
                                 {% for ele in incomes %}
                                     <tr>
                                         <td>{{ ele.date }}</td>
-                                        <td>{{ ele.costumer}}}</td>
-                                        <td>{{ ele.get_order_type_display}}</td>
-                                        <td>{{ ele.tag_final_value }}</td>
+                                        <td>{{ ele.customer }}</td>
+                                        <td>{{ ele.payment_method }}</td>
+                                        <td>{{ ele.tag_value }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -156,10 +156,10 @@ var ctx = document.getElementById('expenseChart');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Συνολικα Εξοδα', 'Πληρωμες Προμηθευτων', 'Λογαριασμοι', 'Μισθοδοσια', 'Γενικά Εξοδα'],
+        labels: ['Συνολικα Εξοδα', 'Πληρωμες Προμηθευτων', 'Λογαριασμοι', 'Μισθοδοσια'],
         datasets: [{
             label: '# Σε Ευρω',
-            data: [{{ total_expenses }},{{ vendor_payments_total }}, {{ bills_total }}, {{ payrolls_total }}, {{ generic_expenses_total }}],
+            data: [{{ total_expenses }},{{ vendor_payments_total }}, {{ bills_total }}, {{ payrolls_total }}],
             backgroundColor: [
                 'red',
                 'blue',

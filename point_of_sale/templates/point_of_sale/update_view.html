@@ -15,24 +15,32 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-header">
-                        Προϊοντα
+                       <h5>Προϊοντα</h5>
+                        <br>
+                         <a href="{{ request.path }}"  class="btn btn-danger">Καθαρισμος</a>
                     </div>
                     <div class="card-body">
                         <form class="form">
                             <input data-href="{% url 'point_of_sale:ajax_search_products' object.id %}" name="q" type="text" class="form-control searchProducts" placeholder="Αναζητηση" />
+                            <div class="form-group">
+                              <input name='product_class_name' onclick="this.form.submit()" class="form-control"
+                                     type="checkbox" value="_check" {% if request.GET.product_class_name == '_check' %} checked {% endif %} />
+                                  <label class="form-check-label" for="defaultCheck1">
+                                    Μονο δικα μας
+                                  </label>
+                            </div>
                         </form>
                         <br> <hr>
                         <div class="product_container">
                             {% include 'point_of_sale/ajax/product_container.html' %}
                         </div>
-
                     </div>
                 </div>
             </div>
-             <div class="col-6 .order_container">
+             <div class="col-8 .order_container">
                 {% include 'point_of_sale/ajax/order_container.html' %}
             </div>
         </div>

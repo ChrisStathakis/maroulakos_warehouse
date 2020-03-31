@@ -41,7 +41,7 @@ class InvoiceForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = '__all__'
+        fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'extra_value', 'description']
 
 
 class PaymentForm(BaseForm, forms.ModelForm):

@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
 from .models import Invoice, Product, InvoiceItem
+from project_settings.models import Storage
 from catalogue.models import ProductStorage
 from .forms import InvoiceItemForm, InvoiceForm
 
@@ -51,8 +52,14 @@ def ajax_create_product_modal(request, pk, dk):
     if not product.product_class.have_storage:
         form.fields['storage'].widget = forms.HiddenInput()
     else:
-        form.fields['storage'].queryset = ProductStorage.objects.filter(product=product)
-        form.fields['storage'].required = True
+        qs = ProductStorage.objects.filter(product=product)
+        if qs.exists():
+            form.fields['storage'].queryset = qs
+            form.fields['storage'].required = True
+        else:
+            form.fields['storage'].widget = forms.HiddenInput()
+            form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+            form.fields['create_storage'].required = True
     data['result'] = render_to_string(request=request,
                                       template_name='warehouse/ajax/product_modal.html',
                                       context={

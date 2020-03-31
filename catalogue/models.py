@@ -150,7 +150,10 @@ class Product(models.Model):
     @staticmethod
     def filters_data(request, qs):
         q = request.GET.get('q', None)
-        search_name = request.GET.get('search_name', q)
+        search_name = request.GET.get('search_name', None)
+        product_class_name = request.GET.get('product_class_name', None)
+        if product_class_name:
+            qs = qs.filter(product_class__have_ingredient=True)
 
         if q:
             qs = qs.filter(Q(title__icontains=q) |

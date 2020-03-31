@@ -327,10 +327,10 @@ var ctx = document.getElementById('totalChart');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Συνολικα Εξοδα','Συνολο Λογαριασμών', 'Συνολο Μισθοδοσιας', 'Συνολο Προμηθευτών', 'Διαφορα Εξοδα'],
+        labels: ['Συνολικα Εξοδα','Συνολο Λογαριασμών', 'Συνολο Μισθοδοσιας', 'Συνολο Προμηθευτών'],
         datasets: [{
             label: '# Σε Ευρω',
-            data: [{{ total_expenses }}, {{ total_bills }}, {{ total_payroll}}, {{ total_invoices }}, {{ total_total_generic }}],
+            data: [{{ total_expenses }}, {{ total_bills }}, {{ total_payroll}}, {{ total_invoices }}],
             backgroundColor: [
                 'red',
                 'blue',
@@ -396,16 +396,6 @@ var myChart = new Chart(ctx, {
 				borderColor: 'yellow',
 				fill: false,
 				data:[{% for ele in result_per_months %} {% if forloop.last %} {{ ele.invoice }}{% else %} {{ele.invoice}}, {% endif %} {% endfor %}],
-			},
-
-
-
-            {
-				label: 'Γενικα Εξοδα',
-				backgroundColor: 'teal',
-				borderColor: 'teal',
-				fill: false,
-				data:[{% for ele in result_per_months %} {% if forloop.last %} {{ ele.generic }}{% else %} {{ele.generic}}, {% endif %} {% endfor %}],
 			}
             ]
 		},
