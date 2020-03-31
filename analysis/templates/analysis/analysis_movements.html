@@ -1,0 +1,41 @@
+{% extends 'analysis/homepage.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Κινησεις</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Ειδος</th>
+                                    <th>Συσχετιζομενος</th>
+                                    <th>Τροπος Πληρωμης</th>
+                                    <th>Ποσο</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for movement in movements %}
+                                    <tr>
+                                        <td>{{ movement.date }}</td>
+                                        <td>{{ movement.tag_order_type }}</td>
+                                        <td>{{ movement.tag_person }}</td>
+                                        <td>{{ movement.payment_method }}</td>
+                                        <td>{{ movement.tsg_final_value }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

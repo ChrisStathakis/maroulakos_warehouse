@@ -216,31 +216,16 @@ def product_analysis_view(request, pk):
     total_ingre_items_created = ingre_created.aggregate(Sum('qty'))['qty__sum'] if ingre_created.exists() else 0
     total_sells = sell_items.aggregate(Sum('qty'))['qty__sum'] if sell_items.exists() else 0
 
+    current_qty = 0
     movements = sorted(
         chain(sell_items, invoice_items, ingre_items, ingre_created),
-        key=attrgetter('date'), reverse=True)
+        key=attrgetter('date'))
+    qty_movements = []
+    for movement in movements:
+        current_qty = current_qty + movement.qty if movement.transaction_type_method == 'add' else current_qty - movement.qty
+        qty_movements.append([movement, current_qty])
 
 
-    # movements
-    invoice_items_movements = invoice_items.annotate(month=TruncMonth('invoice__date')).values('month')\
-        .annotate(total_qty=Sum('qty'),
-                  total_value=Sum('total_value')
-            ).values('month', 'total_qty', 'total_value').order_by('month')
-
-    sell_items_movements = sell_items.annotate(month=TruncMonth('invoice__date')).values('month') \
-        .annotate(total_qty=Sum('qty'),
-                  total_value=Sum('total_value')
-                  ).values('month', 'total_qty', 'total_value').order_by('month')
-
-    ingre_items_movements = ingre_items.annotate(month=TruncMonth('invoice_item__invoice__date')).values('month') \
-        .annotate(total_qty=Sum('qty'),
-                  total_value=Sum('total_cost')
-                  ).values('month', 'total_qty', 'total_value').order_by('month')
-
-    ingre_created_movements = ingre_created.annotate(month=TruncMonth('invoice__date')).values('month') \
-        .annotate(total_qty=Sum('qty'),
-                  total_value=Sum('total_value')
-                  ).values('month', 'total_qty', 'total_value').order_by('month')
     return render(request, 'catalogue/product_analysis.html', context=locals())
 
 

@@ -10,6 +10,7 @@ from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngred
 from project_settings.constants import CURRENCY
 from project_settings.models import Storage
 
+
 @staff_member_required
 def validate_payment_form_view(request, pk):
     vendor = get_object_or_404(Vendor, id=pk)
@@ -72,7 +73,8 @@ def validate_create_invoice_order_item_view(request, pk):
                                                           'vendor': instance.vendor,
                                                           })
     form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(),
-                                                           widget=forms.Select(attrs={'class': 'form-control'}))
+                                                           widget=forms.Select(attrs={'class': 'form-control'}),
+                                                           required=False)
     if form.is_valid():
         data = form.save()
         product = data.product
@@ -81,7 +83,6 @@ def validate_create_invoice_order_item_view(request, pk):
         product.order_discount = data.discount
         product.save()
         create_storage = form.cleaned_data.get('create_storage', None)
-        print(create_storage, form)
         if create_storage:
             new_storage = ProductStorage.objects.create(
                 product=product,
@@ -89,6 +90,8 @@ def validate_create_invoice_order_item_view(request, pk):
             )
             data.storage = new_storage
             data.save()
+    else:
+        print(form.errors)
     return redirect(instance.get_edit_url())
 
 
@@ -133,6 +136,12 @@ def add_product_to_invoice_trans_view(request, pk, dk):
                 maximum_uses = new_qty
 
     if form.is_valid():
+        for ele in product_.ingredients.all():
+            pr = ele.ingredient
+            if pr.product_class.have_storage:
+                if not pr.favorite_storage():
+                    messages.warning(request, f'{pr.tit} δε έχει βασική αποθηκη')
+                    return redirect(instance.get_edit_url())
         item = form.save()
         ingredients = product_.ingredients.all()
         qty = item.qty

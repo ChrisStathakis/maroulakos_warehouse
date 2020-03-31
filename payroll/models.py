@@ -108,6 +108,9 @@ class Bill(DefaultOrderModel):
 
     def update_category(self):
         self.category.update_balance()
+    @property
+    def date(self):
+        return self.date_expired
 
     @staticmethod
     def filters_data(request, queryset):
@@ -259,7 +262,6 @@ class Payroll(DefaultOrderModel):
     category = models.CharField(max_length=1, choices=PAYROLL_CHOICES, default='1', verbose_name='Κατηγορια')
     objects = models.Manager()
 
-
     class Meta:
         verbose_name_plural = '2. Μισθόδοσία'
         verbose_name = 'Εντολή Πληρωμής'
@@ -302,6 +304,10 @@ class Payroll(DefaultOrderModel):
 
     def get_copy_url(self):
         return reverse('payroll_bills:action_copy_payroll', kwargs={'pk': self.id})
+
+    @property
+    def date(self):
+        return self.date_expired
 
     def update_category(self):
         self.person.update_balance()

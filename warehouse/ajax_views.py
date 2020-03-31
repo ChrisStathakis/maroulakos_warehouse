@@ -58,7 +58,10 @@ def ajax_create_product_modal(request, pk, dk):
             form.fields['storage'].required = True
         else:
             form.fields['storage'].widget = forms.HiddenInput()
-            form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+            form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(),
+                                                                   widget=forms.Select(attrs={'class': 'form-control'}),
+                                                                   label='Δημιουργια Αποθηκης'
+                                                                   )
             form.fields['create_storage'].required = True
     data['result'] = render_to_string(request=request,
                                       template_name='warehouse/ajax/product_modal.html',

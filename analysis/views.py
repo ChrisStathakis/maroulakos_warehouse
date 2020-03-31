@@ -54,6 +54,18 @@ class AnalysisSaleIncomeView(ListView):
         return context
 
 
+@staff_member_required
+def warehouse_movements_view(request):
+    # collect the data
+    invoices = Invoice.filters_data(request, Invoice.objects.all())
+    sales = SalesInvoice.filters_data(request, SalesInvoice.objects.all())
+
+    movements = sorted(
+            chain(invoices, sales),
+            key=attrgetter('date'))
+    return render(request, 'analysis/analysis_movements.html', context=locals())
+
+
 @method_decorator(staff_member_required, name='dispatch')
 class AnalysisOutcomeView(TemplateView):
     template_name = 'analysis/analysis_outcome.html'
@@ -67,7 +79,7 @@ class AnalysisOutcomeView(TemplateView):
         # collect the data from database
         bills = Bill.filters_data(self.request, Bill.objects.all())
         payrolls = Payroll.filters_data(self.request, Payroll.objects.all())
-        invoices = Invoice.filters_data(self.request, Invoice.objects.all())
+        invoices = Invoice.filters_data(self.request, Invoice.objects.filter(order_type__in=['a']))
 
         # analyse bills
         total_bills = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills else 0
@@ -114,7 +126,6 @@ class AnalysisOutcomeView(TemplateView):
             data['bills'] = data['bills'] if 'bills' in data.keys() else 0
             data['payroll'] = data['payroll'] if 'payroll' in data.keys() else 0
             result_per_months.append(data)
-
         context.update(locals())
         return context
 

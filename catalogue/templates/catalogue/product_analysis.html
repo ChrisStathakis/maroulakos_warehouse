@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h6>Report {{ instance }}</h6>
+                        <h6>Report {{ instance }} Ποσοτητες</h6>
                         <a href="{{ instance.get_edit_url }}" class="btn btn-warning pull-right"><i class="fa fa-backward"></i> </a>
                     </div>
                     <div class="card-body">
@@ -34,7 +34,35 @@
                         <h6>Κινησεις</h6>
                     </div>
                     <div class="card-body">
-                        <canvas id="lineChart" width="400" height="400"></canvas>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Ειδος</th>
+                                    <th>Σχετιζομενος</th>
+                                    <th>Ποσοτοτητα</th>
+                                    <th>Υπολοιπο</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for movement in qty_movements %}
+                                    <tr>
+                                        <td>{{ movement.0.date|date }}</td>
+                                        <td>{{ movement.0.transcation_type }}</td>
+                                        <td>{{ movement.0.transcation_person }}</td>
+                                        {% if movement.0.transaction_type_method == 'add' %}
+                                            <td class="table-success">+ {{ movement.0.qty }}</td>
+                                        {% else %}
+                                            <td class="table-danger">- {{ movement.0.qty }}</td>
+                                        {% endif %}
+
+                                        <td>{{ movement.1 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
                     </div>
                 </div>
             </div>
@@ -54,41 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Παραστατικα</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Ημερομηνια</th>
-                                    <th>Ειδος</th>
-                                    <th>Σχετιζομενος</th>
-                                    <th>Ποσοτοτητα</th>
-                                    <th>Τιμη</th>
-                                    <th>Συνολικη Αξια</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for movement in movements %}
-                                    <tr>
-                                        <td>{{ movement.date|date }}</td>
-                                        <td>{{ movement.transcation_type }}</td>
-                                        <td>{{ movement.transcation_person }}</td>
-                                        <td>{{ movement.qty }}</td>
-                                        <td>{{ movement.value }}</td>
-                                        <td>{{ movement.total_value }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
 
-                        </table>
-                    </div>
-                </div>
-
-            </div>
         </div>
     </div>
 {% endblock %}

@@ -82,6 +82,10 @@ class InvoiceTransformationItem(models.Model):
     def transcation_type(self):
         return 'Δημιουργημενο Προϊον'
 
+    @property
+    def transaction_type_method(self):
+        return 'add'
+
     def transcation_person(self):
         return 'Προσθηκη στην Αποθηκη'
 
@@ -124,6 +128,10 @@ class InvoiceTransformationIngredient(models.Model):
 
     def transcation_person(self):
         return 'Αφαιρεση Απο Αποθηκη'
+
+    @property
+    def transaction_type_method(self):
+        return 'remove'
 
     def value(self):
         # for analysis normalization

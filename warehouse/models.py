@@ -10,7 +10,7 @@ from decimal import Decimal
 
 from project_settings.models import PaymentMethod
 from project_settings.tools import initial_date
-from project_settings.constants import INVOICE_TYPES, CURRENCY
+from project_settings.constants import INVOICE_TYPES, CURRENCY, POSITIVE_INVOICES
 from catalogue.models import Product, ProductStorage
 
 
@@ -164,6 +164,12 @@ class Invoice(models.Model):
     def tag_final_value(self):
         return f'{self.final_value} {CURRENCY}'
 
+    def tag_order_type(self):
+        return self.get_order_type_display()
+
+    def tag_person(self):
+        return self.vendor
+
     @staticmethod
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
@@ -225,11 +231,18 @@ class InvoiceItem(models.Model):
     def tag_clean_value(self):
         return str(self.clean_value).replace('.', ',')
 
+    def final_value(self):
+        return round(self.value * ((100 - self.discount)/100), 2)
+
     def tag_total_value(self):
         return str(self.total_clean_value).replace('.', ',')
 
     def tag_discount(self):
         return str(self.discount).replace('.', ',')
+
+    @property
+    def transaction_type_method(self):
+        return 'add' if self.invoice.order_type in POSITIVE_INVOICES else 'remove'
 
     @property
     def date(self):

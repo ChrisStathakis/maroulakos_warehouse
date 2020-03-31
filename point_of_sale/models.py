@@ -50,6 +50,9 @@ class SalesInvoice(models.Model):
     def tag_order_type(self):
         return f'{self.get_order_type_display()}'
 
+    def tag_person(self):
+        return self.costumer
+
     def get_edit_url(self):
         return reverse('point_of_sale:sales_update', kwargs={'pk': self.id})
 
