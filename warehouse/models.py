@@ -296,6 +296,17 @@ class Payment(models.Model):
     def report_value(self):
         return self.value
 
+    def tag_order_type(self):
+        return 'Πληρωμη'
+
+    def tag_final_value(self):
+        return f'{self.value} {CURRENCY}'
+
+    def taxes_value(self):
+        return '-'
+
+
+
 
 class Note(models.Model):
     status = models.BooleanField(default=True, verbose_name='Κατάσταση')

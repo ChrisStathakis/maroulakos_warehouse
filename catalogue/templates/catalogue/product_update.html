@@ -108,8 +108,9 @@
                     <div class="card-header">
                         <h4>Στοιχεια Προϊόντος</h4>
                         <a href="{{ back_url }}" class="btn btn-warning pull-right"><i class="fa fa-backward"></i> </a>
+                        <br><br>
                         <div class="dropdown-secondary dropdown">
-                            <button class="btn btn-sm btn-primary dropdown-toggle waves-light" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Δημιουργία</button>
+                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Δημιουργία</button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                 <button class="dropdown-item"  data-href="{% url 'catalogue:popup_vendor' %}" id="add_vendor" onclick="return addData(this);">Προμηθευτή</button>
                                  <button class="dropdown-item"  data-href="{% url 'catalogue:popup_storage' %}" id="add_vendor" onclick="return addData(this);">Αποθηκη</button>

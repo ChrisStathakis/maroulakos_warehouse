@@ -12,7 +12,7 @@ from .models import PaymentInvoice, MyCard, Costumer, CostumerPayment
 from point_of_sale.models import SalesInvoice, SalesInvoiceItem
 from .tables import PaymentInvoiceTable, CostumerTable
 from .forms import PaymentInvoiceForm, CostumerDetailsForm, CreateInvoiceItemForm, PaymentInvoiceEditForm, CostumerForm, CostumerPaymentForm
-
+from project_settings.constants import CURRENCY
 from .mixins import MyFormMixin
 from reportlab.pdfgen import canvas
 import io
@@ -46,6 +46,7 @@ class CostumerListView(ListView):
         page_title = 'Πελατες'
         queryset_table = CostumerTable(self.object_list)
         table_title, create_url = 'Λίστα', reverse('costumers:costumers_create')
+        balance_filter, search_filter = [True]*2
         extra_buttons = True
         context.update(locals())
         return context
@@ -87,8 +88,12 @@ class CostumerDetailView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(CostumerDetailView, self).get_context_data(**kwargs)
         context['back_url'] = reverse('costumers:costumer_list')
+        # data
         payments = CostumerPayment.filters_data(self.request, self.object.payments.all())
         invoices = SalesInvoice.filters_data(self.request, self.object.sale_invoices.all())
+        total_payments = payments.aggregate(Sum('value'))['value__sum'] if payments.exists() else 0
+        total_invoices = invoices.aggregate(Sum('final_value'))['final_value__sum'] if invoices.exists() else 0
+        diff, currency = total_invoices - total_payments, CURRENCY
         context['data_qs'] = sorted(chain(payments, invoices), key=attrgetter('date'), reverse=True)
         context['date_filter'] = True
         get_params = self.request.get_full_path().split('?', 1)[1] if '?' in self.request.get_full_path() else ''

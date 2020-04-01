@@ -1,5 +1,5 @@
 from django import forms
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage
+from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage, Employer
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem
 
 
@@ -9,6 +9,13 @@ class BaseForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+
+class EmployerForm(BaseForm, forms.ModelForm):
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
+    class Meta:
+        model = Employer
+        fields = '__all__'
 
 
 class VendorForm(BaseForm, forms.ModelForm):
@@ -109,3 +116,5 @@ class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
     class Meta:
         model = InvoiceTransformationItem
         fields = ['invoice', 'product', 'storage', 'qty', 'value', ]
+
+

@@ -152,7 +152,8 @@ class CategoryListView(ListViewMixin, ListView):
         context['create_url'] = reverse('catalogue:category_create')
         context['back_url'] = reverse('catalogue:homepage')
         qs_table = CategoryTable(self.object_list)
-        context['queryset_table'] =  RequestConfig(self.request, {'per_page': self.paginate_by}).configure(qs_table)
+        context['queryset_table'] = RequestConfig(self.request, {'per_page': self.paginate_by}).configure(qs_table)
+        context['search_filter'] = True
         return context
 
 
@@ -205,8 +206,8 @@ def category_delete_view(request, pk):
 @staff_member_required
 def product_analysis_view(request, pk):
     instance = get_object_or_404(Product, id=pk)
-    invoice_items = instance.invoiceitem_set.all()
-    sell_items = instance.product_items.all()
+    invoice_items = instance.invoice_items.all()
+    sell_items = instance.sale_items.all()
     ingre_items = instance.invoicetransformationingredient_set.all()
     ingre_created = instance.invoicetransformationitem_set.all()
 

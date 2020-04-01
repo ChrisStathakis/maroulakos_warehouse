@@ -41,6 +41,7 @@ class PayrollCardTable(tables.Table):
                                         </div>
                                         ''', verbose_name='Eπεξεργασια', orderable=False)
     tag_final_value = tables.Column('Aξια', orderable=False)
+    date_expired = tables.TemplateColumn("<p>{{ record.date_expired|date:'d/M/Y'}} </p>")
 
     class Meta:
         model = Payroll

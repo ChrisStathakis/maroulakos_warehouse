@@ -8,7 +8,7 @@ from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, InvoiceTransformationIngredient
 
 from .forms import (VendorForm, PaymentForm, InvoiceForm, NoteForm, InvoiceVendorDetailForm,
-                    InvoiceProductForm, InvoiceTransformationForm, InvoiceTransformationItemForm
+                    InvoiceProductForm, InvoiceTransformationForm, InvoiceTransformationItemForm, EmployerForm
                     )
 from catalogue.models import Product, ProductStorage, Category
 from .tables import ProductTransTable, VendorTable, InvoiceTable, InvoiceTransformationTable, VendorProductTable
@@ -18,6 +18,8 @@ from .mixins import ListViewMixin
 from django_tables2 import RequestConfig
 
 from decimal import Decimal
+from operator import attrgetter
+from itertools import chain
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -98,11 +100,15 @@ class UpdateVendorView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['invoice_form'] = InvoiceVendorDetailForm(initial={'vendor': self.object})
         context['payment_form'] = PaymentForm(initial={'vendor': self.object})
-        # context['employer_form'] = EmployerForm(initial={'vendor': self.object})
-        # context['page_title'] = f'{self.object.title}'
-        # context['notes'] = Note.objects.filter(vendor_related=self.object, status=True)
-        context['invoices'] = Invoice.filters_data(self.request, self.object.invoices.all())
-        context['payments'] = Payment.filters_data(self.request, self.object.payments.all())
+        context['employer_form'] = EmployerForm(initial={'vendor': self.object})
+        context['page_title'] = f'{self.object.title}'
+        context['notes'] = Note.objects.filter(vendor_related=self.object, status=True)
+        invoices = Invoice.filters_data(self.request, self.object.invoices.all())
+        payments = Payment.filters_data(self.request, self.object.payments.all())
+        qs_together = sorted(chain(
+            invoices, payments
+        ), key=attrgetter('date'))
+        context['qs_together'] = qs_together
         # context['action_url'] = reverse('vendors:list')
         return context
 
@@ -401,7 +407,8 @@ def create_sale_invoice_transformation_view(request, pk):
         costumer=instance.costumer,
         order_type='a',
         payment_method=instance.payment_method,
-        date=timezone.now()
+        date=timezone.now(),
+        title=instance.title
     )
     for item in instance.invoicetransformationitem_set.all():
         SalesInvoiceItem.objects.create(

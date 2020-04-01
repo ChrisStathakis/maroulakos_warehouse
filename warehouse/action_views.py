@@ -4,8 +4,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django import forms
 from django.contrib import messages
 
-from .forms import InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm, InvoiceTransformationItemForm, NoteForm, PaymentForm, VendorForm
-from .models import Vendor, Invoice, InvoiceItem, Product, ProductStorage
+from .forms import (InvoiceVendorDetailForm, InvoiceProductForm, InvoiceItemForm, InvoiceForm,
+                    InvoiceTransformationItemForm, NoteForm, PaymentForm, VendorForm, EmployerForm, VendorBankingAccountForm)
+from .models import Vendor, Invoice, InvoiceItem, Product, ProductStorage, VendorBankingAccount, Employer
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationIngredient, InvoiceTransformationItem
 from project_settings.constants import CURRENCY
 from project_settings.models import Storage
@@ -174,11 +175,65 @@ def validate_note_creation_view(request, pk):
 
 
 @staff_member_required
+def validate_employer_view(request, pk):
+    vendor = get_object_or_404(Vendor, id=pk)
+    form = EmployerForm(request.POST or None, initial={'vendor': vendor})
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+@staff_member_required
 def delete_transformation_item_view(request, pk):
     instance = get_object_or_404(InvoiceTransformationItem, id=pk)
     instance.delete()
     return redirect(instance.invoice.get_edit_url())
 
+
+@staff_member_required
+def validate_employer_edit_view(request, pk):
+    employer = get_object_or_404(Employer, id=pk)
+    form = EmployerForm(request.POST or None, instance=employer)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def delete_employer_view(request, pk):
+    employer = get_object_or_404(Employer, id=pk)
+    employer.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def validate_create_banking_account_view(request, pk):
+    vendor = get_object_or_404(Vendor, id=pk)
+    form = VendorBankingAccountForm(request.POST, initial={'vendor': vendor})
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def validate_edit_banking_account_view(request, pk):
+    banking_account = get_object_or_404(VendorBankingAccount, id=pk)
+    form = VendorBankingAccountForm(request.POST or None, instance=banking_account)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@staff_member_required
+def delete_banking_account_view(request, pk):
+    banking_account = get_object_or_404(VendorBankingAccount, id=pk)
+    banking_account.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @staff_member_required
 def change_product_favorite_warehouse_view(request):

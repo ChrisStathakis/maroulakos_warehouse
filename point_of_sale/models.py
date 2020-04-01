@@ -124,12 +124,9 @@ class SalesInvoiceItem(models.Model):
     def tag_clean_value(self):
         return str(self.clean_value).replace('.', ',')
 
-    def tag_total_value(self):
-        return str(self.total_clean_value).replace('.', ',')
-
-    def tag_discount(self):
-        return str(self.discount).replace('.', ',')
-
+    @property
+    def transaction_type_method(self):
+        return 'remove'
 
     @staticmethod
     def filter_data(request, qs):

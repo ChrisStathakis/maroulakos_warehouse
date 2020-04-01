@@ -1,4 +1,5 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render
+from django.db.models import Sum
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -42,7 +43,7 @@ class SalesListView(ListView):
         context['page_title'] = 'Πωλησεις'
         context['create_url'] = reverse('point_of_sale:sales_create')
         context['back_url'] = reverse('point_of_sale:homepage')
-        context['date_filter'], context['search_filter'], context['costumer_filter'] = [True] * 3
+        context['date_filter'], context['search_filter'], context['costumer_filter'], context['payment_filter'] = [True] * 4
         qs_table = SalesInvoiceListTable(self.object_list)
         RequestConfig(self.request).configure(qs_table)
         context['queryset_table'] = qs_table
@@ -96,3 +97,13 @@ def delete_sales_invoice_view(request, pk):
     instance.delete()
     messages.success(request, 'Το Παραστατικο Διαγραφηκε!.')
     return redirect(reverse('point_of_sale:sales_list'))
+
+
+@staff_member_required
+def order_itema_analysis_view(request):
+    order_items = SalesInvoiceItem.filter_data(request, SalesInvoiceItem.objects.all())
+    costumers_id = order_items.values_list('costumer')
+    costumers = Costumer.objects.filter(id__in=costumers_id)
+    sells_per_costumer = order_items.values('costumer__eponimia').annotate(total_value=Sum('total_value'), total_qty=Sum('qty')).order_by('qty')
+    context = locals()
+    return render(request, 'point_of_sale/order_item_analysis.html', context)

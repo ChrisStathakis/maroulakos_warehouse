@@ -279,7 +279,6 @@ def occupation_delete_view(request, pk):
     return redirect(reverse('payroll_bills:payroll_list'))
 
 
-
 @method_decorator(staff_member_required, name='dispatch')
 class PayrollCardUpdateView(UpdateView):
     template_name = 'payroll/form.html'

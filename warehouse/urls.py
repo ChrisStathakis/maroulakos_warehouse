@@ -10,7 +10,9 @@ from .views import (HomepageView,
 from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_update_view,
                            validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view,
                            validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view,
-                           change_product_favorite_warehouse_view, popup_vendor
+                           change_product_favorite_warehouse_view, popup_vendor,
+                           delete_employer_view, validate_employer_edit_view, validate_employer_view,
+                           delete_banking_account_view, validate_create_banking_account_view, validate_edit_banking_account_view
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
 
@@ -74,6 +76,19 @@ urlpatterns = [
     path('analysis/homepage/', ReportHomepageView.as_view(), name='analysis_homepage'),
     path('analysis/order-analysis/', InvoiceListAnalysisView.as_view(), name='invoice_analysis'),
     path('analysis/order-item-analysis/', InvoiceItemListAnalysisView.as_view(), name='invoice_items_analysis'),
+
+    #  employer links
+    path('actions/validate-employer-edit-form/<int:pk>/', validate_employer_edit_view,
+         name='validate_employer_edit_view'),
+    path('actions/employer-delete/<int:pk>/', delete_employer_view, name='action_delete_employer'),
+    path('ajax/validatel=/<int:pk>/', validate_employer_view, name='validate_employer_create'),
+
+    # banking accounts
+    path('validate/banking-account-create/<int:pk>/', validate_create_banking_account_view,
+         name='validate_create_banking_account'),
+    path('validate/banking_account-edit/<int:pk>/', validate_edit_banking_account_view,
+         name='validate_edit_banking_account'),
+    path('banking-account-delete/<int:pk>/', delete_banking_account_view, name='delete_account_banking_view'),
 
     
 ]

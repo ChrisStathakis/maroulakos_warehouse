@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>{{ costumer }}</h4>
+                        <h4>Αναλυση Προϊόντων{{ costumer }}</h4>
                     </div>
                     <div class="card-body">
                         <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -39,7 +39,7 @@
                           <li class="list-group-item">Μεση Αξία... {{ avg }}</li>
                         </ul>
                         <br> <hr>
-                        <h5>Συνολικές Αξίες</h5>
+                        <h5>Συνολικα Δεδομενα</h5>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -66,7 +66,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Κινήσεις</h4>
+                        <h4>Προϊοντα</h4>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -85,7 +85,7 @@
                                     <td>{{ item.product }}</td>
                                     <td>{{ item.qty }} {{ item.get_unit_display }}</td>
                                     <td>{{ item.tag_value }}</td>
-                                    <td>{{ item.tag_total_value }}</td>
+                                    <td>{{ item.total_value }}</td>
                                 {% endfor %}
                             </tbody>
                         </table>

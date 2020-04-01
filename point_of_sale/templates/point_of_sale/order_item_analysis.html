@@ -1,0 +1,70 @@
+{% extends 'point_of_sale/homepage.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Αναλυση Προϊόντων Πώλησης</h4>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Συνολα ανα Πελατη</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for costumer in sells_per_costumer %}
+                                <li class="list-group-item">{{ costumer.costumer__eponimia }}</li>
+                            {% endfor %}
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header">
+
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Πελατης</th>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξια</th>
+                                    <th>Συνολικη Αξια</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                    <tr>
+                                        <td>{{ item.date }}</td>
+                                        <td>{{ item.costumer }}</td>
+                                        <td>{{ item.product }}</td>
+                                        <td>{{ item.qty }} {{ item.get_unit_display }}</td>
+                                        <td>{{ item.value }}</td>
+                                        <td>{{ item.total_value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

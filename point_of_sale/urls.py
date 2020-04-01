@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (PointOfSaleHomepageView,
+from .views import (PointOfSaleHomepageView, order_itema_analysis_view,
                     SalesListView, SalesCreateView, update_sale_invoice_view, delete_sales_invoice_view
                     )
 from .ajax_views import ajax_order_item_edit_modal, ajax_search_products
@@ -24,4 +24,6 @@ urlpatterns = [
     path('validate/order-item/edit/<int:pk>/', validate_order_item_edit_view, name='validate_order_item_edit'),
     path('validadte/order-item-delete/<int:pk>/', validate_delete_order_item, name='validate_order_item_delete'),
     path('popup-costumer/', popup_costumer, name='popup_costumer'),
+
+    path('analysis-order-item/', order_itema_analysis_view, name='analysis_order_item'),
 ]
