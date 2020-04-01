@@ -140,7 +140,7 @@ def add_product_to_invoice_trans_view(request, pk, dk):
             pr = ele.ingredient
             if pr.product_class.have_storage:
                 if not pr.favorite_storage():
-                    messages.warning(request, f'{pr.tit} δε έχει βασική αποθηκη')
+                    messages.warning(request, f'{pr.title} δε έχει βασική αποθηκη')
                     return redirect(instance.get_edit_url())
         item = form.save()
         ingredients = product_.ingredients.all()

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/warehouse/views.py" description="form_class = VendorForm" line="78" />
+    <bookmark url="file://$PROJECT_DIR$/warehouse/views.py" description="form_class = VendorForm" line="92" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ad10669-b2bf-4371-a70a-894b72ee59de" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/analysis/templates/analysis/analysis_movements.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/costumers/migrations/0002_auto_20200331_1603.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/costumers/migrations/0003_auto_20200331_1605.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/point_of_sale/migrations/0002_auto_20200331_1603.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/warehouse/migrations/0002_auto_20200331_1605.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/templates/analysis/homepage.html" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/templates/analysis/homepage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalogue/templates/catalogue/product_analysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalogue/templates/catalogue/product_analysis.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalogue/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalogue/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalogue/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalogue/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/payroll/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/payroll/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/point_of_sale/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/point_of_sale/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/warehouse/action_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/action_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/ajax_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/ajax_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/warehouse/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/warehouse/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/warehouse/warehouse_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/warehouse_models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,20 +37,32 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/warehouse/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="10" column="88" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="88" />
+            <state relative-caret-position="187">
+              <caret line="42" column="51" lean-forward="true" selection-start-line="42" selection-start-column="51" selection-end-line="42" selection-end-column="51" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="action_views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/warehouse/action_views.py">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/warehouse/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="138" column="46" lean-forward="true" selection-start-line="138" selection-start-column="46" selection-end-line="138" selection-end-column="46" />
+            <state relative-caret-position="318">
+              <caret line="219" column="22" selection-start-line="219" selection-start-column="22" selection-end-line="219" selection-end-column="22" />
               <folding>
-                <element signature="e#0#109#0" expanded="true" />
+                <element signature="e#0#91#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="warehouse_models.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/warehouse/warehouse_models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="21" column="121" selection-start-line="21" selection-start-column="121" selection-end-line="21" selection-end-column="121" />
             </state>
           </provider>
         </entry>
@@ -95,6 +106,7 @@
       <find>create/payment</find>
       <find>popup_vendor</find>
       <find>date</find>
+      <find>nvoice-trans-create/</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -103,7 +115,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/warehouse/templates/warehouse/analysis/invoice_item_analysis.html" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/invoice_detail.html" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/ajax/product_modal.html" />
         <option value="$PROJECT_DIR$/warehouse/tables.py" />
@@ -131,29 +142,30 @@
         <option value="$PROJECT_DIR$/point_of_sale/forms.py" />
         <option value="$PROJECT_DIR$/point_of_sale/templates/point_of_sale/ajax/order_container.html" />
         <option value="$PROJECT_DIR$/point_of_sale/templates/point_of_sale/ajax/product_container.html" />
-        <option value="$PROJECT_DIR$/catalogue/models.py" />
         <option value="$PROJECT_DIR$/point_of_sale/templates/point_of_sale/update_view.html" />
         <option value="$PROJECT_DIR$/point_of_sale/urls.py" />
         <option value="$PROJECT_DIR$/point_of_sale/views.py" />
         <option value="$PROJECT_DIR$/analysis/templates/analysis/analysis_outcome.html" />
         <option value="$PROJECT_DIR$/costumers/models.py" />
         <option value="$PROJECT_DIR$/analysis/templates/analysis/cash_row.html" />
-        <option value="$PROJECT_DIR$/warehouse/views.py" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/form_view.html" />
         <option value="$PROJECT_DIR$/warehouse/forms.py" />
         <option value="$PROJECT_DIR$/warehouse/ajax_views.py" />
-        <option value="$PROJECT_DIR$/warehouse/warehouse_models.py" />
         <option value="$PROJECT_DIR$/catalogue/views.py" />
         <option value="$PROJECT_DIR$/catalogue/templates/catalogue/product_analysis.html" />
         <option value="$PROJECT_DIR$/payroll/models.py" />
         <option value="$PROJECT_DIR$/analysis/views.py" />
         <option value="$PROJECT_DIR$/analysis/urls.py" />
         <option value="$PROJECT_DIR$/analysis/templates/analysis/homepage.html" />
-        <option value="$PROJECT_DIR$/warehouse/models.py" />
-        <option value="$PROJECT_DIR$/point_of_sale/models.py" />
         <option value="$PROJECT_DIR$/analysis/templates/analysis/analysis_movements.html" />
         <option value="$PROJECT_DIR$/warehouse/urls.py" />
+        <option value="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" />
         <option value="$PROJECT_DIR$/warehouse/action_views.py" />
+        <option value="$PROJECT_DIR$/point_of_sale/models.py" />
+        <option value="$PROJECT_DIR$/warehouse/models.py" />
+        <option value="$PROJECT_DIR$/catalogue/models.py" />
+        <option value="$PROJECT_DIR$/warehouse/views.py" />
+        <option value="$PROJECT_DIR$/warehouse/warehouse_models.py" />
       </list>
     </option>
   </component>
@@ -168,7 +180,7 @@
       <path value="$PROJECT_DIR$/project_settings/static/daterangepicker-master/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-10" />
     <option name="width" value="980" />
     <option name="height" value="1050" />
@@ -299,7 +311,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -312,7 +324,7 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.122395836" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="4" />
-      <window_info anchor="bottom" id="manage.py@maroulakos_warehouse" order="9" visible="true" weight="0.32275862" />
+      <window_info anchor="bottom" id="manage.py@maroulakos_warehouse" order="9" visible="true" weight="0.32199788" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -330,24 +342,24 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="manage.py@maroulakos_warehouse" order="9" visible="true" weight="0.32412326" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.122395836" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.39001063" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32965517" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.32827586" />
       <window_info anchor="bottom" id="Event Log" order="13" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32965517" />
+      <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -390,13 +402,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/transfo_detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="45" column="69" lean-forward="true" selection-start-line="45" selection-start-column="69" selection-end-line="45" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/update_vendor.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-102">
@@ -506,13 +511,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/catalogue/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="143" lean-forward="true" selection-start-line="143" selection-end-line="143" />
         </state>
       </provider>
     </entry>
@@ -632,16 +630,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-84">
-          <caret line="364" column="41" selection-start-line="364" selection-start-column="41" selection-end-line="364" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#91#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/project_settings/constants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -666,13 +654,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/warehouse_models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="133" column="22" selection-start-line="133" selection-start-column="22" selection-end-line="133" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/payroll/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
@@ -687,37 +668,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/templates/analysis/analysis_movements.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="29" column="68" selection-start-line="29" selection-start-column="68" selection-end-line="29" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/templates/analysis/analysis_movements.html" />
     <entry file="file://$PROJECT_DIR$/analysis/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="84" selection-start-line="9" selection-start-column="65" selection-end-line="9" selection-end-column="84" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="170" column="26" selection-start-line="170" selection-start-column="26" selection-end-line="170" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/point_of_sale/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="53" column="28" selection-start-line="53" selection-start-column="28" selection-end-line="53" selection-end-column="28" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -734,20 +689,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/urls.py">
+    <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="10" column="88" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="88" />
+        <state relative-caret-position="186">
+          <caret line="102" column="47" selection-start-line="102" selection-start-column="47" selection-end-line="102" selection-end-column="47" />
+          <folding>
+            <element signature="e#159#626#0#HTML" />
+            <element signature="e#225#592#0#HTML" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/action_views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="138" column="46" lean-forward="true" selection-start-line="138" selection-start-column="46" selection-end-line="138" selection-end-column="46" />
+        <state relative-caret-position="553">
+          <caret line="142" column="57" selection-start-line="142" selection-start-column="57" selection-end-line="142" selection-end-column="57" />
           <folding>
             <element signature="e#0#109#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/catalogue/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="125" column="97" lean-forward="true" selection-start-line="125" selection-start-column="97" selection-end-line="125" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/point_of_sale/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="89" column="5" lean-forward="true" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-67">
+          <caret line="187" lean-forward="true" selection-start-line="187" selection-end-line="187" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="42" column="51" lean-forward="true" selection-start-line="42" selection-start-column="51" selection-end-line="42" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="219" column="22" selection-start-line="219" selection-start-column="22" selection-end-line="219" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#91#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/warehouse_models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="21" column="121" selection-start-line="21" selection-start-column="121" selection-end-line="21" selection-end-column="121" />
         </state>
       </provider>
     </entry>

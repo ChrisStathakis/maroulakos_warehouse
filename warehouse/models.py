@@ -190,7 +190,7 @@ class InvoiceItem(models.Model):
     order_code = models.CharField(max_length=50, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='product_items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='invoice_items', verbose_name='Προϊον')
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')

@@ -114,6 +114,24 @@ class Product(models.Model):
         if self.product_class.have_storage:
             qs = self.storages.all()
             self.qty = qs.aggregate(Sum('qty'))['qty__sum'] if qs.exists() else 0
+        else:
+            add_qty, remove_qty = 0, 0
+
+            qs = self.invoice_items.all()
+            sale_qs = self.sale_items.all()
+            ingre_qs = self.invoicetransformationingredient_set.all()
+
+            cre_ing_qs = self.invoicetransformationitem_set.all()
+            qs_add = qs.filter(invoice__order_type__in=POSITIVE_INVOICES)
+            add_qty += cre_ing_qs.aggregate(Sum('qty'))['qty__sum'] if cre_ing_qs.exists() else 0
+            add_qty += qs_add.aggregate(Sum('qty'))['qty__sum'] if qs_add.exists() else 0
+
+            remove_qty_qs = qs.exclude(invoice__order_type__in=POSITIVE_INVOICES)
+            remove_qty += remove_qty_qs.aggregate(Sum('qty'))['qty__sum'] if remove_qty_qs.exists() else 0
+            remove_qty += ingre_qs.aggregate(Sum('qty'))['qty__sum'] if ingre_qs.exists() else 0
+            remove_qty += sale_qs.aggregate(Sum('qty'))['qty__sum'] if sale_qs.exists() else 0
+
+            self.qty = add_qty - remove_qty
         if self.product_class.have_ingredient:
             qs = self.ingredients.all()
             self.price_buy = qs.aggregate(Sum('cost'))['cost__sum'] if qs.exists() else 0

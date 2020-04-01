@@ -91,7 +91,7 @@ class SalesInvoiceItem(models.Model):
     order_code = models.CharField(max_length=50, blank=True)
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='product_items', verbose_name='Προϊον')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='sale_items', verbose_name='Προϊον')
     date = models.DateField(blank=True, null=True)
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')

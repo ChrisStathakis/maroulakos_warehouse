@@ -14,12 +14,12 @@ from decimal import Decimal
 
 class InvoiceTransformation(models.Model):
     locked = models.BooleanField(default=False)
-    date = models.DateField()
-    title = models.CharField(max_length=200)
-    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE)
-    value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
+    date = models.DateField(verbose_name="Ημερομηνια")
+    title = models.CharField(max_length=200, verbose_name='Ονομασια')
+    costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, verbose_name='Πελατης')
+    value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
+    cost = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Κοστολογηση')
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL, verbose_name='Τροπος Πληρωμής')
 
     def __str__(self):
         return self.title

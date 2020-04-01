@@ -5,16 +5,125 @@
 {% block content %}
     <div class="content">
         <div class="row">
-            <div class="col-4">
+            <div class="col-6">
                 <div class="card">
-                    <div class="card-header">
-                        <h4>Μετασχηματισμός Προϊόντων</h4>
+                    <div class="card-header text-center">
+                        <h4>Προμηθευτες</h4>
                     </div>
                     <div class="card-body">
-                        <a href="{% url 'warehouse:transform_list' %}" class="btn btn-info"><i class="fa fa-eye"></i> </a>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>-</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Ποσο</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vendor in vendors %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ vendor }}</td>
+                                        <td>{{ vendor.tag_balance }}</td>
+                                        <td><a href="{{ vendor.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Τελευταιες Πληρωμες</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Τροπος Πληρωμής</th>
+                                    <th>Ποσο</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in payments %}
+                                    <td>{{ ele.date }}</td>
+                                    <td>{{ ele.vendor }}</td>
+                                    <td>{{ ele.payment_method }}</td>
+                                    <td>{{ ele.tag_value }}</td>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Παραστατικα</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Kωδικος</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Ειδος</th>
+                                    <th>Ποσο</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invoice in invoices %}
+                                    <tr>
+                                        <td>{{ invoice.date }}</td>
+                                        <td>{{ invoice.title }}</td>
+                                        <td>{{ invoice.vendor }}</td>
+                                        <td>{{ invoice.get_order_type_display }}</td>
+                                        <td>{{ invoice.tag_final_value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Τελευταιες Μετατροπες</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Πελατης</th>
+                                    <th>Τροπος Πληρωμής</th>
+                                    <th>Ποσο</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in trans %}
+                                    <td>{{ ele.date }}</td>
+                                    <td>{{ ele.costumer }}</td>
+                                    <td>{{ ele.payment_method }}</td>
+                                    <td>{{ ele.value }}</td>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
         </div>
     </div>
 {% endblock %}

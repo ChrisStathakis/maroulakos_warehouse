@@ -21,6 +21,20 @@ from decimal import Decimal
 
 
 @method_decorator(staff_member_required, name='dispatch')
+class HomepageView(TemplateView):
+    template_name = 'warehouse/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['vendors'] = Vendor.objects.filter(balance__gt=0)[:10]
+        context['payments'] = Payment.objects.all()[:10]
+        context['invoices'] = Invoice.objects.all()[:10]
+        context['trans'] =InvoiceTransformation.objects.all()[:10]
+
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
 class VendorListView(ListView):
     model = Vendor
     template_name = 'warehouse/list_view.html'
@@ -170,11 +184,6 @@ class VendorCardView(ListView):
         context['search_filter'], context['category_filter'] = [True] * 2
 
         return context
-
-
-@method_decorator(staff_member_required, name='dispatch')
-class HomepageView(TemplateView):
-    template_name = 'warehouse/dashboard.html'
 
 
 @method_decorator(staff_member_required, name='dispatch')
