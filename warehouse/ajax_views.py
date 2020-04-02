@@ -1,16 +1,18 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django import forms
 from django.db.models import Sum
+from django.utils import timezone
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
 
+from .warehouse_models import InvoiceTransformation
 from .models import Invoice, Product, InvoiceItem
 from project_settings.models import Storage
 from catalogue.models import ProductStorage
-from .forms import InvoiceItemForm, InvoiceForm
+from .forms import InvoiceItemForm, InvoiceForm, EmployerForm, VendorBankingAccountForm
+from .models import Employer, VendorBankingAccount, Vendor
 
 
 @staff_member_required
@@ -29,6 +31,20 @@ def ajax_modify_order_item_modal(request, pk):
 
                                       }
                                       )
+    return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_search_products_view(request, pk):
+    instance = get_object_or_404(InvoiceTransformation, id=pk)
+    products = Product.filters_data(request, Product.objects.filter(product_class__have_ingredient=True))[:10]
+    data = dict()
+    data['result'] = render_to_string(template_name='warehouse/ajax/product_container.html',
+                                      request=request,
+                                      context={
+                                          'object': instance,
+                                          'products': products
+                                      })
     return JsonResponse(data)
 
 
@@ -73,4 +89,63 @@ def ajax_create_product_modal(request, pk, dk):
                                           }
                                     )
     return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_employer_edit_modal_view(request, pk):
+    employer = get_object_or_404(Employer, id=pk)
+    form = EmployerForm(instance=employer)
+    form_title, valid_url = f'Επεξεργασία {employer.title}', reverse('warehouse:validate_employer_edit_view',
+                                                                     kwargs={'pk': employer.id}
+                                                                     )
+    delete_url = reverse('warehouse:action_delete_employer', kwargs={'pk': employer.id})
+    data = dict()
+    data['result'] = render_to_string(request=request,
+                                      template_name='warehouse/ajax/modal_form.html',
+                                      context=locals(),
+                                      )
+    return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_banking_account_edit_modal_view(request, pk):
+    banking_account = get_object_or_404(VendorBankingAccount, id=pk)
+    form = EmployerForm(instance=banking_account)
+    form_title, valid_url = f'Επεξεργασία {banking_account}', reverse('warehouse:validate_employer_edit_view', kwargs={'pk': banking_account.id})
+    delete_url = reverse('warehouse:delete_account_banking_view', kwargs={'pk': banking_account.id})
+    data = dict()
+    data['result'] = render_to_string(request=request,
+                                      template_name='warehouse/ajax/modal_form.html',
+                                      context=locals(),
+                                      )
+    return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_banking_account_create_modal_view(request, pk):
+    vendor = get_object_or_404(Vendor, id=pk)
+    form = VendorBankingAccountForm(initial={'vendor': vendor})
+    form_title, valid_url = f'Δημιουργία', reverse('warehouse:validate_create_banking_account', kwargs={'pk': vendor.id})
+    data = dict()
+    data['result'] = render_to_string(request=request,
+                                      template_name='warehouse/ajax/modal_form.html',
+                                      context=locals(),
+                                      )
+    return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_banking_account_edit_modal_view(request, pk):
+    banking_account = get_object_or_404(VendorBankingAccount, id=pk)
+    form = VendorBankingAccountForm(instance=banking_account)
+    form_title, valid_url = f'Επεξεργασια', reverse('warehouse:validate_edit_banking_account', kwargs={'pk': banking_account.id})
+    delete_url = reverse('warehouse:delete_account_banking_view', kwargs={'pk': banking_account.id})
+    data = dict()
+    data['result'] = render_to_string(request=request,
+                                      template_name='warehouse/ajax/modal_form.html',
+                                      context=locals(),
+                                      )
+    return JsonResponse(data)
+
+
 

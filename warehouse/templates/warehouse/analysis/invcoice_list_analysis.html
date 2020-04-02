@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="content">
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -46,6 +47,20 @@
     </div>
 
     <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <nav>
+                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                         <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Τιμολογια</a>
+                         <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Πληρωμες</a>
+                     </div>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="row">
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
@@ -107,7 +122,8 @@
                                 <th>Ημερομηνια</th>
                                 <th>Κωδικος</th>
                                 <th>Ειδος Παρ.</th>
-                                <th>Αξία Εμπορ.</th>
+                                <th>Προμηθευτής</th>
+                                <th>Καθαρη Αξια</th>
                                 <th>ΦΠΑ</th>
                                 <th>Αξία</th>
                             </tr>
@@ -118,9 +134,10 @@
                                     <td>{{ invoice.date }}</td>
                                     <td>{{ invoice.title }}</td>
                                     <td>{{ invoice.get_order_type_display }}</td>
+                                    <td>{{ invoice.vendor }}</td>
                                     <td>{{ invoice.tag_value }}</td>
-                                    <td>{{ invoice.tag_taxes }}</td>
-                                    <td>{{ invoice.tag_total_value }}</td>
+                                    <td class="table-warning">{{ invoice.taxes_value }}</td>
+                                    <td class="table-success">{{ invoice.tag_final_value }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -128,6 +145,100 @@
                 </div>
             </div>
         </div>
+    </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                             <div class="row">
+                                 <div class="col-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4>Πληρωμές Ανα Προμηθευτη</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Προμηθευτης</th>
+                                                        <th>Αρ. Παραστ.</th>
+                                                        <th>Αξια</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for vendor in payment_analysis %}
+                                                        <tr>
+                                                            <td>{{ vendor.vendor__title }}</td>
+                                                            <td>{{ vendor.count }}</td>
+                                                            <td>{{ vendor.total }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header">Πληρωμες Ανα Μηνα</div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Μηνας</th>
+                                                        <th>Ποσο</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for month in month_payments %}
+                                                        <tr>
+                                                            <td>{{ month.month }}</td>
+                                                            <td>{{ month.total }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="col-8">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4>Παραστατικά</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ημερομηνια</th>
+                                                        <th>Κωδικος</th>
+                                                        <th>Ειδος Πληρωμης</th>
+                                                        <th>Προμηθευτής</th>
+                                                        <th>Αξία</th>
+                                                        <th>Πληρωμενο</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for invoice in payment_qs %}
+                                                        <tr>
+                                                            <td>{{ invoice.date }}</td>
+                                                            <td>{{ invoice.title }}</td>
+                                                            <td>{{ invoice.payment_method }}</td>
+                                                            <td>{{ invoice.vendor }}</td>
+                                                            <td class="table-success">{{ invoice.tag_final_value }}</td>
+                                                            <th>{{ invoice.tag_is_paid }} </th>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 
@@ -143,25 +254,20 @@ var ctx = document.getElementById('totalChart');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Συνολο', 'Συνολο Ζ', 'Συνολο POS', 'Mετρητα', 'Συνολο Τιμ.'],
+        labels: ['Αξια Τιμολ.', 'Αξία Πληρ.', 'Διαφορα'],
         datasets: [{
             label: '# Σε Ευρω',
             data: [{{ total }}, {{ total_z }}, {{ total_pos }}, {{ total_cash }}, {{ total_order }}],
             backgroundColor: [
-                'green',
                 'blue',
+                'green',
                 'red',
-                'yellow',
-                'purple'
 
             ],
             borderColor: [
-                'green',
                 'blue',
+                'green',
                 'red',
-                'yellow',
-                'purple'
-
             ],
             borderWidth: 1
         }]
@@ -184,14 +290,21 @@ var myChart = new Chart(ctx, {
     type: 'line',
 
     data: {
-        labels: [{% for ele in analysis_per_month %} {% if forloop.last %} '{{ ele.month }}'{% else %} '{{ele.month}}', {% endif %} {% endfor %}],
+        labels: [{% for ele in chart_analysis %} {% if forloop.last %} '{{ ele.month }}'{% else %} '{{ele.month}}', {% endif %} {% endfor %}],
         datasets: [
             {
-				label: 'Εσοδα',
+				label: 'Πληρωμες',
 				backgroundColor: 'green',
 				borderColor: 'green',
 				fill: false,
-				data:[{% for ele in analysis_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
+				data:[{% for ele in chart_analysis %} {% if forloop.last %} {{ ele.payments }}{% else %} {{ele.payments}}, {% endif %} {% endfor %}],
+			},
+            {
+				label: 'Τιμολογια',
+				backgroundColor: 'red',
+				borderColor: 'red',
+				fill: false,
+				data:[{% for ele in chart_analysis %} {% if forloop.last %} {{ ele.invoices }}{% else %} {{ele.invoices}}, {% endif %} {% endfor %}],
 			}
             ]
 

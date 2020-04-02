@@ -35,19 +35,21 @@ class InvoiceTable(tables.Table):
     title = tables.TemplateColumn("<a href='{{ record.get_edit_url}}'>{{ record }}</a>",
              verbose_name='Κωδικος Τιμ.')
     order_type = tables.Column(verbose_name='Ειδος')
-
+    date = tables.TemplateColumn("<p>{{ record.date|date:'d/M/Y'}} </p>")
 
     class Meta:
         model = Invoice
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'title', 'vendor',  'order_type', 'value', '','final_value']
+        fields = ['date', 'title', 'vendor',  'order_type', 'value','final_value']
 
 
 class InvoiceTransformationTable(tables.Table):
     title = tables.TemplateColumn("<a href='{{ record.get_edit_url}}'>{{ record }}</a>",
-                                  orderable=False, verbose_name='-')
+                                  orderable=False, verbose_name='Επεξηγηση')
+    date = tables.TemplateColumn("<p>{{ record.date|date:'d/M/Y'}} </p>")
+
 
     class Meta:
         model = InvoiceTransformation
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'title', 'costumer', 'total_value']
+        fields = ['date', 'title', 'costumer', 'value', 'locked']

@@ -14,8 +14,9 @@ from .action_views import (validate_invoice_form_view, create_product_from_invoi
                            delete_employer_view, validate_employer_edit_view, validate_employer_view,
                            delete_banking_account_view, validate_create_banking_account_view, validate_edit_banking_account_view
                            )
-from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
-
+from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal,
+                         ajax_banking_account_create_modal_view, ajax_banking_account_edit_modal_view, ajax_employer_edit_modal_view,
+                         ajax_search_products_view
                          )
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
 
@@ -69,6 +70,7 @@ urlpatterns = [
     # ajax 
     path('ajax-create-product-from-invoice/<int:pk>/<int:dk>/', ajax_create_product_modal, name='ajax_create_product'),
     path('ajax-modify-order-item-modal/<int:pk>/', ajax_modify_order_item_modal, name='ajax_modify_order_item'),
+    path('ajax/search-products/<int:pk>/', ajax_search_products_view, name='ajax_search_products'),
 
 
 
@@ -78,12 +80,24 @@ urlpatterns = [
     path('analysis/order-item-analysis/', InvoiceItemListAnalysisView.as_view(), name='invoice_items_analysis'),
 
     #  employer links
-    path('actions/validate-employer-edit-form/<int:pk>/', validate_employer_edit_view,
-         name='validate_employer_edit_view'),
+    path('actions/validate-employer-edit-form/<int:pk>/', validate_employer_edit_view, name='validate_employer_edit_view'),
     path('actions/employer-delete/<int:pk>/', delete_employer_view, name='action_delete_employer'),
-    path('ajax/validatel=/<int:pk>/', validate_employer_view, name='validate_employer_create'),
+    path('ajax/validate/<int:pk>/', validate_employer_view, name='validate_employer_create'),
+    path('ajax/employer-edit/<int:pk>/', ajax_employer_edit_modal_view, name='ajax_edit_employer'),
+
 
     # banking accounts
+    path('validate/banking-account-create/<int:pk>/', validate_create_banking_account_view,
+         name='validate_create_banking_account'),
+    path('validate/banking_account-edit/<int:pk>/', validate_edit_banking_account_view,
+         name='validate_edit_banking_account'),
+    path('banking-account-delete/<int:pk>/', delete_banking_account_view, name='delete_account_banking_view'),
+
+
+    path('ajax/modal/banking-account/<int:pk>/', ajax_banking_account_create_modal_view,
+         name='ajax_create_banking_account'),
+    path('ajax/modal/banking-account-edit/<int:pk>/', ajax_banking_account_edit_modal_view,
+         name='ajax_edit_banking_account'),
     path('validate/banking-account-create/<int:pk>/', validate_create_banking_account_view,
          name='validate_create_banking_account'),
     path('validate/banking_account-edit/<int:pk>/', validate_edit_banking_account_view,

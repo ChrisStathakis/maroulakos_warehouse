@@ -179,6 +179,7 @@ class Product(models.Model):
                            Q(sku__icontains=q)
                            ).distinct()
         if search_name:
+
             qs = qs.filter(Q(title__icontains=search_name) |
                            Q(order_sku__icontains=search_name) |
                            Q(sku__icontains=search_name)

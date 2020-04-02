@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.conf import settings
 from django.shortcuts import reverse
 from django.db.models.signals import post_delete
@@ -86,7 +86,14 @@ class Vendor(models.Model):
         vendor_name = request.GET.getlist('vendor_name', None)
         balance_name = request.GET.getlist('balance_name', [])
 
-        qs = qs.filter(title__icontains=search_name_.upper()) if search_name_ else qs
+        if search_name_:
+            qs = qs.filter(Q(title__icontains=search_name_) |
+                           Q(afm__icontains=search_name_) |
+                           Q(cellphone__icontains=search_name_) |
+                           Q(phone__icontains=search_name_) |
+                           Q(owner__icontains=search_name_)
+                           ).distinct()
+
         qs = qs.filter(title__icontains=search_name.upper()) if search_name else qs
         qs = qs.filter(balance__gt=0) if 'have_' in balance_name else qs.filter(balance_name__lte=0) \
             if 'not' in balance_name else qs
@@ -121,10 +128,10 @@ class VendorBankingAccount(models.Model):
         return f'{self.vendor.title} {self.payment_method.title}'
 
     def get_edit_url(self):
-        return reverse('vendors:ajax_edit_banking_account', kwargs={'pk': self.id})
+        return reverse('warehouse:ajax_edit_banking_account', kwargs={'pk': self.id})
 
     def get_delete_url(self):
-        return reverse('vendors:delete_banking_account_view', kwargs={'pk': self.id})
+        return reverse('warehouse:delete_banking_account_view', kwargs={'pk': self.id})
 
 
 class Invoice(models.Model):
@@ -174,7 +181,9 @@ class Invoice(models.Model):
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
         search_name = request.GET.get('search_name', None)
+        vendor_name = request.GET.getlist('vendor_name', None)
         qs = qs.filter(title__icontains=search_name) if search_name else qs
+        qs = qs.filter(vendor__id__in=vendor_name) if vendor_name else qs
         if date_start and date_end:
             qs = qs.filter(date__range=[date_start, date_end])
         return qs
@@ -188,7 +197,7 @@ class InvoiceItem(models.Model):
 
     )
     order_code = models.CharField(max_length=50, blank=True)
-    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='')
+    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='Προμηθευτης')
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='invoice_items', verbose_name='Προϊον')
 
@@ -254,6 +263,17 @@ class InvoiceItem(models.Model):
     def transcation_person(self):
         return self.invoice.vendor
 
+    @staticmethod
+    def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        vendor_name = request.GET.getlist('vendor_name', None)
+
+        qs = qs.filter(vendor__id__in=vendor_name) if vendor_name else qs
+
+        if date_start and date_end:
+            qs = qs.filter(invoice__date__range=[date_start, date_end])
+        return qs
+
 
 class Payment(models.Model):
     date = models.DateField(verbose_name='Ημερομηνία')
@@ -263,6 +283,7 @@ class Payment(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='payments', verbose_name='Προμηθευτής')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία')
     description = models.TextField(blank=True, verbose_name='Περιγραφή')
+    is_paid = models.BooleanField(default=True, verbose_name='Πληρωμενο;')
 
     class Meta:
         ordering = ['-date']
@@ -277,6 +298,9 @@ class Payment(models.Model):
 
     def tag_value(self):
         return f'{self.value} {CURRENCY}'
+
+    def tag_is_paid(self):
+        return 'Πληρωμενο' if self.is_paid else 'Μη Πληρωμενο'
 
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
@@ -304,8 +328,6 @@ class Payment(models.Model):
 
     def taxes_value(self):
         return '-'
-
-
 
 
 class Note(models.Model):

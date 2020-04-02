@@ -52,7 +52,9 @@
                                         <td>{{ movement.0.transcation_type }}</td>
                                         <td>{{ movement.0.transcation_person }}</td>
                                         {% if movement.0.transaction_type_method == 'add' %}
-                                            <td class="table-success">+ {{ movement.0.qty }}</td>
+                                            <td class="table-success">
+                                                + {{ movement.0.qty }} {{ movement.0.storage }}
+                                            </td>
                                         {% else %}
                                             <td class="table-danger">- {{ movement.0.qty }}</td>
                                         {% endif %}

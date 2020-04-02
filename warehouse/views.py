@@ -29,9 +29,9 @@ class HomepageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['vendors'] = Vendor.objects.filter(balance__gt=0)[:10]
-        context['payments'] = Payment.objects.all()[:10]
+        context['payments'] = Payment.objects.filter(is_paid=False).order_by('date')[:10]
         context['invoices'] = Invoice.objects.all()[:10]
-        context['trans'] =InvoiceTransformation.objects.all()[:10]
+        context['trans'] = InvoiceTransformation.objects.all()[:10]
 
         return context
 
@@ -213,6 +213,7 @@ class InvoiceTransformationListView(ListView):
     template_name = 'warehouse/list_view.html'
     model = InvoiceTransformation
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset_table = InvoiceTransformationTable(self.object_list)
@@ -252,7 +253,7 @@ class InvoiceTransformationDetailView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.filter(product_class__have_ingredient=True)
+        context['products'] = Product.objects.filter(product_class__have_ingredient=True)[:10]
         return context
 
     def form_valid(self, form):
@@ -342,7 +343,8 @@ class InvoiceListView(ListView):
         create_url = reverse('warehouse:invoice_create')
         page_title, back_url = 'Προμηθευτές', reverse('warehouse:homepage')
         # report_button, report_url = True, reverse('vendors:ajax_vendors_balance')
-        balance_filter, search_filter = [True] * 2
+        vendors = Vendor.objects.filter(active=True)
+        vendor_filter, search_filter, date_filter = [True] * 3
         context.update(locals())
         return context
 

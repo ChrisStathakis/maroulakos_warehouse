@@ -30,40 +30,22 @@
     <div class="row">
         <div class="col-4">
             <div class="card">
-                <div class="card-body">
-                    <canvas id="totalChart" width="400" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="lineChart" width="400" height="400"></canvas>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-4">
-            <div class="card">
                 <div class="card-header">
-                    <h4>Συνολα Προμηθευτών</h4>
+                    <h4>Συνολα Ανα Προϊόν</h4>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Προμηθευτης</th>
-                                <th>Αρ. Παραστ.</th>
+                                <th>Προϊον</th>
+                                <th>Ποσοτητα</th>
                                 <th>Αξια</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for vendor in vendors_analysis %}
+                            {% for vendor in product_analysis %}
                                 <tr>
-                                    <td>{{ vendor.vendor__title }}</td>
+                                    <td>{{ vendor.product__title }}</td>
                                     <td>{{ vendor.count }}</td>
                                     <td>{{ vendor.total }}</td>
                                 </tr>
@@ -74,20 +56,24 @@
             </div>
 
             <div class="card">
-                <div class="card-header">Αναλυση Ανα Μηνα</div>
+                <div class="card-header">
+                    <h4>Συνολα Ανα Προϊόν</h4>
+                </div>
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Μηνας</th>
-                                <th>Ποσο</th>
+                                <th>Προϊον</th>
+                                <th>Ποσοτητα</th>
+                                <th>Αξια</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for month in month_analysis %}
+                            {% for vendor in vendors__analysis %}
                                 <tr>
-                                    <td>{{ month.month }}</td>
-                                    <td>{{ month.total }}</td>
+                                    <td>{{ vendor.vendor__title }}</td>
+                                    <td>{{ vendor.qty }}</td>
+                                    <td>{{ vendor.total }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

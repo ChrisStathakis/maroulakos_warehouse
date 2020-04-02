@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'analysis',
 
     'django_tables2',
+
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -120,5 +122,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CURRENCY = '€'
+
+
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+}
 
 

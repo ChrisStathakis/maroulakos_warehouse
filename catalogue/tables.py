@@ -16,11 +16,12 @@ class ProductTable(tables.Table):
     final_price = tables.Column(verbose_name='Αξια Πωλησης')
     price_buy = tables.Column(verbose_name='Αξια Αγορας')
     product_class__title = tables.Column(verbose_name='Ειδος')
+    order_sku = tables.Column(verbose_name='Κωδ. Τιμολ.')
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'
         model = Product
-        fields = ['sku', 'order_sku', 'title', 'product_class__title', 'vendor','qty', 'price_buy', 'final_price']
+        fields = ['sku', 'order_sku', 'title', 'product_class__title', 'vendor', 'qty', 'price_buy', 'final_price']
 
 
 class CategoryTable(tables.Table):

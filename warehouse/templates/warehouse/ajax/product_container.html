@@ -1,0 +1,30 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Προϊόν</th>
+        <th>Κοστολογηση</th>
+        <th>Υπόλοιπο</th>
+        <th>Aξία Μοναδας</th>
+        <th>Αποθηκες</th>
+        <th>Επιλογή</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product }}</td>
+            <td>{{ product.price_buy }}</td>
+            <td>{{ product.qty }}</td>
+            <td>{{ product.final_price }}</td>
+            <td>{% for storage in product.storages.all %}<p>{{ storage }}==> {{ storage.qty }} |</p> {% empty %} No {% endfor %}</td>
+            <td>
+                {% if object.locked %}
+                    Kλειδωμενo
+                {% else %}
+                    <a href="{% url 'warehouse:add_product_to_trans_invoice' object.id product.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

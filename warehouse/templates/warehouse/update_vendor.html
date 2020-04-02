@@ -59,7 +59,7 @@
             <div class='col-md-4'>
                 <div class='card'>
                     <div class='card-header'>
-                        <div class='title'>Δημιουργία Τιμολογίου </div>
+                        <div class='title'>Πληρωμες</div>
                     </div>
                     <div class='card-body'>
                         <h4 style='color:green;'>Δημιουργία Πληρωμής</h4>
@@ -103,10 +103,10 @@
                             </tbody>
                         </table>
                         
-                        <button data-href=""
+                        <button data-href="{% url 'warehouse:ajax_create_banking_account' object.id %}"
                             class='btn btn-small btn-success pull-right quick_view'>Προσθηκη
                         </button>
-                            </div>
+                    </div>
                 </div>
 
                 <div class='card' style='height:300px;overflow: scroll;'>
@@ -128,10 +128,10 @@
                                         <td>{{ person.title }}</td>
                                         <td>{{ person.phone }}</td>
                                         <td>
-                                            <button data-href=""
+                                            <button data-href="{% url 'warehouse:ajax_edit_employer' person.id %}"
                                                 class='btn btn-small btn-primary pull-right quick_view'><i class='fa fa-info'></i>
                                             </button>
-                                     </td>
+                                        </td>
                                     </tr>
                                 {%  endfor %}
                             </tbody>

@@ -38,7 +38,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h4>Τελευταιες Πληρωμες</h4>
+                        <h4>Μη Πληρωμενα Παραστατικα</h4>
                     </div>
                     <div class="card-body">
                         <table class="table">
@@ -71,7 +71,7 @@
                         <h4>Παραστατικα</h4>
                     </div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Ημερομηνια</th>
@@ -103,7 +103,7 @@
                         <h4>Τελευταιες Μετατροπες</h4>
                     </div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Ημερομηνια</th>
@@ -114,10 +114,12 @@
                             </thead>
                             <tbody>
                                 {% for ele in trans %}
-                                    <td>{{ ele.date }}</td>
-                                    <td>{{ ele.costumer }}</td>
-                                    <td>{{ ele.payment_method }}</td>
-                                    <td>{{ ele.value }}</td>
+                                    <tr>
+                                        <td>{{ ele.date }}</td>
+                                        <td>{{ ele.costumer }}</td>
+                                        <td>{{ ele.payment_method }}</td>
+                                        <td>{{ ele.value }}</td>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
