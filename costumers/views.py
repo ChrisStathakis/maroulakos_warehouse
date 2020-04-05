@@ -1,6 +1,7 @@
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from django.utils.decorators import method_decorator
+from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -11,7 +12,7 @@ from itertools import chain
 from .models import PaymentInvoice, MyCard, Costumer, CostumerPayment
 from point_of_sale.models import SalesInvoice, SalesInvoiceItem
 from .tables import PaymentInvoiceTable, CostumerTable
-from .forms import PaymentInvoiceForm, CostumerDetailsForm, CreateInvoiceItemForm, PaymentInvoiceEditForm, CostumerForm, CostumerPaymentForm
+from .forms import PaymentInvoiceForm, CostumerDetailsForm, CreateInvoiceItemForm, CostumerForm, CostumerPaymentForm, PaymentInvoiceEditForm
 from project_settings.constants import CURRENCY
 from .mixins import MyFormMixin
 from reportlab.pdfgen import canvas
@@ -32,7 +33,7 @@ class CostumerHomepageView(TemplateView):
 
 @method_decorator(staff_member_required, name='dispatch')
 class CostumerListView(ListView):
-    template_name = 'list_view.html'
+    template_name = 'costumers/list_view.html'
     paginate_by = 50
     model = Costumer
 
@@ -89,6 +90,9 @@ class CostumerDetailView(UpdateView):
         context = super(CostumerDetailView, self).get_context_data(**kwargs)
         context['back_url'] = reverse('costumers:costumer_list')
         # data
+
+        payment_form = CostumerPaymentForm(initial={'customer': self.object})
+        payment_form.fields['customer'].widget = forms.HiddenInput()
         payments = CostumerPayment.filters_data(self.request, self.object.payments.all())
         invoices = SalesInvoice.filters_data(self.request, self.object.sale_invoices.all())
         total_payments = payments.aggregate(Sum('value'))['value__sum'] if payments.exists() else 0

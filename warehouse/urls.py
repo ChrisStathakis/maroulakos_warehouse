@@ -19,7 +19,7 @@ from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
                          ajax_search_products_view
                          )
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
-
+from .payment_view import PaymentListView, PaymentCreateView, PaymentUpdateView, payment_delete_view
 
 app_name = 'warehouse'
 
@@ -104,5 +104,10 @@ urlpatterns = [
          name='validate_edit_banking_account'),
     path('banking-account-delete/<int:pk>/', delete_banking_account_view, name='delete_account_banking_view'),
 
+    # payments
+    path('payment/list/', PaymentListView.as_view(), name='payment_list'),
+    path('payment/create/', PaymentCreateView.as_view(), name='payment_create'),
+    path('payment_update/<int:pk>/', PaymentUpdateView.as_view(), name='payment_update'),
+    path('payment-delete/<int:pk>/', payment_delete_view, name='payment_delete')
     
 ]

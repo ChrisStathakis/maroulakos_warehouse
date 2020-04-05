@@ -76,7 +76,7 @@ class Costumer(models.Model):
         self.save()
 
     def update_payments(self):
-        qs = self.payments.all()
+        qs = self.payments.filter(is_paid=True)
         new_value = qs.aggregate(Sum('value'))['value__sum'] if qs.exists() else 0
         self.paid_value = new_value
         self.save()
@@ -317,9 +317,10 @@ def delete_invoice_item(sender, instance, **kwargs):
 
 
 class CostumerPayment(models.Model):
+    is_paid = models.BooleanField(default=True, verbose_name='Πληρωμενο')
     timestamp = models.DateTimeField(auto_now_add=True)
     customer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='payments', verbose_name='Πελάτης')
-    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL, verbose_name='Επιταγη')
     date = models.DateField(verbose_name='Ημερομηνία')
     title = models.CharField(max_length=200, blank=True, verbose_name='Τίτλος')
     description = models.TextField(blank=True, verbose_name='Περιγραφή')
@@ -358,14 +359,16 @@ class CostumerPayment(models.Model):
     @staticmethod
     def filters_data(request, qs):
         q = request.GET.get('q', None)
+        paid_name = request.GET.getlist('paid_name', None)
         date_start, date_end, date_range = initial_date(request, months=12)
         if q:
             qs = qs.filter(Q(customer__first_name__icontains=q) |
-                      Q(customer__last_name__icontains=q) |
-                      Q(customer__amka__icontains=q) |
-                      Q(customer__cellphone__icontains=q) |
-                      Q(customer__phone__icontains=q)
-                      ).distinct()
+                           Q(customer__last_name__icontains=q) |
+                           Q(customer__amka__icontains=q) |
+                           Q(customer__cellphone__icontains=q) |
+                           Q(customer__phone__icontains=q)
+                       ).distinct()
+        qs = qs.filter(is_paid=True) if 'have_' in paid_name else qs.filter(is_paid=False) if 'not_' in paid_name else qs
         if date_range:
             qs = qs.filter(date__range=[date_start, date_end])
         return qs

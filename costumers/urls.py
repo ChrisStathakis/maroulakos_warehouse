@@ -11,7 +11,7 @@ from .views import (CostumerListView, CostumerDetailView, CostumerCreateView,
                     )
 from .ajax_views import (quick_view_costumer_view, quick_pay_costumer_view, ajax_calculate_balance, ajax_analysis_view,
                          ajax_quick_order_view, ajax_quick_payment_view, create_costumer_invoice_view)
-
+from .action_views import validate_payment_creation
 
 app_name = 'costumers'
 
@@ -54,7 +54,10 @@ urlpatterns = [
 
 
     path('print-costumers/', PrintListView.as_view(), name='print_list'),
-    path('create-invoice-from-order/<int:pk>/', create_costumer_invoice_view, name='create_costu_inv_from_order')
+    path('create-invoice-from-order/<int:pk>/', create_costumer_invoice_view, name='create_costu_inv_from_order'),
+
+    # action_Views
+    path('validate/payment/<int:pk>/', validate_payment_creation, name='validate_payment')
 
 
 ]

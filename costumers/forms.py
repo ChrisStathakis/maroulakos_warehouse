@@ -37,11 +37,11 @@ class PaymentInvoiceForm(BaseForm, forms.ModelForm):
 
 
 class CostumerPaymentForm(BaseForm, forms.ModelForm):
-    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}), label='Ημερομηνια')
 
     class Meta:
         model = CostumerPayment
-        fields = ['date', 'title', 'customer', 'payment_method', 'value', 'description']
+        fields = ['is_paid', 'date', 'title', 'customer', 'payment_method', 'value', 'description']
 
 
 class PaymentInvoiceEditForm(PaymentInvoiceForm):

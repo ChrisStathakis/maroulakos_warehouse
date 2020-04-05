@@ -138,7 +138,7 @@ class CashRowView(TemplateView):
         context = super().get_context_data(**kwargs)
         currency, date_filter = settings.CURRENCY, True
         back_url = reverse('analysis:homepage')
-
+        search_filter, paid_filter = [True] * 2
         # get the incomes
         incomes = CostumerPayment.filters_data(self.request, CostumerPayment.objects.all()).order_by('date')
         total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0

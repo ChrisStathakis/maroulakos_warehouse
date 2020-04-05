@@ -1,7 +1,7 @@
 import django_tables2 as tables
 
 from catalogue.models import Product
-from .models import Vendor, Invoice
+from .models import Vendor, Invoice, Payment
 from .warehouse_models import InvoiceTransformation
 
 
@@ -53,3 +53,14 @@ class InvoiceTransformationTable(tables.Table):
         model = InvoiceTransformation
         template_name = 'django_tables2/bootstrap.html'
         fields = ['date', 'title', 'costumer', 'value', 'locked']
+
+
+class PaymentTable(tables.Table):
+    title = tables.TemplateColumn("<a href='{{ record.get_edit_url}}'>{{ record }}</a>",
+                                  orderable=False, verbose_name='Επεξηγηση')
+    date = tables.TemplateColumn("<p>{{ record.date|date:'d/M/Y'}} </p>")
+
+    class Meta:
+        model = Payment
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['date', 'title', 'vendor', 'value', 'is_paid']

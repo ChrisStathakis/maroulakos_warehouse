@@ -14,7 +14,7 @@
              </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="author">
@@ -82,17 +82,31 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-8">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h5>Δημιουργια Πληρωμης</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="form" action="{% url 'costumers:validate_payment' object.id %}">
+                            {% csrf_token %}
+                            {{ payment_form }}
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
             <div class="card card-user">
               <div class="card-header">
                 <h5 class="card-title">Επεργασία Προφίλ</h5>
               </div>
               <div class="card-body">
-                  <form class="form" method="post"> {% csrf_token %}
+                  <form class="form" method="post">
+                      {% csrf_token %}
                       <div class="row">
                           {% for field in form %}
-                              <div class="col-4">
+                              <div class="col-6">
                                   <div class="form-group">
                                       <label for="exampleInputEmail1">{{ field.label }}</label>
                                       {{ field }}
@@ -145,12 +159,15 @@
                         <tbody>
                             {% for ele in data_qs %}
                                 <tr>
-                                    <td>{{ ele.date }}</td>
+                                    <td>{{ ele.date }} {{ object.tag_is_paid }}</td>
                                     <td>{{ ele.tag_order_type }}</td>
                                     <td>{{ ele.title }}</td>
                                     <td>{{ ele.tag_final_value }}</td>
                                     <td>{{ ele.payment_method }}</td>
-                                    <td><a href="{{ ele.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i> </a> </td>
+                                    <td><a href="{{ ele.get_edit_url }}"
+                                           {% if object.is_paid %} class="btn btn-success" {% else %} class="btn btn-info" {% endif %}
+                                           ><i class="fa fa-edit"></i> </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

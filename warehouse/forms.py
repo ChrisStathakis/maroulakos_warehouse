@@ -51,15 +51,6 @@ class InvoiceForm(BaseForm, forms.ModelForm):
         fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'extra_value', 'description']
 
 
-class PaymentForm(BaseForm, forms.ModelForm):
-    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
-
-    class Meta:
-        model = Payment
-        fields = '__all__'
-
-
 class VendorBankingAccountForm(BaseForm, forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
 
@@ -118,3 +109,18 @@ class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
         fields = ['invoice', 'product', 'storage', 'qty', 'value', ]
 
 
+class PaymentForm(BaseForm, forms.ModelForm):
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
+
+    class Meta:
+        model = Payment
+        fields = '__all__'
+
+
+class PaymentCreateForm(BaseForm, forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
+
+    class Meta:
+        model = Payment
+        fields = '__all__'

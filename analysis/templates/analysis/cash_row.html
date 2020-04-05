@@ -23,7 +23,6 @@
                                  </div>
                                  <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -58,6 +57,7 @@
                                     <th>Ημερομηνια </th>
                                     <th>Ειδος </th>
                                     <th>Αξια </th>
+                                    <th>Πληρωμενο </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,6 +66,9 @@
                                         <td>{{ ele.report_date }}</td>
                                         <td>{{ ele.report_expense_type }}</td>
                                         <td class="table-warning">{{ ele.report_value }} {{ currency }}</td>
+                                        <td>{% if ele.is_paid %} <i style="color: green" class="fa fa-thumbs-up"></i> {% else %}
+                                            <i style="color: red" class="red fa fa-remove"></i> {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             <tbody>
@@ -81,6 +84,7 @@
                                     <th>Πελατης</th>
                                     <th>Τροπος Πληρωμής </th>
                                     <th>Αξια </th>
+                                    <th>Πληρωμενο </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,6 +94,9 @@
                                         <td>{{ ele.customer }}</td>
                                         <td>{{ ele.payment_method }}</td>
                                         <td>{{ ele.tag_value }}</td>
+                                        <td>{% if ele.is_paid %} <i style="color: green" class="fa fa-thumbs-up"></i> {% else %}
+                                            <i style="color: red" class="red fa fa-remove"></i> {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

@@ -63,13 +63,13 @@ class Vendor(models.Model):
         return reverse('warehouse:vendor_delete', kwargs={'pk': self.id})
 
     def update_paid_value(self):
-        qs = self.payments.all()
+        qs = self.payments.filter(is_paid=True)
         value = qs.aggregate(Sum('value'))['value__sum'] if qs.exists() else 0
         self.paid_value = Decimal(value)
         self.save()
 
     def update_value(self):
-        qs = self.invoices.all()
+        qs = self.invoices.filter(order_type='a')
         value = qs.aggregate(Sum('final_value'))['final_value__sum'] if qs.exists() else 0
         self.value = Decimal(value)
         self.save()
@@ -276,6 +276,7 @@ class InvoiceItem(models.Model):
 
 
 class Payment(models.Model):
+    is_paid = models.BooleanField(default=True, verbose_name='Πληρωμενο;')
     date = models.DateField(verbose_name='Ημερομηνία')
     title = models.CharField(max_length=150, verbose_name='Τίτλος')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
@@ -283,7 +284,7 @@ class Payment(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='payments', verbose_name='Προμηθευτής')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία')
     description = models.TextField(blank=True, verbose_name='Περιγραφή')
-    is_paid = models.BooleanField(default=True, verbose_name='Πληρωμενο;')
+
 
     class Meta:
         ordering = ['-date']
@@ -304,6 +305,9 @@ class Payment(models.Model):
 
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
+        paid_name = request.GET.getlist('paid_name', None)
+        qs = qs.filter(is_paid=True) if 'have_' in paid_name else qs.filter(
+            is_paid=False) if 'not_' in paid_name else qs
         if date_start and date_end:
             qs = qs.filter(date__range=[date_start, date_end])
         return qs
@@ -313,6 +317,12 @@ class Payment(models.Model):
     @property
     def report_date(self):
         return self.date
+
+    def get_edit_url(self):
+        return reverse('warehouse:payment_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('warehouse:payment_delete', kwargs={'pk': self.id})
 
     def report_expense_type(self):
         return f'Πληρωμη-{self.vendor}'
