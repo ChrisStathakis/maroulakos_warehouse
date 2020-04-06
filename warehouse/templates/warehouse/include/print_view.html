@@ -1,0 +1,90 @@
+<!DOCTYPE html> {% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ instance.costumer }} | {{ instance.get_series_display }} | {{ instance.number }}</title>
+        <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
+        <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
+<!------ Include the above in your HEAD tag ---------->
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="row p-5">
+                                <div class="col-md-6">
+                                    <h4>Αναλυση Παρτιδας Εμφιαλωσης</h4>
+                                    <p class="font-weight-bold mb-4">ΜΑΡΟΥΛΑΚΟΣ ΑΕ</p>
+                                    <p class="mb-1">ΤΥΠΟΠΟΙΗΣΗ ΛΑΔΙΟΥ</p>
+                                    <p class="mb-1">{{ card_info.city }}</p>
+                                    <p class="mb-1">ΑΦΜ: {{ card_info.afm }} ΔΟΥ: {{ card_info.doy }}</p>
+                                    <p class="mb-1">ΤΗΛΕΦΩΝΑ: {{ card_info.phone }}</p>
+                                </div>
+
+                                <div class="col-md-6 text-right">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Κωδικος Εμφιαλωσης</th>
+                                                <th>{{ instance.get_order_type_display }}</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Σειρα - Αριθμός</th>
+                                                <th><p class="font-weight-bold mb-1">{{ instance.get_series_display }}-{{ instance.number }}</p></th>
+                                            </tr>
+                                            <tr>
+                                                <th>Ημερομηνια - Ωρα</th>
+                                                <th>{{ instance.date|date:"d/m/Y"}} - {{ instance.date}}</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+
+                            {% for product in products %}
+                            <div class="row p-5">
+                                <div class="col-md-12">
+
+                                    <h4>{{ product }}</h4>
+                                    <hr>
+                                </div>
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Κωδικος Ηλης</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Αποθηκη</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Προμηθευτης</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Υλικο Συσκευασιας</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Ημερομηνια</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Ποσοτητα</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ele in product.transf_ingre.all %}
+                                                <tr>
+                                                    <td>{{ ele.product.order_code }}</td>
+                                                    <td>{{ ele.storage }}</td>
+                                                    <td>{{ ele.product.vendor }}</td>
+                                                    <td>{{ ele.product }}</td>
+                                                    <td>1-1-12}</td>
+                                                    <td>{{ ele.qty }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+  </body>
+</html>

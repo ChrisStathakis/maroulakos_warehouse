@@ -97,7 +97,7 @@ class Product(models.Model):
     vendor = models.ForeignKey('warehouse.Vendor', verbose_name="Προμηθευτής", blank=True, null=True, on_delete=models.SET_NULL)
     qty = models.DecimalField(default=0, verbose_name="Απόθεμα", max_digits=10, decimal_places=2)
     unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='ΜΜ')
-    safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Ασφαλη Αποθεμα')
+    safe_stock = models.DecimalField(max_digits=17, decimal_places=2, default=0, verbose_name='Ασφαλη Αποθεμα')
     safe_warning = models.BooleanField(default=False)
     order_sku = models.CharField(blank=True, null=True, max_length=50, verbose_name='Κωδικος Τιμολογιου')
     price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0,
@@ -233,7 +233,7 @@ class ProductIngredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredients')
     ingredient = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredient_value', verbose_name='Συστατικο')
     qty = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Αναλογια')
-    cost = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Κοστος')
+    cost = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Κοστος', default=0)
 
     def save(self, *args, **kwargs):
         if self.cost == 0:

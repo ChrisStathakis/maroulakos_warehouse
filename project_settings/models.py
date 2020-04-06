@@ -20,10 +20,10 @@ class Storage(models.Model):
     active = models.BooleanField(default=True)
     title = models.CharField(unique=True, max_length=250)
     position = models.TextField(blank=True, null=True)
-    capacity = models.DecimalField(decimal_places=2, max_digits=17)
-    max_capacity = models.DecimalField(decimal_places=2, max_digits=17)
-    warning_max_capacity = models.DecimalField(decimal_places=2, max_digits=17)
-    warning_low_max_capacity = models.DecimalField(decimal_places=2, max_digits=17)
+    capacity = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    max_capacity = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    warning_max_capacity = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    warning_low_max_capacity = models.DecimalField(decimal_places=2, max_digits=17, default=0)
 
     def __str__(self):
         return self.title

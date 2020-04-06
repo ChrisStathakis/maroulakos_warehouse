@@ -9,6 +9,7 @@ from django.db.models.functions import TruncMonth
 from django.contrib.auth import logout
 from django.db.models import Sum
 
+from project_settings.constants import CURRENCY
 from .models import ProductClass, Product, Category
 from warehouse.models import Vendor
 from .tables import ProductClassTable, ProductTable, CategoryTable
@@ -118,7 +119,7 @@ class ProductUpdateView(UpdateView):
         context['product_ingredient_form'] = ProductIngredientForm(initial={'product': self.object})
         context['back_url'] = reverse('catalogue:product_list')
         context['action_url'] = reverse('catalogue:product_list')
-
+        context['currency'] = CURRENCY
         return context
 
 
@@ -225,8 +226,6 @@ def product_analysis_view(request, pk):
     for movement in movements:
         current_qty = current_qty + movement.qty if movement.transaction_type_method == 'add' else current_qty - movement.qty
         qty_movements.append([movement, current_qty])
-
-
     return render(request, 'catalogue/product_analysis.html', context=locals())
 
 

@@ -12,6 +12,8 @@ class BaseForm(forms.Form):
 
 
 class ProductForm(BaseForm, forms.ModelForm):
+    product_class = forms.ModelChoiceField(queryset=ProductClass.objects.all(), widget=forms.HiddenInput())
+    
     '''
     product = forms.ModelChoiceField(
         queryset=Product.objects.all(),
@@ -23,7 +25,7 @@ class ProductForm(BaseForm, forms.ModelForm):
         model = Product
         fields = ['active', 'title', 'product_class', 'sku', 'category',
                   'price', 'vendor', 'order_sku', 'price_buy', 'order_discount',
-                  'safe_stock', 'unit', 'taxes_modifier', 'qty_kilo'
+                  'safe_stock', 'unit', 'taxes_modifier',
                   ]
 
 

@@ -10,7 +10,7 @@ from .views import (HomepageView,
 from .action_views import (validate_invoice_form_view, create_product_from_invoice, validate_order_item_update_view,
                            validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view,
                            validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view,
-                           change_product_favorite_warehouse_view, popup_vendor,
+                           change_product_favorite_warehouse_view, popup_vendor, print_invoice_transformation,
                            delete_employer_view, validate_employer_edit_view, validate_employer_view,
                            delete_banking_account_view, validate_create_banking_account_view, validate_edit_banking_account_view
                            )
@@ -62,6 +62,7 @@ urlpatterns = [
     path('delete-invoice-item/<int:pk>/', delete_invoice_item_view, name='delete_invoice_item'),
     path('delete-transformation-item/<int:pk>/', delete_transformation_item_view, name='delete_transformation_item'),
     path('aciton-validate-payment-creation/<int:pk>/', validate_payment_form_view, name='validate_payment'),
+    path('action-print/<int:pk>/', print_invoice_transformation, name='print_invoice_transformation'),
 
     path('add-product-to-trans-invoice/<int:pk>/<int:dk>/', add_product_to_invoice_trans_view, name='add_product_to_trans_invoice'),
     path('action/change-favorite-product-storage/', change_product_favorite_warehouse_view, name='quick_favorite_storage'),

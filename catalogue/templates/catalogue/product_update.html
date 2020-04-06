@@ -122,7 +122,7 @@
                         <br><br>
                         <hr>
                         <a href="{% url 'catalogue:product_analysis' object.id %}" class="btn btn-info pull-right"><i class="fa fa-file"></i> Report </a>
-                        <a href="{{ object.get_delete_url }}" class="btn btn-danger" onclick="return confirm('Are tou sure?')"><i class="fa fa-remove"></i> Διαγραφη Προϊοντος</a>
+
 
                     </div>
                     <div class="card-body">
@@ -134,23 +134,23 @@
                                 </tr>
                                 <tr>
                                     <td>Sku | Κωδικος</td>
-                                    <th>{{ object.sku }} | {{ object.order_sku }}</th>
+                                    <th>{{ object.sku|default_if_none:'-' }} | {{ object.order_sku|default_if_none:'-' }}</th>
                                 </tr>
                                 <tr>
                                     <td>Ποσοτητα</td>
-                                    <th>{{ object.qty }} {{ object.unit }}</th>
+                                    <th>{{ object.qty }} {{ object.get_unit_display }}</th>
                                 </tr>
                                 <tr>
                                     <td>Προμηθευτης</td>
-                                    <th>{{ object.vendor }}</th>
+                                    <th>{{ object.vendor|default_if_none:'-' }}</th>
                                 </tr>
                                 <tr>
                                     <td>Τιμη Αγορας</td>
-                                    <th>{{ object.price_buy }}</th>
+                                    <th>{{ object.price_buy }} {{ currency }}</th>
                                 </tr>
                                 <tr>
                                     <td>Τιμη Πωλησης</td>
-                                    <th>{{ object.final_price }}</th>
+                                    <th>{{ object.final_price }} {{ currency }}</th>
                                 </tr>
                             </tbody>
                         </table>
@@ -158,6 +158,10 @@
                         <a href="{% url 'catalogue:copy_product' object.id %}" class="btn btn-success pull-left"><i class="fa fa-copy"></i> </a>
                     </div>
                 </div>
+
+                <br>
+                <hr>
+                <a href="{{ object.get_delete_url }}" class="btn btn-danger pull-right" onclick="return confirm('Are tou sure?')"><i class="fa fa-remove"></i> Διαγραφη Προϊοντος</a>
             </div>
         </div>
     </div>

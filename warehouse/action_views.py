@@ -161,6 +161,8 @@ def add_product_to_invoice_trans_view(request, pk, dk):
                 new_ingre.storage = pro.favorite_storage()
                 new_ingre.save()
         return redirect(instance.get_edit_url())
+    else:
+        messages.success(request, form.errors)
     return render(request, 'warehouse/form_view.html', context=locals())
 
 
@@ -235,6 +237,7 @@ def delete_banking_account_view(request, pk):
     banking_account.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 @staff_member_required
 def change_product_favorite_warehouse_view(request):
     new_id = request.POST.get('new_id', None)
@@ -250,10 +253,15 @@ def popup_vendor(request):
     form = VendorForm(request.POST or None)
     form_title = 'Δημιουργια Προμηθευτη'
     if form.is_valid():
-        print('for')
         instance = form.save()
         return HttpResponse(
             '<script>opener.closePopup(window, "%s", "%s", "#id_vendor");</script>' % (instance.pk, instance))
     return render(request, 'warehouse/form_view.html', context=locals())
 
+
+@staff_member_required
+def print_invoice_transformation(request, pk):
+    instance = get_object_or_404(InvoiceTransformation, id=pk)
+    products = instance.invoicetransformationitem_set.all()
+    return render(request, 'warehouse/include/print_view.html', context=locals())
 

@@ -128,6 +128,12 @@ class SalesInvoiceItem(models.Model):
     def transaction_type_method(self):
         return 'remove'
 
+    def transcation_type(self):
+        return self.invoice.get_order_type_display()
+
+    def transcation_person(self):
+        return self.costumer
+
     @staticmethod
     def filter_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
