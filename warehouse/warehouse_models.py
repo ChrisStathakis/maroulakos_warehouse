@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.db.models.signals import post_delete, post_save
 
+from .models import InvoiceItem
 from catalogue.models import Product, ProductStorage, ProductIngredient
 from costumers.models import Costumer
 from project_settings.constants import CURRENCY
@@ -107,12 +108,14 @@ class InvoiceTransformationIngredient(models.Model):
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT,
                                 blank=True, null=True, related_name='storage_ingre'
                                 )
+    warehouse_item = models.ForeignKey(InvoiceItem, null=True, on_delete=models.CASCADE, related_name='warehouse_items')
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     qty_ratio = models.DecimalField(decimal_places=3, max_digits=17, default=0)
     cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
 
     def save(self, *args, **kwargs):
+        self.qty = self.invoice_item.qty*self.qty_ratio
         self.total_cost = Decimal(self.qty) * Decimal(self.cost)
         super().save(*args, **kwargs)
         self.invoice_item.save()

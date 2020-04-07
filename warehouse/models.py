@@ -214,6 +214,7 @@ class InvoiceItem(models.Model):
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.PROTECT, related_name='storage_invoices')
+    used_qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Χρησιμοποιημενη Ποσοτητα', default=0)
 
     def save(self, *args, **kwargs):
         self.clean_value = self.qty * self.value
@@ -221,7 +222,7 @@ class InvoiceItem(models.Model):
         self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
         self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
-
+        self.used_qty = self.warehouse_items.aggregate(Sum('qty'))['qty__sum'] if self.warehouse_items.exists() else 0
         super().save(*args, **kwargs)
         if self.storage:
             self.storage.update_product(self.value, self.discount, )
@@ -236,6 +237,9 @@ class InvoiceItem(models.Model):
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')
         return str_value
+
+    def not_used_qty(self):
+        return self.qty - self.used_qty
 
     def tag_clean_value(self):
         return str(self.clean_value).replace('.', ',')

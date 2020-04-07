@@ -124,3 +124,5 @@ class PaymentCreateForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Payment
         fields = '__all__'
+
+

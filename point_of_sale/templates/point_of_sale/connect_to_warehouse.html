@@ -1,0 +1,40 @@
+{% extends 'point_of_sale/homepage.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Κωδικος Εμφιαλωσης</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αποθηκη</th>
+                                    <th>-</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.invoice.date }}</td>
+                                        <td>{{ item.invoice.title }}</td>
+                                        <td>{{ item.qty }}</td>
+                                        <td>{{ item.storage }}</td>
+                                        <td><a href="" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

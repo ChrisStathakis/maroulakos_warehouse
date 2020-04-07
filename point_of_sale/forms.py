@@ -22,7 +22,7 @@ class SaleInvoiceItemForm(BaseForm, forms.ModelForm):
     class Meta:
         model = SalesInvoiceItem
         fields = ['product', 'invoice', 'order_code', 'unit', 'qty',
-                  'value', 'taxes_modifier', 'storage', 'costumer'
+                  'value', 'taxes_modifier', 'costumer'
                   ]
 
 

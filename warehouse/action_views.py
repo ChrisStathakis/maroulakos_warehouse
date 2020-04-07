@@ -137,12 +137,6 @@ def add_product_to_invoice_trans_view(request, pk, dk):
                 maximum_uses = new_qty
 
     if form.is_valid():
-        for ele in product_.ingredients.all():
-            pr = ele.ingredient
-            if pr.product_class.have_storage:
-                if not pr.favorite_storage():
-                    messages.warning(request, f'{pr.title} δε έχει βασική αποθηκη')
-                    return redirect(instance.get_edit_url())
         item = form.save()
         ingredients = product_.ingredients.all()
         qty = item.qty
@@ -157,13 +151,10 @@ def add_product_to_invoice_trans_view(request, pk, dk):
                 qty_ratio=ingre.qty
 
             )
-            if pro.favorite_storage():
-                new_ingre.storage = pro.favorite_storage()
-                new_ingre.save()
-        return redirect(instance.get_edit_url())
+        return redirect(item.get_edit_url())
     else:
         messages.success(request, form.errors)
-    return render(request, 'warehouse/form_view.html', context=locals())
+    return render(request, 'warehouse/product_ingridient_form.html', context=locals())
 
 
 @staff_member_required
@@ -184,7 +175,6 @@ def validate_employer_view(request, pk):
         form.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
 
 
 @staff_member_required
@@ -264,4 +254,18 @@ def print_invoice_transformation(request, pk):
     instance = get_object_or_404(InvoiceTransformation, id=pk)
     products = instance.invoicetransformationitem_set.all()
     return render(request, 'warehouse/include/print_view.html', context=locals())
+
+
+@staff_member_required
+def validate_ingredient_order_item_view(request, pk,dk):
+    ingredient = get_object_or_404(InvoiceTransformationIngredient, id=pk)
+    order_item = get_object_or_404(InvoiceItem, id=dk)
+    old_order_item = ingredient.warehouse_item
+    old_storage = ingredient.storage
+    ingredient.warehouse_item = order_item
+    ingredient.storage = order_item.storage
+    ingredient.save()
+    old_order_item.save() if old_order_item is not None else ''
+    old_storage.save() if old_storage is not None else ''
+    return redirect(ingredient.invoice_item.get_edit_url())
 

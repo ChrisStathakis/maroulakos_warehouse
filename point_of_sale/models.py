@@ -9,6 +9,7 @@ from costumers.models import Costumer
 from project_settings.tools import initial_date
 from project_settings.constants import CURRENCY
 from decimal import Decimal
+from warehouse.warehouse_models import InvoiceTransformationItem
 
 
 class SalesInvoice(models.Model):
@@ -102,6 +103,8 @@ class SalesInvoiceItem(models.Model):
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
+
+    warehouse_item = models.ForeignKey(InvoiceTransformationItem, null=True, blank=True, on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
         self.date = self.invoice.date

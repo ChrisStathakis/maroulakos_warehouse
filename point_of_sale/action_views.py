@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 
 from .models import SalesInvoice, SalesInvoiceItem
+from warehouse.warehouse_models import InvoiceTransformationItem
 from catalogue.models import Product
 from .forms import SaleInvoiceItemForm
 from costumers.forms import CostumerForm
@@ -26,11 +27,13 @@ def create_order_item_view(request, pk, dk):
                                         'order_code': product.sku
                                         }
                                 )
+    '''
     if product.product_class.have_storage:
         form.fields['storage'].queryset = product.storages.all()
         form.fields['storage'].required = True
         if product.favorite_storage():
             form.initial['storage'] = product.favorite_storage()
+    '''
     if form.is_valid():
         item = form.save()
         product.update_product_from_sale(item)
@@ -66,3 +69,16 @@ def popup_costumer(request):
         return HttpResponse(
             '<script>opener.closePopup(window, "%s", "%s", "#id_costumer");</script>' % (instance.pk, instance))
     return render(request, "point_of_sale/form_view.html", {"form": form, 'form_title': form_title})
+
+
+@staff_member_required
+def connect_to_warehouse_item_view(request, pk):
+    sale_item = get_object_or_404(SalesInvoiceItem, id=pk)
+    product = sale_item.product
+    items = InvoiceTransformationItem.objects.filter(product=product)
+
+    return render(request, 'point_of_sale/connect_to_warehouse.html', context=locals())
+
+
+@staff_member_required
+def validate_connect_to_warehouse_view(request, pk)

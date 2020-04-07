@@ -1,0 +1,147 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{ form_title }}</h4>\
+                        <a href="{{ back_url }}" class="btn btn-warning pull-right">Επιστροφη</a>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <form class="form" method="post">
+                                    {% csrf_token %}
+                                    {{ form }}
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> </button>
+                                </form>
+                            </div>
+                            <div class="col-8">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Προϊον</th>
+                                            <th>Ποσοτητα</th>
+                                            <th>Παραστατικο</th>
+                                            <th>-</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in object.transf_ingre.all %}
+                                            <tr>
+                                                <td>{{ product.product }}</td>
+                                                <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                                                <td>{{ product.warehouse_item.invoice.title }}</td>
+                                                <td>
+                                                    <!-- Button trigger modal -->
+                                                    <button data-href="{% url 'warehouse:ajax_edit_ingre_modal' product.id %}" type="button"
+                                                            class="btn btn-primary edit_button" data-toggle="modal" data-target="#exampleModal">
+                                                      <i class="fa fa-edit"></i>
+                                                    </button>
+
+                                                    <!-- Modal -->
+
+                                                    <div class="modal fade" id="exampleModal_{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                      <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">{{ product }}</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                              <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                            <h4>Επιλογη Αποθηκης</h4>
+                                                            <form method="post" class="form" action="{% url 'warehouse:quick_favorite_storage' %}">
+                                                                {% csrf_token %}
+                                                                <div class="input-group-prepend"></div>
+                                                                    <select required name="new_id" class="custom-select" id="inputGroupSelect01">
+                                                                        {% for ele in product.ingredient.storages.all %}
+                                                                            <option   value="{{ ele.id }}">{{ ele }} ==> {{ ele.qty }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> </button>
+                                                            </form>
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div id="modal_area"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Προϊον</th>
+                                    <th>Τιμολογιο</th>
+                                    <th>Ημερομηνια</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Κωδικος Προϊόντος</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Κοστολογηση</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in object.transf_ingre.all %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ product.product }}</td>
+                                        <td>{{ product.warehouse_item.invoice.title }}</td>
+                                        <td>{{ product.warehouse_item.invoice.date }}</td>
+                                        <td>{{ product.warehouse_item.vendor }}</td>
+                                        <td>{{ product.warehouse_item.order_code }}</td>
+                                        <td>{{ product.qty }}</td>
+                                        <td>{{ product.cost }} | {{ product.total_cost }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $('.edit_button').click(function(evt){
+          evt.preventDefault();
+          $('#modal_area').empty();
+          const myBtn = $(this);
+          const url = myBtn.attr('data-href');
+          $.ajax({
+            method: 'GET',
+            dataType: 'json',
+            url: url,
+
+            success: function(data){
+              $('#modal_area').html(data.result);
+              $('#exampleModal').modal('show');
+            }
+          })
+        })
+    </script>
+{% endblock %}

@@ -11,12 +11,12 @@ from .action_views import (validate_invoice_form_view, create_product_from_invoi
                            validate_invoice_edit_view, add_product_to_invoice_trans_view, validate_create_invoice_order_item_view,
                            validate_note_creation_view, delete_invoice_item_view, delete_transformation_item_view, validate_payment_form_view,
                            change_product_favorite_warehouse_view, popup_vendor, print_invoice_transformation,
-                           delete_employer_view, validate_employer_edit_view, validate_employer_view,
+                           delete_employer_view, validate_employer_edit_view, validate_employer_view, validate_ingredient_order_item_view,
                            delete_banking_account_view, validate_create_banking_account_view, validate_edit_banking_account_view
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal,
                          ajax_banking_account_create_modal_view, ajax_banking_account_edit_modal_view, ajax_employer_edit_modal_view,
-                         ajax_search_products_view
+                         ajax_search_products_view, ajax_edit_ingredient_view
                          )
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
 from .payment_view import PaymentListView, PaymentCreateView, PaymentUpdateView, payment_delete_view
@@ -59,6 +59,7 @@ urlpatterns = [
     path('validate-order-item-creation/<int:pk>/', validate_order_item_update_view, name='validate_order_item_update'),
     path('validate-invoice-edit/<int:pk>/', validate_invoice_edit_view, name='validate_invoice_edit'),
     path('validate-order-item_creation/<int:pk>/', validate_create_invoice_order_item_view, name='validate_order_item_creation'),
+    path('valdiate/ingre-order-item/<int:pk>/<int:dk>/', validate_ingredient_order_item_view, name='validate_ingre_order_item'),
     path('delete-invoice-item/<int:pk>/', delete_invoice_item_view, name='delete_invoice_item'),
     path('delete-transformation-item/<int:pk>/', delete_transformation_item_view, name='delete_transformation_item'),
     path('aciton-validate-payment-creation/<int:pk>/', validate_payment_form_view, name='validate_payment'),
@@ -72,6 +73,7 @@ urlpatterns = [
     path('ajax-create-product-from-invoice/<int:pk>/<int:dk>/', ajax_create_product_modal, name='ajax_create_product'),
     path('ajax-modify-order-item-modal/<int:pk>/', ajax_modify_order_item_modal, name='ajax_modify_order_item'),
     path('ajax/search-products/<int:pk>/', ajax_search_products_view, name='ajax_search_products'),
+    path('ajax-edit-ingre-modal/<int:pk>/', ajax_edit_ingredient_view, name='ajax_edit_ingre_modal'),
 
 
 

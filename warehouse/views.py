@@ -265,7 +265,7 @@ class InvoiceTransformationDetailView(UpdateView):
 class InvoiceItemTransformationUpdateView(UpdateView):
     model = InvoiceTransformationItem
     form_class = InvoiceTransformationItemForm
-    template_name = 'warehouse/form_view.html'
+    template_name = 'warehouse/product_ingridient_form.html'
 
     def get_success_url(self):
         return self.object.invoice.get_edit_url()

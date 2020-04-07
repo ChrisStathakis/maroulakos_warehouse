@@ -79,6 +79,7 @@
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item editOrderITem" data-href="{% url 'point_of_sale:ajax_order_item_modal' order_item.id %}"><i class="fa fa-edit"></i> Επεξεργασια </a>
+                                <a class="dropdown-item" href="{% url 'point_of_sale:connect_to_warehouse' order_item.id %}"> Ενωση με Αποθηκη </a>
                                 <a class="dropdown-item" href="{% url 'point_of_sale:validate_order_item_delete' order_item.id %}"><i class="fa fa-remove"></i> Διαγραφη</a>
                             </div>
                         </div>

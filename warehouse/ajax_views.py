@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .warehouse_models import InvoiceTransformation
+from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, InvoiceTransformationIngredient
 from .models import Invoice, Product, InvoiceItem
 from project_settings.models import Storage
 from catalogue.models import ProductStorage
@@ -148,4 +148,13 @@ def ajax_banking_account_edit_modal_view(request, pk):
     return JsonResponse(data)
 
 
-
+@staff_member_required
+def ajax_edit_ingredient_view(request, pk):
+    instance = get_object_or_404(InvoiceTransformationIngredient, id=pk)
+    order_items = InvoiceItem.objects.filter(product=instance.product)
+    data = dict()
+    data['result'] = render_to_string(template_name='warehouse/ajax/ingre_modal.html',
+                                      request=request,
+                                      context=locals()
+                                      )
+    return JsonResponse(data)

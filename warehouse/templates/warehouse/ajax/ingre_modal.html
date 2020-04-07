@@ -1,0 +1,42 @@
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ instance }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Επιλογη Παραστατικου</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ημερομηνια</th>
+                            <th>κωδικος</th>
+                            <th>Προμηθευτης</th>
+                            <th>Ποσοτητα Τιμολογιου</th>
+                            <th>Υπολοιπη Ποσοτητα</th>
+                            <th>Διασυνδεση</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_item in order_items %}
+                            <tr>
+                                <td>{{ order_item.invoice.date }}</td>
+                                <td>{{ order_item.order_code }}</td>
+                                <td>{{ order_item.vendor }}</td>
+                                <td>{{ order_item.qty }}</td>
+                                <td>{{ order_item.not_used_qty }}</td>
+                                <td><a href="{% url 'warehouse:validate_ingre_order_item' instance.id order_item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

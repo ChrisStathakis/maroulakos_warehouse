@@ -236,8 +236,8 @@ class ProductIngredient(models.Model):
     cost = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Κοστος', default=0)
 
     def save(self, *args, **kwargs):
-        if self.cost == 0:
-            self.cost = self.ingredient.price_buy * (100-self.ingredient.order_discount)/100
+        price_buy = self.ingredient.price_buy * (100-self.ingredient.order_discount)/100
+        self.cost = price_buy * self.qty
         super().save(*args, **kwargs)
         self.product.save()
 

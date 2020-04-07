@@ -29,7 +29,7 @@
                                         <tbody>
                                             <tr>
                                                 <th>Κωδικος Εμφιαλωσης</th>
-                                                <th>{{ instance.get_order_type_display }}</th>
+                                                <th>{{ instance.title }}</th>
                                             </tr>
                                             <tr>
                                                 <th>Σειρα - Αριθμός</th>
@@ -56,7 +56,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th class="border-0 text-uppercase small font-weight-bold">Κωδικος Ηλης</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Κωδικος Υλης</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Αποθηκη</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Προμηθευτης</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Υλικο Συσκευασιας</th>
@@ -67,11 +67,11 @@
                                         <tbody>
                                             {% for ele in product.transf_ingre.all %}
                                                 <tr>
-                                                    <td>{{ ele.product.order_code }}</td>
+                                                    <td>{{ ele.warehouse_item.order_code }}</td>
                                                     <td>{{ ele.storage }}</td>
                                                     <td>{{ ele.product.vendor }}</td>
                                                     <td>{{ ele.product }}</td>
-                                                    <td>1-1-12}</td>
+                                                    <td>{{ ele.warehouse_item.invoice.date }}</td>
                                                     <td>{{ ele.qty }}</td>
                                                 </tr>
                                             {% endfor %}
