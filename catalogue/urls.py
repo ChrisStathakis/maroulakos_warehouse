@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (HomepageView, ProductClassListView, ProductClassCreateView,
                     ProductListView, ProductCreateView, ProductUpdateView, delete_product_view,
                     CategoryListView, CategoryCreateView, CategoryUpdateView, category_delete_view,
-                    product_analysis_view
+                    product_analysis_view, print_product_movement_view
                     )
 from .action_views import (create_storage_form_view, create_product_ingredient_view, class_copy_product_view,
                            ProductIngredientUpdateView, ingredient_delete_view, ProductStorageUpdateView, delete_product_storage_view,
@@ -35,6 +35,7 @@ urlpatterns = [
     path('copy-product/<int:pk>/', class_copy_product_view, name='copy_product'),
     path('update/product-ingredient/<int:pk>/', ProductIngredientUpdateView.as_view(), name='update_ingredient'),
     path('delete/product-ingredient/<int:pk>/', ingredient_delete_view, name='delete_ingredient',),
+    path('print/product/<int:pk>/', print_product_movement_view, name='print_product_movement'),
 
     path('popup/add-vendor/', popup_vendor, name='popup_vendor'),
     path('popup/add-storage/', popup_storage, name='popup_storage'),

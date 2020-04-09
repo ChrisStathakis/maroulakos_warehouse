@@ -1,0 +1,47 @@
+{% extends 'project_settings/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+            <div class="card">
+                <div class="card-header">Ολες οι Κινησεις</div>
+                <div class="card-body">
+                    <table class="table-bordered table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ημερομηνια</th>
+                                <th>Προϊον</th>
+                                <th>Ειδος Συναλαγγης</th>
+                                <th>Συσχετιζομενος</th>
+                                <th>Ποσότητα</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in movements %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.product }}</td>
+                                    <td>{{ item.transcation_type }}</td>
+                                    <td>{{ item.transcation_person }}</td>
+                                    {% if item.transaction_type_method == 'add' %}
+                                        <td class="table-success"> + {{ item.qty }}</td>
+                                    {% else %}
+                                        <td class="table-warning"> - {{ item.qty }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

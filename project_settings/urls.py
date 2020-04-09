@@ -4,6 +4,8 @@ from .views import (HomepageView,
                     PaymentMethodListView, PaymentMethodCreateView, PaymentMethodUpdateView, delete_payment_view,
 
                     )
+from .print_view import storage_movements_view
+
 app_name = 'settings'
 
 urlpatterns = [
@@ -18,5 +20,6 @@ urlpatterns = [
     path('payment-update/<int:pk>/', PaymentMethodUpdateView.as_view(), name='payment_update'),
     path('payment-delete/<int:pk>/', delete_payment_view, name='payment_delete'),
 
+    path('storage-analysis/<int:pk>/', storage_movements_view, name='storage_analysis')
 
 ]

@@ -4,7 +4,10 @@ from .views import (PointOfSaleHomepageView, order_itema_analysis_view,
                     SalesListView, SalesCreateView, update_sale_invoice_view, delete_sales_invoice_view
                     )
 from .ajax_views import ajax_order_item_edit_modal, ajax_search_products
-from .action_views import create_order_item_view, validate_order_item_edit_view, validate_delete_order_item, popup_costumer, connect_to_warehouse_item_view
+from .action_views import (create_order_item_view, validate_order_item_edit_view, validate_delete_order_item,
+                           popup_costumer, connect_to_warehouse_item_view, print_sale_order_tree_view,
+                           validate_connect_to_warehouse_view,
+                           )
 app_name = 'point_of_sale'
 
 urlpatterns = [
@@ -27,4 +30,6 @@ urlpatterns = [
     path('popup-costumer/', popup_costumer, name='popup_costumer'),
 
     path('analysis-order-item/', order_itema_analysis_view, name='analysis_order_item'),
+    path('validate/connection-to-warehouse/<int:pk>/<int:dk>/', validate_connect_to_warehouse_view, name='validate_connect_to_warehouse'),
+    path('print/sale-order/<int:pk>/', print_sale_order_tree_view, name='sale_order_print')
 ]

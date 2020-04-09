@@ -229,3 +229,14 @@ def product_analysis_view(request, pk):
     return render(request, 'catalogue/product_analysis.html', context=locals())
 
 
+@staff_member_required
+def print_product_movement_view(request, pk):
+    instance = get_object_or_404(Product, id=pk)
+    invoice_items = instance.invoice_items.all()
+    sell_items = instance.sale_items.all()
+    ingre_items = instance.invoicetransformationingredient_set.all()
+    ingre_created = instance.invoicetransformationitem_set.all()
+    movements = sorted(
+        chain(sell_items, invoice_items, ingre_items, ingre_created),
+        key=attrgetter('date'))
+    return render(request, 'catalogue/print/product_movements.html', context=locals())

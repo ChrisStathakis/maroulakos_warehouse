@@ -7,6 +7,7 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <h6>Report {{ instance }} Ποσοτητες</h6>
+                        <a href="{% url 'catalogue:print_product_movement' instance.id %}" class="btn btn-primary pull-left"><i class="fa fa-file"></i> Δελτιο Κινησης </a>
                         <a href="{{ instance.get_edit_url }}" class="btn btn-warning pull-right"><i class="fa fa-backward"></i> </a>
                     </div>
                     <div class="card-body">

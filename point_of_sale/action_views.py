@@ -81,4 +81,22 @@ def connect_to_warehouse_item_view(request, pk):
 
 
 @staff_member_required
-def validate_connect_to_warehouse_view(request, pk)
+def validate_connect_to_warehouse_view(request, pk, dk):
+    sale_item = get_object_or_404(SalesInvoiceItem, id=pk)
+    warehouse_item = get_object_or_404(InvoiceTransformationItem, id=dk)
+    old_warehouse_item = sale_item.warehouse_item
+    old_storage = sale_item.storage
+    sale_item.warehouse_item = warehouse_item
+    sale_item.storage = warehouse_item.storage
+    sale_item.save()
+
+    old_warehouse_item.save() if old_warehouse_item is not None else ''
+    old_storage.save() if old_storage is not None else ''
+
+    return redirect(sale_item.invoice.get_edit_url())
+
+
+@staff_member_required
+def print_sale_order_tree_view(request,pk):
+    instance = get_object_or_404(SalesInvoice, id=pk)
+    return render(request, 'point_of_sale/print/sale_order_tree.html', context=locals())

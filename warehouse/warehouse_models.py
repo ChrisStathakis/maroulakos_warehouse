@@ -46,11 +46,17 @@ class InvoiceTransformationItem(models.Model):
 
     total_value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    # ixnilasimitita
+    used_qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    locked = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         qs = self.transf_ingre.all()
         self.total_cost = qs.aggregate(Sum('total_cost'))['total_cost__sum'] if qs.exists() else 0
         self.total_value = Decimal(self.qty) * Decimal(self.value)
+        self.used_qty = self.sale_items.all().aggregate(Sum('qty'))['qty__sum'] if self.sale_items.exists() else 0
+        self.locked = True if self.used_qty > self.qty else False
+
         super().save(*args, **kwargs)
         if self.storage:
             self.storage.save()

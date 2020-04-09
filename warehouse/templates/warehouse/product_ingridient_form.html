@@ -33,7 +33,7 @@
                                         {% for product in object.transf_ingre.all %}
                                             <tr>
                                                 <td>{{ product.product }}</td>
-                                                <td>{{ product.qty }} * {{ product.ingredient.qty }} {{ product.ingredient.get_unit_display }}</td>
+                                                <td>Θα χρειατεις {{ product.qty }}  {{ product.product.get_unit_display }}</td>
                                                 <td>{{ product.warehouse_item.invoice.title }}</td>
                                                 <td>
                                                     <!-- Button trigger modal -->
@@ -88,6 +88,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-header">
+                        <h4>Α Υλες και Συστατικα</h4>
+                    </div>
                     <div class="card-body">
                         <table class="table table-bordered">
                             <thead>
@@ -113,6 +116,46 @@
                                         <td>{{ product.warehouse_item.order_code }}</td>
                                         <td>{{ product.qty }}</td>
                                         <td>{{ product.cost }} | {{ product.total_cost }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Παραστατικα Πωλησης</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Προϊον</th>
+                                    <th>Τιμολογιο</th>
+                                    <th>Ημερομηνια</th>
+                                    <th>Πελατης</th>
+                                    <th>Κωδικος Προϊόντος</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξια Πωλησης</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in sale_invoices %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ product.product }}</td>
+                                        <td>{{ product.invoice.title }}</td>
+                                        <td>{{ product.invoice.date }}</td>
+                                        <td>{{ product.costumer }}</td>
+                                        <td>{{ product.order_code }}</td>
+                                        <td>{{ product.qty }}</td>
+                                        <td>{{ product.clean_value }} | {{ product.total_value }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

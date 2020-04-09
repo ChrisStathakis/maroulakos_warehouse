@@ -33,3 +33,6 @@ class Storage(models.Model):
 
     def get_delete_url(self):
         return reverse('settings:storage_delete', kwargs={'pk': self.id})
+
+    def get_storage_url(self):
+        return reverse('settings:storage_analysis', kwargs={'pk': self.id})

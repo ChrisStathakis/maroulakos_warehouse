@@ -267,5 +267,6 @@ def validate_ingredient_order_item_view(request, pk,dk):
     ingredient.save()
     old_order_item.save() if old_order_item is not None else ''
     old_storage.save() if old_storage is not None else ''
+    order_item.save()
     return redirect(ingredient.invoice_item.get_edit_url())
 

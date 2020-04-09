@@ -6,8 +6,32 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-header">
+                        <a href="{{ sale_item.invoice.get_edit_url }}" class="btn btn-warning pull-right">Επιστροφη</a>
+                        <h4>{{ sale_item.product }}</h4>
+                        <p>Υπαρχων Παραστατικο ==> {{ sale_item.warehouse_item }}</p>
+                        <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Ημερομηνια</th>
+                                    <th>Κωδικος Εμφιαλωσης</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αποθηκη</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ sale_item.invoice.date }}</td>
+                                <td>{{ sale_item.invoice.title }}</td>
+                                <td>{{ sale_item.qty }}</td>
+                                <td>{{ sale_item.storage }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
 
+                    </div>
                     <div class="card-body">
+                        <h4>Προσθηκη Αλλαγη Παραστατατικου</h4>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -26,7 +50,7 @@
                                         <td>{{ item.invoice.title }}</td>
                                         <td>{{ item.qty }}</td>
                                         <td>{{ item.storage }}</td>
-                                        <td><a href="" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                        <td><a href="{% url 'point_of_sale:validate_connect_to_warehouse' sale_item.id item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

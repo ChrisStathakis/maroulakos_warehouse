@@ -104,7 +104,7 @@ class SalesInvoiceItem(models.Model):
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
 
-    warehouse_item = models.ForeignKey(InvoiceTransformationItem, null=True, blank=True, on_delete=models.PROTECT)
+    warehouse_item = models.ForeignKey(InvoiceTransformationItem, null=True, blank=True, on_delete=models.PROTECT, related_name='sale_items')
 
     def save(self, *args, **kwargs):
         self.date = self.invoice.date

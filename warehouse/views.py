@@ -275,6 +275,7 @@ class InvoiceItemTransformationUpdateView(UpdateView):
         context['form_title'] = f'Παραστατικο ==> {self.object}'
         context['trans_info'] = True
         context['back_url'] = self.get_success_url()
+        context['sale_invoices'] = self.object.sale_items.all()
         return context
 
     def form_valid(self, form):
