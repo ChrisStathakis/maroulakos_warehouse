@@ -13,7 +13,7 @@ SECRET_KEY = '_o@!!plzt#etcp(p8#lli147i%j-l0-c&s=u3q_wp)l3yg&rr-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['maroulakoswarehouse.herokuapp.com']
 
 
 # Application definition
