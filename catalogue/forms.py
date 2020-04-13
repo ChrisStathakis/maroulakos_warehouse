@@ -29,6 +29,23 @@ class ProductForm(BaseForm, forms.ModelForm):
                   ]
 
 
+class OurProductFrom(ProductForm):
+    class Meta:
+        model = Product
+        fields = ['active', 'title', 'product_class', 'sku', 'category',
+                  'price', 'safe_stock', 'unit', 'taxes_modifier',
+                  ]
+
+
+class ProductServiceForm(ProductForm):
+
+    class Meta:
+        model = Product
+        fields = ['active', 'title', 'product_class', 'sku', 'category',
+                  'price', 'order_sku', 'price',
+                  'taxes_modifier',
+                  ]
+
 class ProductClassForm(BaseForm, forms.ModelForm):
 
     class Meta:

@@ -4,9 +4,15 @@ from .models import SalesInvoice, SalesInvoiceItem, Costumer
 from catalogue.models import Product
 from project_settings.forms import BaseForm
 
+from dal import autocomplete
+
 
 class SalesInvoiceForm(BaseForm, forms.ModelForm):
     date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+    costumer = forms.ModelChoiceField(queryset=Costumer.objects.all(),
+                                      widget=autocomplete.ModelSelect2(url='point_of_sale:autocomplete_costumer'),
+                                      label='Πελατης'
+                                      )
 
     class Meta:
         model = SalesInvoice

@@ -18,6 +18,7 @@ class SalesInvoice(models.Model):
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
+    lot = models.CharField(blank=True, null=True, max_length=25)
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, related_name='sale_invoices', verbose_name='Πελάτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0)
@@ -89,12 +90,13 @@ class SalesInvoiceItem(models.Model):
         ('c', 'Κιλό'),
 
     )
+    expiration_date = models.DateField(blank=True, verbose_name='Ημερομηνια λήξης')
     order_code = models.CharField(max_length=50, blank=True)
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='sale_items', verbose_name='Προϊον')
     date = models.DateField(blank=True, null=True)
-
+    lot = models.CharField(blank=True, null=True, max_length=25)
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
     value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή')
@@ -107,6 +109,8 @@ class SalesInvoiceItem(models.Model):
     warehouse_item = models.ForeignKey(InvoiceTransformationItem, null=True, blank=True, on_delete=models.PROTECT, related_name='sale_items')
 
     def save(self, *args, **kwargs):
+        if self.invoice.lot:
+            self.lot = self.invoice.lot
         self.date = self.invoice.date
         self.clean_value = Decimal(self.qty * self.value) * Decimal((100-self.taxes_modifier)/100)
         self.total_value = self.qty * self.value

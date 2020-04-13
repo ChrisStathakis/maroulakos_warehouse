@@ -8,6 +8,9 @@ from .action_views import (create_order_item_view, validate_order_item_edit_view
                            popup_costumer, connect_to_warehouse_item_view, print_sale_order_tree_view,
                            validate_connect_to_warehouse_view,
                            )
+from .autocomplete import CostumerAutocomplete
+
+
 app_name = 'point_of_sale'
 
 urlpatterns = [
@@ -31,5 +34,9 @@ urlpatterns = [
 
     path('analysis-order-item/', order_itema_analysis_view, name='analysis_order_item'),
     path('validate/connection-to-warehouse/<int:pk>/<int:dk>/', validate_connect_to_warehouse_view, name='validate_connect_to_warehouse'),
-    path('print/sale-order/<int:pk>/', print_sale_order_tree_view, name='sale_order_print')
+    path('print/sale-order/<int:pk>/', print_sale_order_tree_view, name='sale_order_print'),
+
+
+    # autocomplete
+    path('autocomplete/costumers/', CostumerAutocomplete.as_view(), name='autocomplete_costumer')
 ]

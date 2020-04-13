@@ -13,7 +13,7 @@ from project_settings.constants import CURRENCY
 from .models import ProductClass, Product, Category
 from warehouse.models import Vendor
 from .tables import ProductClassTable, ProductTable, CategoryTable
-from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm, CategoryForm
+from .forms import ProductForm, ProductCreateForm, ProductStorageForm, ProductIngredientForm, ProductClassForm, CategoryForm, ProductServiceForm, OurProductFrom
 from .mixins import ListViewMixin
 
 from operator import attrgetter
@@ -106,8 +106,15 @@ class ProductCreateView(CreateView):
 @method_decorator(staff_member_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     model = Product
-    form_class = ProductForm
     template_name = 'catalogue/product_update.html'
+
+    def get_form_class(self):
+
+        if self.object.product_class.is_service:
+            return ProductServiceForm
+        if self.object.product_class.have_ingredient:
+            return OurProductFrom
+        return ProductForm
 
     def get_success_url(self):
         return self.object.get_edit_url()

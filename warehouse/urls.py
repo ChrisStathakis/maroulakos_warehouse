@@ -18,6 +18,8 @@ from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
                          ajax_banking_account_create_modal_view, ajax_banking_account_edit_modal_view, ajax_employer_edit_modal_view,
                          ajax_search_products_view, ajax_edit_ingredient_view
                          )
+
+from .autocomplete import VendorAutocomplete
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
 from .payment_view import PaymentListView, PaymentCreateView, PaymentUpdateView, payment_delete_view
 
@@ -111,6 +113,9 @@ urlpatterns = [
     path('payment/list/', PaymentListView.as_view(), name='payment_list'),
     path('payment/create/', PaymentCreateView.as_view(), name='payment_create'),
     path('payment_update/<int:pk>/', PaymentUpdateView.as_view(), name='payment_update'),
-    path('payment-delete/<int:pk>/', payment_delete_view, name='payment_delete')
+    path('payment-delete/<int:pk>/', payment_delete_view, name='payment_delete'),
+
+    # autocomplete
+    path('autocomplete-vendor/', VendorAutocomplete.as_view(), name='vendor_autocomplete'),
     
 ]

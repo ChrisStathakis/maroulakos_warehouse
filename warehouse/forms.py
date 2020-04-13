@@ -1,6 +1,7 @@
 from django import forms
 from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage, Employer
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem
+from dal.autocomplete import ModelSelect2
 
 
 class BaseForm(forms.Form):
@@ -43,8 +44,8 @@ class InvoiceVendorDetailForm(BaseForm, forms.ModelForm):
 
 
 class InvoiceForm(BaseForm, forms.ModelForm):
-    # vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput())
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True, label='Ημερομηνία')
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=ModelSelect2(url='warehouse:vendor_autocomplete'), label='Προμηθευτης')
 
     class Meta:
         model = Invoice
@@ -103,10 +104,11 @@ class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
     # storage = forms.ModelChoiceField(queryset=ProductStorage.objects.all(), widget=forms.HiddenInput(), required=False)
     invoice = forms.ModelChoiceField(queryset=InvoiceTransformation.objects.all(), widget=forms.HiddenInput())
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+    expiration_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}), label='Ημερομηνια λήξης')
 
     class Meta:
         model = InvoiceTransformationItem
-        fields = ['invoice', 'product', 'storage', 'qty', 'value', ]
+        fields = ['invoice', 'product', 'storage', 'qty', 'value', 'expiration_date']
 
 
 class PaymentForm(BaseForm, forms.ModelForm):

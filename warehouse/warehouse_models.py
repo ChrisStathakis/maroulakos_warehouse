@@ -36,6 +36,7 @@ class InvoiceTransformation(models.Model):
 
 
 class InvoiceTransformationItem(models.Model):
+    expiration_date = models.DateField(blank=True, null=True, verbose_name='Ημερομηνια λήξης')
     invoice = models.ForeignKey(InvoiceTransformation, on_delete=models.CASCADE)
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT, blank=True, null=True,
                                 related_name='trans_items', verbose_name='Αποθηκη'
