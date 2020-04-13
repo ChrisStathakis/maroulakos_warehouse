@@ -209,7 +209,12 @@ class ProductStorage(models.Model):
 
         sales_qs = self.salesinvoiceitem_set.all()
         sales_qty = sales_qs.aggregate(Sum('qty'))['qty__sum'] if sales_qs.exists() else 0
-        self.qty = add_qty + add_qty_2 - remove_qty - remove_qty_2 - sales_qty
+
+        warehouse_movements = self.ware_storage_movements.all()
+        add_ware_move = warehouse_movements.filter(invoice__order_type='a').aggregate(Sum('qty'))['qty__sum'] if warehouse_movements.filter(invoice__order_type='a').exists() else 0
+        add_ware_remove = warehouse_movements.filter(invoice__order_type__in=['b', 'c']).aggregate(Sum('qty'))[
+            'qty__sum'] if warehouse_movements.filter(invoice__order_type__in=['b', 'c']).exists() else 0
+        self.qty = add_qty + add_qty_2 + add_ware_move - add_ware_remove - remove_qty - remove_qty_2 - sales_qty
         super().save(*args, **kwargs)
         self.product.save()
 

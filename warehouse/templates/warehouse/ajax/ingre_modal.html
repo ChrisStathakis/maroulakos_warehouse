@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{ instance }}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{ instance.product }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -28,7 +28,11 @@
                                 <td>{{ order_item.vendor }}</td>
                                 <td>{{ order_item.qty }}</td>
                                 <td>{{ order_item.not_used_qty }}</td>
-                                <td><a href="{% url 'warehouse:validate_ingre_order_item' instance.id order_item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                {% if order_item.locked %}
+                                    <td><a href="" class="btn btn-danger"><i class="fa fa-eye"></i> </a> </td>
+                                {% else %}
+                                    <td><a href="{% url 'warehouse:validate_ingre_order_item' instance.id order_item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>

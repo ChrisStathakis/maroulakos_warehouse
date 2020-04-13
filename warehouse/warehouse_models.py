@@ -13,6 +13,64 @@ from project_settings.models import PaymentMethod
 from decimal import Decimal
 
 
+class WarehouseMovementsInvoice(models.Model):
+    TYPE_CHOICES = (
+        ('a', 'Παραστατικο Εισαγωγής'),
+        ('b', 'Παραστατικο Εξαγωγης'),
+        ('c', 'Φυρα'),
+    )
+    date = models.DateField(verbose_name='Ημερομηνια')
+    title = models.CharField(blank=True, max_length=120, verbose_name='Τιτλος')
+    order_type = models.CharField(max_length=1, choices=TYPE_CHOICES, verbose_name='Ειδος')
+
+    @staticmethod
+    def filters_data(request, qs):
+        return qs
+
+    def get_edit_url(self):
+        return reverse('warehouse:ware_move_update', kwargs={'pk':self.id})
+
+    def get_delete_url(self):
+        return reverse('warehouse:ware_move_delete', kwargs={'pk': self.id})
+
+
+class WarehouseMovementInvoiceItem(models.Model):
+    invoice = models.ForeignKey(WarehouseMovementsInvoice, on_delete=models.CASCADE, verbose_name='Παραστατικο', related_name='order_items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Προϊον', related_name='ware_movements')
+    qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Ποσοτητα')
+    value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
+    total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Συνολική Αξια')
+    storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT, blank=True, null=True, verbose_name='Αποθηκη', related_name='ware_storage_movements')
+
+    def __str__(self):
+        return self.product.title
+
+    def save(self, *args, **kwargs):
+        self.value = self.product.price_buy
+        self.total_value = Decimal(self.value)*Decimal(self.qty)
+        super().save(*args, **kwargs)
+        if self.storage:
+            self.storage.save()
+        else:
+            self.product.save()
+
+    @property
+    def date(self):
+        return self.invoice.date
+
+    @property
+    def transaction_type_method(self):
+        return 'add' if self.invoice.order_type == 'a' else 'remove'
+
+    def transcation_type(self):
+        return self.invoice.get_order_type_display()
+
+    def transcation_person(self):
+        return 'Μεταβολες Αποθηκης'
+
+
+
+
 class InvoiceTransformation(models.Model):
     locked = models.BooleanField(default=False, verbose_name="Μετασχηματισμενο")
     date = models.DateField(verbose_name="Ημερομηνια")
@@ -134,10 +192,10 @@ class InvoiceTransformationIngredient(models.Model):
         return self.invoice_item.date
 
     def transcation_type(self):
-        return 'Μετασχηματιζομενο Προϊον'
+        return 'Εμφιαλωση'
 
     def transcation_person(self):
-        return 'Αφαιρεση Απο Αποθηκη'
+        return 'Συσταστικο'
 
     @property
     def transaction_type_method(self):
@@ -182,6 +240,14 @@ def update_trans_invoice_on_delete(sender, instance, **kwargs):
 
 @receiver(post_delete,sender=InvoiceTransformationIngredient)
 def update_warehouse_on_delete(sender, instance, **kwargs):
+    if instance.storage:
+        instance.storage.save()
+    else:
+        instance.product.save()
+
+
+@receiver(post_delete, sender=WarehouseMovementInvoiceItem)
+def update_warehouse_on_ware_move_delete(sender, instance, **kwargs):
     if instance.storage:
         instance.storage.save()
     else:

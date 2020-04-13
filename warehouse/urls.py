@@ -19,6 +19,10 @@ from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal
                          ajax_search_products_view, ajax_edit_ingredient_view
                          )
 
+from .warehouse_movements_view import (WarehouseMovementsInvoiceListView, CreateWarehouseMovementsInvoiceView,
+                                       WarehouseMovementsInvoiceUpdateView, delete_warehouse_movements_invoice_view,
+                                       validate_add_products_view, delete_ware_move_item)
+
 from .autocomplete import VendorAutocomplete
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
 from .payment_view import PaymentListView, PaymentCreateView, PaymentUpdateView, payment_delete_view
@@ -114,6 +118,15 @@ urlpatterns = [
     path('payment/create/', PaymentCreateView.as_view(), name='payment_create'),
     path('payment_update/<int:pk>/', PaymentUpdateView.as_view(), name='payment_update'),
     path('payment-delete/<int:pk>/', payment_delete_view, name='payment_delete'),
+
+    # warehouse movements
+    path('warehouse-movements-list/', WarehouseMovementsInvoiceListView.as_view(), name='ware_move_list'),
+    path('warehouse-movements-create/', CreateWarehouseMovementsInvoiceView.as_view(), name='ware_move_create'),
+    path('warehouse-movements-detail/<int:pk>/', WarehouseMovementsInvoiceUpdateView.as_view(), name='ware_move_update'),
+    path('warehouse-movements-delete-<int:pk>/', delete_warehouse_movements_invoice_view, name='ware_move_delete'),
+    path('ware-move-add-products/<int:pk>/', validate_add_products_view, name='validate_add_products'),
+    path('ware-move-delete-item/<int:pk>/', delete_ware_move_item, name='ware_move_item_delete'),
+
 
     # autocomplete
     path('autocomplete-vendor/', VendorAutocomplete.as_view(), name='vendor_autocomplete'),

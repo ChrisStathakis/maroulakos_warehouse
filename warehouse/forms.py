@@ -1,6 +1,6 @@
 from django import forms
 from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage, Employer
-from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem
+from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, WarehouseMovementInvoiceItem, WarehouseMovementsInvoice
 from dal.autocomplete import ModelSelect2
 
 
@@ -128,3 +128,16 @@ class PaymentCreateForm(BaseForm, forms.ModelForm):
         fields = '__all__'
 
 
+class WarehouseMovementInvoiceForm(BaseForm, forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
+
+    class Meta:
+        model = WarehouseMovementsInvoice
+        fields = ['date', 'title', 'order_type']
+
+
+class WarehouseMovementInvoiceItemForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = WarehouseMovementInvoiceItem
+        fields = ['invoice', 'product', 'qty']

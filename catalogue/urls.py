@@ -9,6 +9,8 @@ from .action_views import (create_storage_form_view, create_product_ingredient_v
                            ProductIngredientUpdateView, ingredient_delete_view, ProductStorageUpdateView, delete_product_storage_view,
                            popup_vendor, popup_storage, popup_category
                            )
+from .autocomplete import ProductAutocomplete
+
 app_name = 'catalogue'
 
 urlpatterns = [
@@ -40,5 +42,8 @@ urlpatterns = [
     path('popup/add-vendor/', popup_vendor, name='popup_vendor'),
     path('popup/add-storage/', popup_storage, name='popup_storage'),
     path('popup/add-category/', popup_category, name='popup_category'),
+
+    # autocomplete
+    path('autocomplete/products/', ProductAutocomplete.as_view(), name='product_autocomplete')
 
 ]

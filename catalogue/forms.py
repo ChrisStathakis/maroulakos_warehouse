@@ -68,8 +68,16 @@ class ProductStorageForm(BaseForm, forms.ModelForm):
         fields = ['product', 'storage', 'priority']
 
 
+from dal.autocomplete import  ModelSelect2
+
+
 class ProductIngredientForm(BaseForm, forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.all(), required=True, widget=forms.HiddenInput())
+    ingredient = forms.ModelChoiceField(queryset=Product.objects.all(),
+                                        required=True,
+                                        widget=ModelSelect2(url='catalogue:product_autocomplete'),
+                                        label='Συστατικο'
+                                        )
 
     class Meta:
         model = ProductIngredient

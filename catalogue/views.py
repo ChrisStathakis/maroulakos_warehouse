@@ -218,6 +218,7 @@ def product_analysis_view(request, pk):
     sell_items = instance.sale_items.all()
     ingre_items = instance.invoicetransformationingredient_set.all()
     ingre_created = instance.invoicetransformationitem_set.all()
+    warehouse_movements = instance.ware_movements.all()
 
     # totals
     total_invoices = invoice_items.aggregate(Sum('qty'))['qty__sum'] if invoice_items.exists() else 0
@@ -227,11 +228,13 @@ def product_analysis_view(request, pk):
 
     current_qty = 0
     movements = sorted(
-        chain(sell_items, invoice_items, ingre_items, ingre_created),
+        chain(sell_items, invoice_items, ingre_items, ingre_created, warehouse_movements),
         key=attrgetter('date'))
     qty_movements = []
     for movement in movements:
-        current_qty = current_qty + movement.qty if movement.transaction_type_method == 'add' else current_qty - movement.qty
+        print(movement.transaction_type_method, current_qty, movement.qty)
+        if movement.transaction_type_method == 'add': current_qty = current_qty + movement.qty
+        else: current_qty - movement.qty
         qty_movements.append([movement, current_qty])
     return render(request, 'catalogue/product_analysis.html', context=locals())
 

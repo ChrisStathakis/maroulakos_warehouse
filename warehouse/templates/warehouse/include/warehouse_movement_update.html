@@ -1,0 +1,182 @@
+{% extends 'warehouse/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Επιλογη Προϊοντος</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="form" action='{% url "warehouse:validate_add_products" object.id %}'>{% csrf_token %}
+                        <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> </button>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>-</th>
+                                    <th>Κωδ. Προμ</th>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα Αποηθηκης</th>
+                                    <th>Ποσοτητα</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td><input id="add_id_{{ product.id }}" type="checkbox" class="form-check-sign" name="add_id_{{ product.id }}" /> </td>
+                                        <td> {{ product.order_sku }}</td>
+                                        <td> <label class="form-check-label" for="add_id_{{ product.id }}">{{ product }}</label></td>
+                                        <td>{{ product.qty }}</td>
+                                        <td><input name="qty_{{ product.id }}" type="number" step="any" class="form-control" placeholder="0"></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class='col-6'>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>Λεπτομεριες Τιμολογιου </h4>
+                    </div>
+                    <div class='card-body'>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Κωδ. Τιμο</th>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Αξια</th>
+                                    <th>--</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in object.order_items.all %}
+                                    <tr>
+                                        <td>{{ item.product.order_code }}</td>
+                                        <td>{{ item.product }}</td>
+                                        <td>{{ item.qty }}
+                                            {% if item.storage %}<br> {{ item.storage }}{% endif %}
+                                        </td>
+                                        <td>{{ item.product.vendor|default_if_none:'--' }}</td>
+                                        <td>{{ item.value }} | {{ item.total_value }}</td>
+                                        <td>
+                                            <a href="{% url 'warehouse:ware_move_item_delete' item.id %}" class="btn btn-warning"><i class="fa fa-remove"></i> </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Συνολικα Στοιχεια</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Ημερομηνια... {{ object.date }}</li>
+                                    <li class="list-group-item">Κωδικος Τιμ.. {{ object.title }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Ειδος Παραστατ... {{ object.get_order_type_display }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-12">
+                                <hr>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#exampleModal">
+                                  <i class="fa fa-edit"></i> Επεξεργασια
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Επεξεργασια</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <form method="post" class="form">
+                                            {% csrf_token %}
+                                            {{ form }}
+                                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Αποθηκευση </button>
+                                        </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <a href="#" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        $('.add_button').click(function(evt){
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const myBtn = $(this);
+            const url = myBtn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function(data){
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $('.edit_button').click(function (evt) {
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const myBtn = $(this);
+            const url = myBtn.attr('data-href');
+            $.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: url,
+
+                success: function (data) {
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show')
+                }
+            })
+        })
+    </script>
+
+
+{% endblock %}

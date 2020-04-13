@@ -167,6 +167,7 @@
 {% endblock %}
 
 {% block extra_js %}
+    {{ product_ingredient_form.media }}
     <script type="text/javascript">
         function showEditPopup(url) {
             var win = window.open(url, "Edit",

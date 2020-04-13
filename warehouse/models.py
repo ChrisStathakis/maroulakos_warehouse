@@ -215,8 +215,10 @@ class InvoiceItem(models.Model):
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.PROTECT, related_name='storage_invoices', verbose_name='Αποθηκη')
     used_qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Χρησιμοποιημενη Ποσοτητα', default=0)
+    locked = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        self.locked = True if self.used_qty >= self.qty else False
         self.clean_value = self.qty * self.value
         self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
         self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
