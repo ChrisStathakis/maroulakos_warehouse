@@ -9,7 +9,8 @@
                     <div class="card-header">
                         <a href="{{ sale_item.invoice.get_edit_url }}" class="btn btn-warning pull-right">Επιστροφη</a>
                         <h4>{{ sale_item.product }}</h4>
-                        <p>Υπαρχων Παραστατικο ==> {{ sale_item.warehouse_item }}</p>
+                        {% if have_ %}<p>Υπαρχων Παραστατικο ==> {{ sale_item.warehouse_item }}</p> {% else %} <p>Υπαρχων Αποθηκη ==> {{ sale_item.warehouse_item }}</p>{% endif %}
+                        {% if have_ %}
                         <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -28,34 +29,75 @@
                             </tr>
                             </tbody>
                         </table>
-
-                    </div>
-                    <div class="card-body">
-                        <h4>Προσθηκη Αλλαγη Παραστατατικου</h4>
+                    {% else %}
                         <table class="table table-bordered">
-                            <thead>
+                                <thead>
                                 <tr>
-                                    <th>Ημερομηνια</th>
-                                    <th>Κωδικος Εμφιαλωσης</th>
-                                    <th>Ποσοτητα</th>
                                     <th>Αποθηκη</th>
-                                    <th>-</th>
-
+                                    <th>Ποσοτητα</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in items %}
-                                    <tr>
-                                        <td>{{ item.invoice.date }}</td>
-                                        <td>{{ item.invoice.title }}</td>
-                                        <td>{{ item.qty }}</td>
-                                        <td>{{ item.storage }}</td>
-                                        <td><a href="{% url 'point_of_sale:validate_connect_to_warehouse' sale_item.id item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
-                                    </tr>
-                                {% endfor %}
+                            <tr>
+                                <td>{{ sale_item.storage }}</td>
+                                <td>{{ sale_item.qty }}</td>
+                            </tr>
                             </tbody>
                         </table>
+                    {% endif %}
+
                     </div>
+                    {% if have_ %}
+                        <div class="card-body">
+                            <h4>Προσθηκη - Αλλαγη Παραστατατικου</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Ημερομηνια</th>
+                                        <th>Κωδικος Εμφιαλωσης</th>
+                                        <th>Ποσοτητα</th>
+                                        <th>Αποθηκη</th>
+                                        <th>-</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.invoice.date }}</td>
+                                            <td>{{ item.invoice.title }}</td>
+                                            <td>{{ item.qty }}</td>
+                                            <td>{{ item.storage }}</td>
+                                            <td><a href="{% url 'point_of_sale:validate_connect_to_warehouse' sale_item.id item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="card-body">
+                            <h4>Προσθηκη - Αλλαγη Αποθηκης</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Αποθηκη</th>
+                                        <th>Υπολοιπο</th>
+                                        <th>-</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.storage }}</td>
+                                            <td>{{ item.qty }}</td>
+                                            <td><a href="{% url 'point_of_sale:validate_connect_to_warehouse' sale_item.id item.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a> </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

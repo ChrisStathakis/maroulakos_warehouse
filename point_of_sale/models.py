@@ -15,7 +15,7 @@ from warehouse.warehouse_models import InvoiceTransformationItem
 class SalesInvoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
     order_type = models.CharField(max_length=1, choices=SALE_INVOICE_TYPES, default='a', verbose_name='Ειδος')
-    title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
+    title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου', blank=True)
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
     lot = models.CharField(blank=True, null=True, max_length=25)
@@ -90,7 +90,7 @@ class SalesInvoiceItem(models.Model):
         ('c', 'Κιλό'),
 
     )
-    expiration_date = models.DateField(blank=True, verbose_name='Ημερομηνια λήξης')
+    expiration_date = models.DateField(blank=True, verbose_name='Ημερομηνια λήξης', null=True)
     order_code = models.CharField(max_length=50, blank=True)
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')

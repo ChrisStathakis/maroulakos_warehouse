@@ -17,7 +17,7 @@ from point_of_sale.models import SalesInvoice
 from catalogue.models import Product, ProductStorage
 from payroll.models import Bill, Payroll
 from warehouse.models import Payment, Invoice, Vendor
-
+from warehouse.warehouse_models import InvoiceTransformation
 from .tools import sort_months
 from project_settings.constants import CURRENCY
 
@@ -56,12 +56,14 @@ class AnalysisSaleIncomeView(ListView):
 
 @staff_member_required
 def warehouse_movements_view(request):
+    date_filter = True
     # collect the data
     invoices = Invoice.filters_data(request, Invoice.objects.all())
+    transformations = InvoiceTransformation.filters_data(request, InvoiceTransformation.objects.all())
     sales = SalesInvoice.filters_data(request, SalesInvoice.objects.all())
-
+    back_url = reverse('analysis:homepage')
     movements = sorted(
-            chain(invoices, sales),
+            chain(invoices, sales, transformations),
             key=attrgetter('date'))
     return render(request, 'analysis/analysis_movements.html', context=locals())
 

@@ -16,7 +16,7 @@ class SalesInvoiceForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = SalesInvoice
-        fields = ['date', 'order_type', 'title', 'costumer', 'payment_method', 'extra_value',
+        fields = ['date', 'order_type', 'title', 'costumer', 'payment_method', 'extra_value', 'lot',
                 'description']
 
 

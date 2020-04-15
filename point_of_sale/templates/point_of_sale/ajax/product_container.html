@@ -4,6 +4,7 @@
         <th>Sku</th>
         <th>Προϊον</th>
         <th>Τιμή</th>
+        <th>Υπολοιπο</th>
         <th>---</th>
     </tr>
     </thead>
@@ -13,6 +14,7 @@
             <td>{{ product.sku }}</td>
             <td>{{ product }}</td>
             <td>{{ product.price }}</td>
+            <td>{{ product.qty }}</td>
             <td>
                 <div class="dropdown">
                     <a href="{% url 'point_of_sale:create_order_item_view' object.id product.id %}" class="btn btn-success"><i class="fa fa-plus"></i> </a>

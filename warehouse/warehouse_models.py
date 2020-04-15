@@ -11,6 +11,7 @@ from costumers.models import Costumer
 from project_settings.constants import CURRENCY
 from project_settings.models import PaymentMethod
 from decimal import Decimal
+from project_settings.tools import initial_date
 
 
 class WarehouseMovementsInvoice(models.Model):
@@ -25,6 +26,9 @@ class WarehouseMovementsInvoice(models.Model):
 
     @staticmethod
     def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(date__range=[date_start, date_end])
         return qs
 
     def get_edit_url(self):
@@ -41,11 +45,15 @@ class WarehouseMovementInvoiceItem(models.Model):
     value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Συνολική Αξια')
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT, blank=True, null=True, verbose_name='Αποθηκη', related_name='ware_storage_movements')
+    used_qty = models.DecimalField(max_digits=17, decimal_places=2, default=0)
+    locked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.product.title
 
     def save(self, *args, **kwargs):
+        if self.used_qty >= self.qty:
+            self.locked = True
         self.value = self.product.price_buy
         self.total_value = Decimal(self.value)*Decimal(self.qty)
         super().save(*args, **kwargs)
@@ -68,7 +76,12 @@ class WarehouseMovementInvoiceItem(models.Model):
     def transcation_person(self):
         return 'Μεταβολες Αποθηκης'
 
-
+    @staticmethod
+    def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(invoice__date__range=[date_start, date_end])
+        return qs
 
 
 class InvoiceTransformation(models.Model):
@@ -89,8 +102,24 @@ class InvoiceTransformation(models.Model):
         self.value = qs.aggregate(Sum('total_value'))['total_value__sum'] if qs.exists() else 0
         super().save(*args, **kwargs)
 
+    def tag_order_type(self):
+        return 'Εμφιαλωση'
+
+    def tag_person(self):
+        return self.costumer
+
+    def tag_final_value(self):
+        return f'{self.value} {CURRENCY}'
+
     def get_edit_url(self):
         return reverse('warehouse:invoice_trans_detail', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(date__range=[date_start, date_end])
+        return qs
 
 
 class InvoiceTransformationItem(models.Model):
@@ -166,6 +195,13 @@ class InvoiceTransformationItem(models.Model):
         )
         return new
 
+    @staticmethod
+    def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(invoice__date__range=[date_start, date_end])
+        return qs
+
 
 class InvoiceTransformationIngredient(models.Model):
     invoice_item = models.ForeignKey(InvoiceTransformationItem, on_delete=models.CASCADE, related_name='transf_ingre')
@@ -227,6 +263,13 @@ class InvoiceTransformationIngredient(models.Model):
         if storage:
             instance.storage = storage
             instance.save()
+
+    @staticmethod
+    def filters_data(request, qs):
+        date_start, date_end, date_range = initial_date(request, 6)
+        if date_start and date_end:
+            qs = qs.filter(invoice_item__invoice__date__range=[date_start, date_end])
+        return qs
 
 
 @receiver(post_delete, sender=InvoiceTransformationItem)

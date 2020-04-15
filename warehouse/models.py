@@ -218,14 +218,14 @@ class InvoiceItem(models.Model):
     locked = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        self.locked = True if self.used_qty >= self.qty else False
         self.clean_value = self.qty * self.value
         self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
         self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
         self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
         self.used_qty = self.warehouse_items.aggregate(Sum('qty'))['qty__sum'] if self.warehouse_items.exists() else 0
-        print(self.used_qty)
+        if self.used_qty >= self.qty:
+            self.locked = True
         super().save(*args, **kwargs)
         if self.storage:
             self.storage.update_product(self.value, self.discount, )
@@ -272,6 +272,7 @@ class InvoiceItem(models.Model):
 
     @staticmethod
     def filters_data(request, qs):
+        print('workd')
         date_start, date_end, date_range = initial_date(request, 6)
         vendor_name = request.GET.getlist('vendor_name', None)
 

@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 
 from .models import SalesInvoice, SalesInvoiceItem
 from warehouse.warehouse_models import InvoiceTransformationItem
-from catalogue.models import Product
+from catalogue.models import Product, ProductStorage
 from .forms import SaleInvoiceItemForm
 from costumers.forms import CostumerForm
 
@@ -75,24 +75,34 @@ def popup_costumer(request):
 def connect_to_warehouse_item_view(request, pk):
     sale_item = get_object_or_404(SalesInvoiceItem, id=pk)
     product = sale_item.product
-    items = InvoiceTransformationItem.objects.filter(product=product)
-
+    have_ = product.product_class.have_ingredient
+    items = product.storages.all()
+    if have_:
+        items = InvoiceTransformationItem.objects.filter(product=product)
     return render(request, 'point_of_sale/connect_to_warehouse.html', context=locals())
 
 
 @staff_member_required
 def validate_connect_to_warehouse_view(request, pk, dk):
     sale_item = get_object_or_404(SalesInvoiceItem, id=pk)
-    warehouse_item = get_object_or_404(InvoiceTransformationItem, id=dk)
-    old_warehouse_item = sale_item.warehouse_item
-    old_storage = sale_item.storage
-    sale_item.warehouse_item = warehouse_item
-    sale_item.storage = warehouse_item.storage
-    sale_item.save()
+    product = sale_item.product
+    have_ingre = product.product_class.have_ingredient
+    if have_ingre:
+        warehouse_item = get_object_or_404(InvoiceTransformationItem, id=dk)
+        old_warehouse_item = sale_item.warehouse_item
+        old_storage = sale_item.storage
+        sale_item.warehouse_item = warehouse_item
+        sale_item.storage = warehouse_item.storage
+        sale_item.save()
 
-    old_warehouse_item.save() if old_warehouse_item is not None else ''
-    old_storage.save() if old_storage is not None else ''
-
+        old_warehouse_item.save() if old_warehouse_item is not None else ''
+        old_storage.save() if old_storage is not None else ''
+    else:
+        old_storage = sale_item.storage
+        storage = get_object_or_404(ProductStorage, id=dk)
+        sale_item.storage = storage
+        sale_item.save()
+        old_storage.save() if old_storage is not None else ''
     return redirect(sale_item.invoice.get_edit_url())
 
 

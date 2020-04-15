@@ -1,7 +1,7 @@
 import django_tables2 as tables
 
 from catalogue.models import Product
-from .models import Vendor, Invoice, Payment
+from .models import Vendor, Invoice, Payment, InvoiceItem
 from .warehouse_models import InvoiceTransformation, WarehouseMovementsInvoice
 
 
@@ -74,3 +74,11 @@ class WarehouseMovementsInvoiceTable(tables.Table):
         model = InvoiceTransformation
         template_name = 'django_tables2/bootstrap.html'
         fields = ['date', 'title', 'order_type','button']
+
+
+class InvoiceItemTable(tables.Table):
+
+    class Meta:
+        model = InvoiceItem
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['invoice__date', 'product', 'invoice__title', 'vendor', 'locked']

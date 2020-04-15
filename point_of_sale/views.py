@@ -100,10 +100,13 @@ def delete_sales_invoice_view(request, pk):
 
 
 @staff_member_required
-def order_itema_analysis_view(request):
+def order_items_analysis_view(request):
+    date_filter = True
     order_items = SalesInvoiceItem.filter_data(request, SalesInvoiceItem.objects.all())
     costumers_id = order_items.values_list('costumer')
     costumers = Costumer.objects.filter(id__in=costumers_id)
     sells_per_costumer = order_items.values('costumer__eponimia').annotate(total_value=Sum('total_value'), total_qty=Sum('qty')).order_by('qty')
+    sells_per_product = order_items.values('product__title').annotate(total_value=Sum('total_value'),
+                                                                        total_qty=Sum('qty')).order_by('qty')
     context = locals()
     return render(request, 'point_of_sale/order_item_analysis.html', context)

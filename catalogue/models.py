@@ -188,7 +188,7 @@ class Product(models.Model):
 
 
 class ProductStorage(models.Model):
-    priority = models.BooleanField(default=False)
+    priority = models.BooleanField(default=False, verbose_name='Προτεριοτητα')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='storages')
     storage = models.ForeignKey(Storage, on_delete=models.PROTECT, verbose_name='Αποθηκη')
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)

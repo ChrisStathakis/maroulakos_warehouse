@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (PointOfSaleHomepageView, order_itema_analysis_view,
+from .views import (PointOfSaleHomepageView, order_items_analysis_view,
                     SalesListView, SalesCreateView, update_sale_invoice_view, delete_sales_invoice_view
                     )
 from .ajax_views import ajax_order_item_edit_modal, ajax_search_products
@@ -32,7 +32,7 @@ urlpatterns = [
     path('validadte/order-item-delete/<int:pk>/', validate_delete_order_item, name='validate_order_item_delete'),
     path('popup-costumer/', popup_costumer, name='popup_costumer'),
 
-    path('analysis-order-item/', order_itema_analysis_view, name='analysis_order_item'),
+    path('analysis-order-item/', order_items_analysis_view, name='analysis_order_item'),
     path('validate/connection-to-warehouse/<int:pk>/<int:dk>/', validate_connect_to_warehouse_view, name='validate_connect_to_warehouse'),
     path('print/sale-order/<int:pk>/', print_sale_order_tree_view, name='sale_order_print'),
 

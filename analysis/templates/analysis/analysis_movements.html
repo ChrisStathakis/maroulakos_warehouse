@@ -3,6 +3,29 @@
 {% block content %}
     <div class="content">
         <div class="row">
+            <div class="col-12">
+            <div class="card">
+                 <div class="card-header">
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Filters
+                        </a>
+                        <a href="{{ request.path }}" class="btn btn-danger">Καθαρισμος</a>
+                        <a href="{{ back_url }}" class="btn btn-warning pull-right">Επιστροφη</a>
+                    </div>
+                <div class="card-body">
+                    <div class="collapse" id="collapseExample">
+                        <form method="get" class="form">
+                            <div class="row">
+                                {% include 'filters/my_filters.html' %}
+                            </div>
+                            <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                </div>
+        </div>
+        <div class="row">
             <div class="col-10">
                 <div class="card">
                     <div class="card-header">
@@ -17,7 +40,6 @@
                                     <th>Συσχετιζομενος</th>
                                     <th>Τροπος Πληρωμης</th>
                                     <th>Ποσο</th>
-                                    <th>-</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,8 +49,7 @@
                                         <td>{{ movement.tag_order_type }}</td>
                                         <td>{{ movement.tag_person }}</td>
                                         <td>{{ movement.payment_method }}</td>
-                                        <td>{{ movement.tsg_final_value }}</td>
-                                        <td></td>
+                                        <td>{{ movement.tag_final_value }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

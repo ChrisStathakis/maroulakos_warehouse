@@ -9,7 +9,17 @@
                         <h4>Αναλυση Προϊόντων Πώλησης</h4>
                     </div>
                     <div class="card-body">
-
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Filters
+                        </a>
+                        <a href="{{ request.path }}" class="btn btn-danger">Καθαρισμος</a><div class="collapse" id="collapseExample">
+                            <form method="get" class="form">
+                                 <div class="row">
+                                      {% include 'filters/my_filters.html' %}
+                                 </div>
+                                 <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
+                            </form>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -22,14 +32,55 @@
                         <h6>Συνολα ανα Πελατη</h6>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
-                            {% for costumer in sells_per_costumer %}
-                                <li class="list-group-item">{{ costumer.costumer__eponimia }}</li>
-                            {% endfor %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Πελατης</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξια</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cost in sells_per_costumer %}
+                                    <tr>
+                                        <td>{{ cost.costumer__eponimia }}</td>
+                                        <td>{{ cost.total_qty }}</td>
+                                        <td>{{ cost.total_value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-                        </ul>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Συνολα ανα Προϊον</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξια</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cost in sells_per_product %}
+                                    <tr>
+                                        <td>{{ cost.product__title }}</td>
+                                        <td>{{ cost.total_qty }}</td>
+                                        <td>{{ cost.total_value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
             </div>
 
             <div class="col-8">
