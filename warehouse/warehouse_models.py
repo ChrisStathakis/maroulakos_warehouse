@@ -91,7 +91,7 @@ class InvoiceTransformation(models.Model):
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, verbose_name='Πελατης', blank=True, null=True)
     value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
     cost = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Κοστολογηση')
-    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL, verbose_name='Τροπος Πληρωμής')
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL, blank=True, verbose_name='Τροπος Πληρωμής')
 
     def __str__(self):
         return self.title

@@ -193,6 +193,9 @@ class ProductStorage(models.Model):
     storage = models.ForeignKey(Storage, on_delete=models.PROTECT, verbose_name='Αποθηκη')
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
 
+    class Meta:
+        ordering = ['priority', ]
+
     def save(self, *args, **kwargs):
         invoices = self.storage_invoices.all()
         add_invoices, remove_invoices = invoices.filter(invoice__order_type__in=POSITIVE_INVOICES), \

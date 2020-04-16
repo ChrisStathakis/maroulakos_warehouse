@@ -93,11 +93,11 @@ class InvoiceItemForm(BaseForm, forms.ModelForm):
 
 
 class InvoiceTransformationForm(BaseForm, forms.ModelForm):
-    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}), label='Ημερομηνια')
 
     class Meta:
         model = InvoiceTransformation
-        fields = ['date', 'title', 'costumer', 'payment_method']
+        fields = ['date', 'title',]
 
 
 class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):

@@ -4,7 +4,7 @@
 {% block content %}
     <div class="content">
         <div class="row">
-            <div class="col-6">
+            <div class="col-5">
                 <div class="card">
                     <div class="card-header">
                         <h4>Επιλογη Προϊοντος</h4>
@@ -51,7 +51,7 @@
                     <div class="modal_area"></div>
                 </div>
             </div>
-            <div class='col-6'>
+            <div class='col-7'>
                 <div class='card'>
                     <div class='card-header'>
                         <h4>Λεπτομεριες Τιμολογιου </h4>
@@ -65,7 +65,10 @@
                                     <th>Ποσοτητα</th>
                                     <th>Αξία</th>
                                     <th>Εκπτωση</th>
+                                    <th>Τελικη Αξια</th>
+                                    <th>Συνολικη Αξια</th>
                                     <th>Φπα</th>
+
                                     <th>--</th>
                                 </tr>
                             </thead>
@@ -79,6 +82,8 @@
                                         </td>
                                         <td>{{ item.value }}</td>
                                         <td>{{ item.discount }}</td>
+                                        <td>{{ item.clean_value }}</td>
+                                        <td>{{ item.total_clean_value }}</td>
                                         <td>{{ item.taxes_modifier }}</td>
                                         <td><button data-href="{% url 'warehouse:ajax_modify_order_item' item.id %}" type='button' class='btn btn-warning edit_button'><i class='fa fa-edit'></i> </button></td>
                                     </tr>
@@ -100,6 +105,7 @@
                                     <li class="list-group-item">Ημερομηνια... {{ invoice.date }}</li>
                                     <li class="list-group-item">Κωδικος Τιμ.. {{ invoice.title }}</li>
                                     <li class="list-group-item">Αξια Προϊόντων... {{ invoice.tag_value }}</li>
+                                    <li class="list-group-item">Εκπτωση Τιμολογιου... {{ invoice.extra_value }}</li>
                                     <li class="list-group-item">Τροπος Πληρωμής... {{ invoice.payment_method }}</li>
                                 </ul>
                             </div>
@@ -107,6 +113,7 @@
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">Ειδος Παραστατ... {{ invoice.get_order_type_display }}</li>
                                     <li class="list-group-item">Προμηθευτης... {{ invoice.vendor }}</li>
+                                    <li class="list-group-item">Φορος... {{ invoice.taxes_value }}</li>
                                     <li class="list-group-item">Αξια... {{ invoice.tag_final_value }}</li>
                                     <li class="list-group-item">Σημειωσεις.. {{ invoice.description }}</li>
                                 </ul>

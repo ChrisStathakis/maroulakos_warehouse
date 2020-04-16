@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %} {% load render_table from django_tables2 %}
+{% extends 'costumers/homepage.html' %} {% load render_table from django_tables2 %}
 
 {% block content %}
     <div class="content">
@@ -21,15 +21,16 @@
                             <a href="#">
                                 <h5 class="title">{{ object }}</h5>
                             </a>
-                            <p class="description">
-                                Κατασταση {{ object.tag_active }} |  ΑΦΜ {{ object.amka }}
-                            </p>
+
                         </div>
-                        <p class="description text-center">
-                            Τηλέφωνα
-                            <br> {{ object.cellphone|default_if_none:"Δεν υπάρχει κινητό" }}
-                            <br> {{ object.phone }}
-                        </p>
+                        <ul class="list-group">
+                            <li class="list-group-item">{% if object.active %} Ενεργος {% else %} Μη Ενεργος {% endif %}</li>
+
+                            <li class="list-group-item">Τηλεφωνο  {{ object.phone }}</li>
+                            <li class="list-group-item">Κινητο {{ object.cellphone }}</li>
+                            <li class="list-group-item">Αφμ.{{ object.afm }}</li>
+                            <li class="list-group-item">Δου {{ object.doy }}</li>
+                        </ul>
                     </div>
                     <div class="card-footer">
                         <hr>

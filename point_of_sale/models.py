@@ -91,11 +91,11 @@ class SalesInvoiceItem(models.Model):
 
     )
     expiration_date = models.DateField(blank=True, verbose_name='Ημερομηνια λήξης', null=True)
-    order_code = models.CharField(max_length=50, blank=True)
+    order_code = models.CharField(max_length=50, blank=True, verbose_name='Κωδικος Πωλησης')
     costumer = models.ForeignKey(Costumer, on_delete=models.PROTECT, verbose_name='')
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='sale_items', verbose_name='Προϊον')
-    date = models.DateField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True,)
     lot = models.CharField(blank=True, null=True, max_length=25)
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')

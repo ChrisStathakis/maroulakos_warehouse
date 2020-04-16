@@ -1,15 +1,14 @@
-from django.views.generic import ListView, TemplateView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.db import models
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import get_object_or_404, redirect, render, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth import logout
-from django.db.models import Sum
+
 
 from .models import Storage, PaymentMethod
-from .tables import StorageTable, PaymentMethodTable
+from .tables import StorageTable
 from .forms import StorageForm, PaymentMethodForm
 
 from django_tables2 import RequestConfig
@@ -33,7 +32,7 @@ class StorageListView(ListView):
         context['queryset_table'] = queryset_table
         context['create_url'] = reverse('settings:storage_create')
         context['back_url'] = reverse('settings:homepage')
-        context['page_title'] = 'Τροποι πληρωμης'
+        context['page_title'] = 'Αποθηκες'
         return context
 
 

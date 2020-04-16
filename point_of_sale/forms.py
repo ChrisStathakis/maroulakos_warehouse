@@ -8,7 +8,7 @@ from dal import autocomplete
 
 
 class SalesInvoiceForm(BaseForm, forms.ModelForm):
-    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+    date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}), label='Ημερομηνια')
     costumer = forms.ModelChoiceField(queryset=Costumer.objects.all(),
                                       widget=autocomplete.ModelSelect2(url='point_of_sale:autocomplete_costumer'),
                                       label='Πελατης'
@@ -16,7 +16,7 @@ class SalesInvoiceForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = SalesInvoice
-        fields = ['date', 'order_type', 'title', 'costumer', 'payment_method', 'extra_value', 'lot',
+        fields = ['date', 'lot', 'order_type', 'title', 'costumer', 'payment_method', 'extra_value',
                 'description']
 
 

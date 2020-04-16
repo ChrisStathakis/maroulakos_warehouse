@@ -1,6 +1,7 @@
 from django import forms
 from .models import Product, ProductStorage, ProductIngredient, ProductClass, Category
-from dal import autocomplete
+from project_settings.models import Storage
+from dal.autocomplete import ModelSelect2
 
 
 class BaseForm(forms.Form):
@@ -46,6 +47,7 @@ class ProductServiceForm(ProductForm):
                   'taxes_modifier',
                   ]
 
+
 class ProductClassForm(BaseForm, forms.ModelForm):
 
     class Meta:
@@ -62,13 +64,15 @@ class ProductCreateForm(BaseForm, forms.ModelForm):
 
 class ProductStorageForm(BaseForm, forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.all(), required=True, widget=forms.HiddenInput())
+    storage = forms.ModelChoiceField(queryset=Storage.objects.filter(active=True), label='Αποθηκη')
 
     class Meta:
         model = ProductStorage
         fields = ['product', 'storage', 'priority']
 
 
-from dal.autocomplete import  ModelSelect2
+class ProductStorageEditForm(ProductStorageForm):
+    storage = forms.ModelChoiceField(queryset=Storage.objects.filter(active=True), label='Αποθηκη', widget=forms.HiddenInput())
 
 
 class ProductIngredientForm(BaseForm, forms.ModelForm):

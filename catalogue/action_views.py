@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, reverse
 from .models import Product, ProductStorage, ProductIngredient
 from warehouse.forms import VendorForm
-from .forms import ProductStorageForm, ProductIngredientForm, CategoryForm
+from .forms import ProductStorageForm, ProductIngredientForm, CategoryForm, ProductStorageEditForm
 from project_settings.forms import StorageForm
 
 
@@ -19,7 +19,7 @@ def create_storage_form_view(request, pk):
     if form.is_valid():
         form.save()
     else:
-        print('errors', form.errors)
+        messages.warning(request, form.errors)
     return redirect(instance.get_edit_url())
 
 
@@ -28,9 +28,9 @@ def create_product_ingredient_view(request, pk):
     instance = get_object_or_404(Product, id=pk)
     form = ProductIngredientForm(request.POST or None, initial={'product': instance})
     if form.is_valid():
-        data = form.save()
+        form.save()
     else:
-        print('errors', form.errors)
+        messages.warning(request, form.errors)
     return redirect(instance.get_edit_url())
 
 
@@ -77,7 +77,7 @@ def class_copy_product_view(request, pk):
 class ProductStorageUpdateView(UpdateView):
     template_name = 'catalogue/form_view.html'
     model = ProductStorage
-    form_class = ProductStorageForm
+    form_class = ProductStorageEditForm
 
     def get_success_url(self):
         return self.object.product.get_edit_url()

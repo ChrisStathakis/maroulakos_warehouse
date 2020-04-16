@@ -93,7 +93,9 @@ def validate_connect_to_warehouse_view(request, pk, dk):
         old_storage = sale_item.storage
         sale_item.warehouse_item = warehouse_item
         sale_item.storage = warehouse_item.storage
+        sale_item.expiration_date = warehouse_item.expiration_date
         sale_item.save()
+
 
         old_warehouse_item.save() if old_warehouse_item is not None else ''
         old_storage.save() if old_storage is not None else ''

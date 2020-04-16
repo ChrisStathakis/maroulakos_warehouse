@@ -29,11 +29,11 @@
                                         <tbody>
                                             <tr>
                                                 <th>Πελατης</th>
-                                                <th>{{ instance.title }}</th>
+                                                <th>{{ instance.costumer }}</th>
                                             </tr>
                                             <tr>
-                                                <th>Κωδικος</th>
-                                                <th>{{ instance.title }}</th>
+                                                <th>L.O.T.</th>
+                                                <th>{{ instance.lot }}</th>
                                             </tr>
                                             <tr>
                                                 <th>Ειδος</th>
@@ -41,7 +41,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Ημερομηνια - Ωρα</th>
-                                                <th>{{ instance.date|date:"d/m/Y"}} - {{ instance.date}}</th>
+                                                <th>{{ instance.date|date:"d/m/Y"}}</th>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -62,6 +62,7 @@
                                                 <th class="border-0 text-uppercase small font-weight-bold">Αποθηκη</th>
                                                 <th colspan="2" class="border-0 text-uppercase small font-weight-bold">Παραστατικο</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Ποσοτητα</th>
+                                                 <th class="border-0 text-uppercase small font-weight-bold">Ημερομηνια Ληξης</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -72,6 +73,7 @@
                                                     <td>{{ ele.storage }}</td>
                                                     <td colspan="2">{{ ele.warehouse_item.date }} | {{ ele.warehouse_item.invoice.title }}</td>
                                                     <td>{{ ele.qty }}</td>
+                                                    <td>{{ ele.expiration_date|date:"d/m/Y" }}</td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -99,9 +101,9 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>{{ item.date }}</td>
+                                                <td>{{ item.warehouse_item.date|date:"d/m/Y" }}</td>
                                                 <td>{{ item.warehouse_item.invoice.title }}</td>
-                                                <td>{{ item.storage }}</td>
+                                                <td>{{ item.warehouse_item.storage }}</td>
                                                 <td>{{ item.product }}</td>
                                                 <td>{{ item.qty }}</td>
                                             </tr>
@@ -131,7 +133,7 @@
                                                     <td>{{ ele.storage }}</td>
                                                     <td>{{ ele.product.vendor }}</td>
                                                     <td>{{ ele.product }}</td>
-                                                    <td>{{ ele.warehouse_item.invoice.date }}</td>
+                                                    <td>{{ ele.warehouse_item.invoice.date|date:"d/m/Y" }}</td>
                                                     <td>{{ ele.qty }}</td>
                                                 </tr>
                                             {% endfor %}

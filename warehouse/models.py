@@ -154,7 +154,7 @@ class Invoice(models.Model):
         qs = self.order_items.all()
         self.value = qs.aggregate(Sum('total_clean_value'))['total_clean_value__sum'] if qs.exists() else 0.00
         self.taxes_value = qs.aggregate(Sum('taxes_value'))['taxes_value__sum'] if qs.exists() else 0.00
-        self.final_value = Decimal(self.value) + Decimal(self.extra_value) + Decimal(self.taxes_value)
+        self.final_value = round(Decimal(self.value) + Decimal(self.extra_value) + Decimal(self.taxes_value), 2)
         super(Invoice, self).save(*args, **kwargs)
         if self.vendor:
             self.vendor.update_value()
@@ -198,7 +198,7 @@ class InvoiceItem(models.Model):
         ('c', 'Κιλό'),
 
     )
-    order_code = models.CharField(max_length=50, blank=True)
+    order_code = models.CharField(max_length=50, blank=True, verbose_name='Κωδικος Τιμολογιου')
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='Προμηθευτης')
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='invoice_items', verbose_name='Προϊον')
@@ -217,12 +217,14 @@ class InvoiceItem(models.Model):
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.PROTECT, related_name='storage_invoices', verbose_name='Αποθηκη')
     used_qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Χρησιμοποιημενη Ποσοτητα', default=0)
-    locked = models.BooleanField(default=False)
+    locked = models.BooleanField(default=False, verbose_name='Κλειδωμενο')
 
     def save(self, *args, **kwargs):
-        self.clean_value = self.qty * self.value
-        self.discount_value = Decimal(self.clean_value) * Decimal(self.discount / 100)
-        self.total_clean_value = Decimal(self.clean_value) - Decimal(self.discount_value)
+        print(self.value,100-self.discount/100, self.discount)
+        self.clean_value = self.value * ((100-self.discount)/100)
+        self.discount_value = (Decimal(self.value) * Decimal(self.discount / 100)) * (self.qty)
+        self.total_clean_value = self.clean_value * self.qty
+
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.taxes_modifier / 100)
         self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
         self.used_qty = self.warehouse_items.aggregate(Sum('qty'))['qty__sum'] if self.warehouse_items.exists() else 0

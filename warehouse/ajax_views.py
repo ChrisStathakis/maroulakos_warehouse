@@ -62,7 +62,7 @@ def ajax_create_product_modal(request, pk, dk):
                                     'taxes_modifier': product.taxes_modifier,
                                     'discount': product.order_discount,
                                     'value': product.price_buy,
-                                    'order_code': product.order_sku
+                                    'order_code': product.order_sku,
                                     }
                            )
     if not product.product_class.have_storage:
@@ -72,9 +72,10 @@ def ajax_create_product_modal(request, pk, dk):
         if qs.exists():
             form.fields['storage'].queryset = qs
             form.fields['storage'].required = True
+            form.fields['storage'].initial = product.favorite_storage()
         else:
             form.fields['storage'].widget = forms.HiddenInput()
-            form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.all(),
+            form.fields['create_storage'] = forms.ModelChoiceField(queryset=Storage.objects.filter(active=True),
                                                                    widget=forms.Select(attrs={'class': 'form-control'}),
                                                                    label='Δημιουργια Αποθηκης'
                                                                    )
