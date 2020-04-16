@@ -33,6 +33,7 @@ class StorageListView(ListView):
         context['queryset_table'] = queryset_table
         context['create_url'] = reverse('settings:storage_create')
         context['back_url'] = reverse('settings:homepage')
+        context['page_title'] = 'Τροποι πληρωμης'
         return context
 
 
@@ -98,6 +99,7 @@ class PaymentMethodListView(ListView):
         context['queryset_table'] = queryset_table
         context['create_url'] = reverse('settings:payment_create')
         context['back_url'] = reverse('settings:homepage')
+        context['page_title'] = 'Τροποι πληρωμης'
         return context
 
 

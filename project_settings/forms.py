@@ -2,6 +2,7 @@ from django import forms
 
 from .models import Storage, PaymentMethod
 
+
 class BaseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -14,7 +15,7 @@ class StorageForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Storage
-        fields = '__all__'
+        fields = ['title', 'active']
 
 
 class PaymentMethodForm(BaseForm, forms.ModelForm):

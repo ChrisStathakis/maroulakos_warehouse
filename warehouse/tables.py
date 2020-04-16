@@ -77,8 +77,10 @@ class WarehouseMovementsInvoiceTable(tables.Table):
 
 
 class InvoiceItemTable(tables.Table):
-
+    tag_date = tables.Column(verbose_name='Ημερομηνια')
+    button = tables.TemplateColumn("<a href='{{ record.get_locked_url }}' class='btn btn-info'><i class='fa fa-plus'></i> </a>",
+                                   orderable=False, verbose_name='-')
     class Meta:
         model = InvoiceItem
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['invoice__date', 'product', 'invoice__title', 'vendor', 'locked']
+        fields = ['tag_date', 'product', 'order_code', 'vendor', 'final_value', 'qty', 'locked', 'button']

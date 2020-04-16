@@ -74,7 +74,7 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['order_sku', 'title', 'unit', 'taxes_modifier', 
+        fields = ['order_sku', 'title', 'unit', 'taxes_modifier',
                   'order_discount', 'product_class', 'vendor', 'price_buy',
                   
                   ]
@@ -87,7 +87,7 @@ class InvoiceItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = InvoiceItem
-        fields = ['order_code', 'unit', 'qty', 'value', 'discount',
+        fields = ['locked','order_code', 'unit', 'qty', 'value', 'discount',
                   'taxes_modifier', 'storage', 'vendor', 'invoice', 'product'
                   ]
 
@@ -108,7 +108,7 @@ class InvoiceTransformationItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = InvoiceTransformationItem
-        fields = ['invoice', 'product', 'storage', 'qty', 'value', 'expiration_date']
+        fields = ['locked', 'invoice', 'product', 'storage', 'qty', 'value', 'expiration_date']
 
 
 class PaymentForm(BaseForm, forms.ModelForm):

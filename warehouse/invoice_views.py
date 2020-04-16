@@ -3,22 +3,15 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import reverse, get_object_or_404, redirect
-from django.utils import timezone
-from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment
-from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, InvoiceTransformationIngredient
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 
-from .forms import PaymentForm, PaymentCreateForm
+
 from .models import Vendor, InvoiceItem
 from .tables import InvoiceItemTable
-from point_of_sale.models import SalesInvoiceItem, SalesInvoice
-from .mixins import ListViewMixin
 
 from django_tables2 import RequestConfig
 
-from decimal import Decimal
-from operator import attrgetter
-from itertools import chain
+
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -33,7 +26,16 @@ class InvoiceItemListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         date_filter, vendor_filter = [True] * 2
-        
+        vendors = Vendor.filters_data(self.request, Vendor.objects.filter(id__in=self.object_list.values_list('vendor__id')))
         queryset_table = InvoiceItemTable(self.object_list)
+        RequestConfig(self.request, paginate={'per_page': self.paginate_by}).configure(queryset_table)
         context.update(locals())
         return context
+
+
+@staff_member_required
+def order_item_locked_view(request, pk):
+    instance = get_object_or_404(InvoiceItem, id=pk)
+    instance.locked = True if not instance.locked else False
+    instance.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

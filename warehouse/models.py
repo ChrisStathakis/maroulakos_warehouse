@@ -177,6 +177,8 @@ class Invoice(models.Model):
     def tag_person(self):
         return self.vendor
 
+    
+
     @staticmethod
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
@@ -237,6 +239,9 @@ class InvoiceItem(models.Model):
     def get_delete_url(self):
         return reverse('warehouse:delete_invoice_item', kwargs={'pk': self.id})
 
+    def get_locked_url(self):
+        return reverse('warehouse:invoice_item_locked', kwargs={'pk': self.id})
+
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')
         return str_value
@@ -255,6 +260,11 @@ class InvoiceItem(models.Model):
 
     def tag_discount(self):
         return str(self.discount).replace('.', ',')
+
+    def tag_date(self):
+        return self.invoice.date
+
+    
 
     @property
     def transaction_type_method(self):

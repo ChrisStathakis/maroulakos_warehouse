@@ -151,7 +151,7 @@ def ajax_banking_account_edit_modal_view(request, pk):
 @staff_member_required
 def ajax_edit_ingredient_view(request, pk):
     instance = get_object_or_404(InvoiceTransformationIngredient, id=pk)
-    order_items = InvoiceItem.objects.filter(product=instance.product).order_by('locked')[:10]
+    order_items = InvoiceItem.objects.filter(product=instance.product, locked=False).order_by('locked')[:10]
     data = dict()
     data['result'] = render_to_string(template_name='warehouse/ajax/ingre_modal.html',
                                       request=request,

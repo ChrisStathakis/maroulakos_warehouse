@@ -72,7 +72,7 @@
                             <tbody>
                                 {% for item in order_items %}
                                     <tr>
-                                        <td>{{ item.order_code }}</td>
+                                        <td {% if item.locked %} class="table-warning" {% endif %}>{{ item.order_code }}</td>
                                         <td>{{ item.product }}</td>
                                         <td>{{ item.qty }}
                                             {% if item.storage %}<br> {{ item.storage }}{% endif %}

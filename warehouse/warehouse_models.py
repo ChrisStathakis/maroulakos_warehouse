@@ -136,7 +136,7 @@ class InvoiceTransformationItem(models.Model):
     total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     # ixnilasimitita
     used_qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    locked = models.BooleanField(default=False)
+    locked = models.BooleanField(default=False, verbose_name='Κλειδωμενο')
 
     def save(self, *args, **kwargs):
         qs = self.transf_ingre.all()

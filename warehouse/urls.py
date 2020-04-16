@@ -26,7 +26,7 @@ from .warehouse_movements_view import (WarehouseMovementsInvoiceListView, Create
 from .autocomplete import VendorAutocomplete
 from .analysis_views import ReportHomepageView, InvoiceListAnalysisView, InvoiceItemListAnalysisView
 from .payment_view import PaymentListView, PaymentCreateView, PaymentUpdateView, payment_delete_view
-from .invoice_views import InvoiceItemListView
+from .invoice_views import InvoiceItemListView, order_item_locked_view
 
 app_name = 'warehouse'
 
@@ -130,6 +130,7 @@ urlpatterns = [
 
 
     path('invoice-items-list/', InvoiceItemListView.as_view(), name='invoice_item_list_view'),
+    path('invoice-item-locked/<int:pk>/', order_item_locked_view, name='invoice_item_locked'),
 
     # autocomplete
     path('autocomplete-vendor/', VendorAutocomplete.as_view(), name='vendor_autocomplete'),
