@@ -99,11 +99,14 @@ class SalesInvoiceItem(models.Model):
     lot = models.CharField(blank=True, null=True, max_length=25)
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
+
     value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή')
-    clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Συνολικη Αξια Προ Φορου')
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
+
+    final_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια Με φορο')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
+
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.CASCADE)
 
     warehouse_item = models.ForeignKey(InvoiceTransformationItem, null=True, blank=True, on_delete=models.PROTECT, related_name='sale_items')
@@ -112,9 +115,10 @@ class SalesInvoiceItem(models.Model):
         if self.invoice.lot:
             self.lot = self.invoice.lot
         self.date = self.invoice.date
-        self.clean_value = Decimal(self.qty * self.value) * Decimal((100-self.taxes_modifier)/100)
-        self.total_value = self.qty * self.value
-        self.taxes_value = self.total_value * Decimal(self.taxes_modifier/100)
+        self.final_value = Decimal(self.value) + (Decimal(self.value)*(Decimal(self.taxes_modifier)/100))
+        self.total_value = self.qty * self.final_value
+
+        self.taxes_value = (self.value*(Decimal(self.taxes_modifier)/100))*self.qty
         super().save(*args, **kwargs)
 
         if self.storage:
@@ -129,7 +133,7 @@ class SalesInvoiceItem(models.Model):
         return str_value
 
     def tag_clean_value(self):
-        return str(self.clean_value).replace('.', ',')
+        return str(self.value).replace('.', ',')
 
     @property
     def transaction_type_method(self):

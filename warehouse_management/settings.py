@@ -1,5 +1,5 @@
 import os
-
+from decouple import config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -8,13 +8,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_o@!!plzt#etcp(p8#lli147i%j-l0-c&s=u3q_wp)l3yg&rr-'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+PRODUCTION = True
 
-ALLOWED_HOSTS = ['maroulakoswarehouse.herokuapp.com', '127.0.0.1']
-
+ALLOWED_HOSTS = ['maroulakoswarehouse.herokuapp.com', ] if PRODUCTION else ['127.0.0.1', ]
 
 # Application definition
 
@@ -75,15 +75,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'warehouse_management.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if PRODUCTION:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config('Database'),
+            'USER': config('User'),
+            'PASSWORD': config('Password'),
+            'HOST': config('Host'),
+            'PORT': '5432',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
