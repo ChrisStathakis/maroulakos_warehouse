@@ -14,7 +14,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 PRODUCTION = True
 
-ALLOWED_HOSTS = ['maroulakoswarehouse.herokuapp.com', ] if PRODUCTION else ['127.0.0.1', ]
+ALLOWED_HOSTS = ['maroulakoswarehouse.herokuapp.com', '127.0.0.1', ] if PRODUCTION else ['127.0.0.1', ]
 
 # Application definition
 

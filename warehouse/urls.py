@@ -16,7 +16,7 @@ from .action_views import (validate_invoice_form_view, create_product_from_invoi
                            )
 from .ajax_views import (ajax_create_product_modal, ajax_modify_order_item_modal,
                          ajax_banking_account_create_modal_view, ajax_banking_account_edit_modal_view, ajax_employer_edit_modal_view,
-                         ajax_search_products_view, ajax_edit_ingredient_view
+                         ajax_search_products_view, ajax_edit_ingredient_view, ajax_search_products_warehouse_view
                          )
 
 from .warehouse_movements_view import (WarehouseMovementsInvoiceListView, CreateWarehouseMovementsInvoiceView,
@@ -81,6 +81,7 @@ urlpatterns = [
     path('ajax-modify-order-item-modal/<int:pk>/', ajax_modify_order_item_modal, name='ajax_modify_order_item'),
     path('ajax/search-products/<int:pk>/', ajax_search_products_view, name='ajax_search_products'),
     path('ajax-edit-ingre-modal/<int:pk>/', ajax_edit_ingredient_view, name='ajax_edit_ingre_modal'),
+    path('ware-search-products/<int:pk>/', ajax_search_products_warehouse_view, name='search_products_ware'),
 
 
 

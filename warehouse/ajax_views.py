@@ -159,3 +159,19 @@ def ajax_edit_ingredient_view(request, pk):
                                       context=locals()
                                       )
     return JsonResponse(data)
+
+
+@staff_member_required
+def ajax_search_products_warehouse_view(request, pk):
+    instance = get_object_or_404(Invoice, id=pk)
+    vendor = instance.vendor
+    products = Product.filters_data(request, Product.objects.filter(vendor=vendor))
+    data = dict()
+    data['result'] = render_to_string(template_name='warehouse/ajax/ware_product_container.html',
+                                      request=request,
+                                      context={
+                                          'products': products,
+                                          'object': instance,
+                                      }
+                                    )
+    return JsonResponse(data)

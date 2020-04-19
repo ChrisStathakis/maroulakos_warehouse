@@ -8,32 +8,12 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Επιλογη Προϊοντος</h4>
+                        <form method="get" class="form">
+                            <input type="text" class="form-control search_button" data-href="{% url 'warehouse:search_products_ware' object.id %}">
+                        </form>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Κωδ. Προμ</th>
-                                    <th>Προϊον</th>
-                                    <th>Τιμη Αγορας</th>
-                                    <th>Εκπτωση</th>
-                                    <th>Υπολοιπο</th>
-                                    <th>--</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in products %}
-                                    <tr>
-                                        <td>{{ product.order_sku }}</td>
-                                        <td>{{ product }}</td>
-                                        <td>{{ product.price_buy }}</td>
-                                        <td>{{ product.order_discount }}</td>
-                                        <td>{{ product.qty }}</td>
-                                        <td><button data-href='{% url "warehouse:ajax_create_product" object.id product.id %}' type="button" class="btn btn-success add_button"><i class="fa fa-plus"></i> </button> </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="card-body" id="product_container">
+                       {% include 'warehouse/ajax/ware_product_container.html' %}
                     </div>
                 </div>
 
@@ -163,6 +143,25 @@
 
 
 {% block extra_js %}
+
+    <script>
+        $('.search_button').change(function (evt) {
+            evt.preventDefault();
+            const myInput = $(this);
+            const url = myInput.attr('data-href');
+            const value = myInput.val();
+            $.ajax({
+                dataType: 'json',
+                url: url + '?q='+ value,
+                method: 'GET',
+
+                success: function (data) {
+                    $('#product_container').html(data.result)
+                }
+            })
+        })
+    </script>
+
     <script>
         $('.add_button').click(function(evt){
             evt.preventDefault();

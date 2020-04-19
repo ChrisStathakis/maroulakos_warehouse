@@ -1,0 +1,44 @@
+ <table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Κωδ. Προμ</th>
+        <th>Προϊον</th>
+        <th>Τιμη Αγορας</th>
+        <th>Εκπτωση</th>
+        <th>Υπολοιπο</th>
+        <th>--</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product.order_sku }}</td>
+            <td>{{ product }}</td>
+            <td>{{ product.price_buy }}</td>
+            <td>{{ product.order_discount }}</td>
+            <td>{{ product.qty }}</td>
+            <td><button data-href='{% url "warehouse:ajax_create_product" object.id product.id %}' type="button" class="btn btn-success add_button"><i class="fa fa-plus"></i> </button> </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+        $('.add_button').click(function(evt){
+            evt.preventDefault();
+            $('.modal_area').empty();
+            const myBtn = $(this);
+            const url = myBtn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function(data){
+                    $('.modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+            })
+        })
+</script>
