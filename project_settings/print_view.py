@@ -20,23 +20,15 @@ from itertools import chain
 
 @staff_member_required
 def storage_movements_view(request, pk):
+    date_filter, prodduct_filter = [True]*2
     storage = get_object_or_404(Storage, id=pk)
     products = ProductStorage.objects.filter(storage=storage)
-    invoices = InvoiceItem.objects.filter(storage__in=products)
-    transformations = InvoiceTransformationItem.objects.filter(storage__in=products)
-    transformations_ingrentients = InvoiceTransformationIngredient.objects.filter(storage__in=products)
-    sales_invoices = SalesInvoiceItem.objects.filter(storage__in=products)
+    invoices = InvoiceItem.filters_data(request, InvoiceItem.objects.filter(storage__in=products))
+    transformations = InvoiceTransformationItem.filters_data(request, InvoiceTransformationItem.objects.filter(storage__in=products))
+    transformations_ingrentients = InvoiceTransformationIngredient.filters_data(request, InvoiceTransformationIngredient.objects.filter(storage__in=products))
+    sales_invoices = SalesInvoiceItem.filter_data(request, SalesInvoiceItem.objects.filter(storage__in=products))
     movements = sorted(chain(invoices, transformations, transformations_ingrentients,sales_invoices),key=attrgetter('date'))
     context = locals()
     return render(request, 'project_settings/storage_analysis.html', context)
 
 
-@method_decorator(staff_member_required, name='dispatch')
-class StoragePrintView(DetailView):
-    template_name = ''
-    model = Storage
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['warehouse_movements']
-        return context

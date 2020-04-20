@@ -122,7 +122,7 @@
                                         {% for ele in payroll %}
                                             <tr>
                                                 <td>{{ ele.date_expired|date }}</td>
-                                                <td>{{ ele.category }}</td>
+                                                <td>{{ ele.person }}</td>
                                                 <td>{{ ele.tag_final_value }}</td>
                                                 <td><a href="{{ ele.get_edit_url }}" class="btn btn-danger"><i class="fa fa-edit"></i> </a> </td>
                                             </tr>
