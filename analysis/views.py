@@ -174,10 +174,17 @@ class BalanceSheetView(TemplateView):
 
         # incomes
         incomes = SalesInvoice.filters_data(self.request, SalesInvoice.objects.all())
+        incomes_per_month_table = incomes.annotate(month=TruncMonth('date')).values('month').annotate(total=Sum('final_value'),
+                                                                                                      taxes=Sum('total_taxes'),
+                                                                                                      clean_value=Sum(F('final_value') - F('total_taxes'))
+                                                                                                      ).values('month', 'total', 'taxes', 'clean_value').order_by('month')
+
         incomes_per_month = incomes.annotate(month=TruncMonth('date')).values('month').annotate(
             total=Sum('final_value')).values('month', 'total').order_by('month')
-        incomes_total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0
 
+        total_taxes = incomes.aggregate(Sum('total_taxes'))['total_taxes__sum'] if incomes.exists() else 0
+        incomes_total = incomes.aggregate(Sum('final_value'))['final_value__sum'] if incomes.exists() else 0
+        clean_value = incomes_total - total_taxes
         # vendors data
 
         invoices = Invoice.filters_data(self.request, Invoice.objects.all())

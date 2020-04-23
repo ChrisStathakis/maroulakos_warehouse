@@ -43,6 +43,10 @@ class SalesInvoice(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def clean_value(self):
+        return self.final_value - self.total_taxes
+
     def tag_final_value(self):
         return f'{self.final_value} {CURRENCY}'
 

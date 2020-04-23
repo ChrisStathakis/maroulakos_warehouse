@@ -6,7 +6,8 @@
 <body class="">
   <div class="wrapper ">
     {% block navbar %}{% include 'include/navbar.html' %} {% endblock %}
-    <div class="main-panel">
+      <div class="main-panel">
+
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -75,9 +76,105 @@
 
   <canvas id="bigDashboardChart"></canvas>
         </div> -->
-        {% block content %}
-           <div class="content">
-               <div class="row">
+          {% block content %}
+              <div class="content">
+                  <div class="row">
+                      <div class="col-3">
+                           <div class="card">
+                               <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-4">
+                                          <i class="fa fa-plus"></i>
+                                        </div>
+                                        <div style="color: green" class="col-8">
+                                            <div class="numbers">
+                                                <p>Τζιρος</p>
+                                                <br>
+                                                 {{ total_incomes }} {{ currency }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <a href="{% url 'analysis:income_analysis' %}"><i class="ti-reload"></i> Αναλυση Πωλησεων</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="col-3">
+                           <div class="card">
+                               <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-4">
+                                          <i class="fa fa-plus"></i>
+                                        </div>
+                                        <div style="color: red" class="col-8">
+                                            <div class="numbers">
+                                                <p>Υπολοιπο Προμηθευτων</p>
+                                                {{ total_vendors }} {{ currency }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <a href="{% url 'warehouse:vendor_list' %}"><i class="ti-reload"></i> Προμηθευτες</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="col-3">
+                           <div class="card">
+                               <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-2">
+                                          <i class="fa fa-plus"></i>
+                                        </div>
+                                        <div style="color: #8bd8ff" class="col-10">
+                                            <div class="numbers">
+                                                <p>Υπολοιπο Πελατών</p>
+                                                <br>
+                                                {{ total_costumers }} {{ currency }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <a href="{% url 'costumers:costumer_list' %}"><i class="ti-reload"></i> Πελατες</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="col-3">
+                           <div class="card">
+                               <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-2">
+                                          <i class="fa fa-plus"></i>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="numbers">
+                                                <p>Υπολοιπο Λογαριασμών</p>
+                                                 {{ total_bills }} {{ currency }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <a href="{% url 'payroll_bills:bill_list' %}"><i class="ti-reload"></i> Λογαριασμοι</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                  <div class="row">
                    <div class="col-4">
                         <div class="card">
                             <div class="card-header"><h5>Λογαριασμοι</h5></div>

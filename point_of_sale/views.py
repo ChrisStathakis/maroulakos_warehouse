@@ -105,7 +105,7 @@ def order_items_analysis_view(request):
     order_items = SalesInvoiceItem.filter_data(request, SalesInvoiceItem.objects.all())
     costumers_id = order_items.values_list('costumer')
     costumers = Costumer.objects.filter(id__in=costumers_id)
-    sells_per_costumer = order_items.values('costumer__eponimia').annotate(total_value=Sum('total_value'), total_qty=Sum('qty')).order_by('qty')
+    sells_per_costumer = order_items.values('costumer__eponimia').annotate(total_value=Sum('total_value'), total_qty=Sum('qty')).order_by('total_qty')
     sells_per_product = order_items.values('product__title').annotate(total_value=Sum('total_value'),
                                                                         total_qty=Sum('qty')).order_by('qty')
     context = locals()

@@ -153,20 +153,18 @@
                             </thead>
                             <tbody>
                                 <tr class=>
-                                    <th>Συνολο Ζ</th>
-                                    <th>{{ total_z }} {{ currency }}</th>
+                                    <th>Καθαρη Αξια</th>
+                                    <th>{{ clean_value }} {{ currency }}</th>
                                 </tr>
                                 <tr>
-                                    <td>Συνολο POS</td>
-                                    <td>{{ total_pos }} {{ currency }}</td>
+                                    <td>ΦΠΑ</td>
+                                    <td>{{ total_taxes }} {{ currency }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Συνολο Τιμολογιων</td>
-                                    <td>{{ total_order}} {{ currency }}</td>
+
                                 </tr>
                                 <tr>
-                                    <td>Μετρητα</td>
-                                    <td>{{ total_cash}} {{ currency }}</td>
+
                                 </tr>
                                 <tr>
                                     <td>Συνολο</td>
@@ -297,21 +295,18 @@
                              <thead>
                                 <tr>
                                     <th>Μηνας</th>
-                                    <th>Συνολο Ζ</th>
-                                    <th>Συνολο POS</th>
-                                    <th>Συνολο Μετρητων</th>
-                                    <th>Συνολο Τιμολογιων</th>
+                                    <th>Καθαρα Εσοδα</th>
+                                    <th>Συνολο Φπα</th>
                                     <th>Συνολο</th>
+
                                 </tr>
                              </thead>
                              <tbody>
                                 {% for income in incomes_per_month_table %}
                                     <tr>
                                         <td>{{ income.month }}</td>
-                                        <td>{{ income.total_z }} {{ currency }}</td>
-                                        <td>{{ income.total_pos }} {{ currency }}</td>
-                                        <td>{{ income.total_cash }} {{ currency }}</td>
-                                        <td>{{ income.total_order }} {{ currency }}</td>
+                                        <td>{{ income.clean_value }} {{ currency }}</td>
+                                        <td>{{ income.taxes }} {{ currency }}</td>
                                         <td class="table-success">{{ income.total }} {{ currency }}</td>
                                     </tr>
                                 {% endfor %}
