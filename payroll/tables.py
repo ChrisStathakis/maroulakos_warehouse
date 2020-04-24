@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from .models import Payroll, Person, Occupation, BillCategory, Bill
+from .models import Payroll, Person, Occupation, BillCategory, Bill, GenericExpense, GenericExpensePerson, GenericExpenseCategory
 
 
 class PayrollTable(tables.Table):
@@ -129,3 +129,37 @@ class BillCategoryTable(tables.Table):
         model = BillCategory
         template_name = 'django_tables2/bootstrap.html'
         fields = ['title', 'tag_balance', 'active', 'action']
+
+
+class GenericExpenseTable(tables.Table):
+    action = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'>"
+                                   "<i class='fa fa-edit'> </i> </a>",
+                                   orderable=False, verbose_name='Επεξεργασια')
+
+    class Meta:
+        model = GenericExpense
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['date_expired', 'person', 'category', 'is_paid', 'final_value', 'action']
+
+
+class GenericExpensePersonTable(tables.Table):
+    action = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'>"
+                                   "<i class='fa fa-edit'> </i> </a>",
+                                   orderable=False, verbose_name='Επεξεργασια')
+
+    class Meta:
+        model = GenericExpensePerson
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['title', 'phone', 'balance', 'action']
+
+
+class GenericExpenseCategoryTable(tables.Table):
+    action = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'>"
+                                   "<i class='fa fa-edit'> </i> </a>",
+                                   orderable=False, verbose_name='Επεξεργασια')
+
+    class Meta:
+        model = GenericExpenseCategory
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ['title',]
+

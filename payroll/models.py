@@ -404,7 +404,41 @@ class GenericExpenseCategory(models.Model):
         return queryset
 
 
+class GenericExpensePerson(models.Model):
+    active = models.BooleanField(default=True)
+    title = models.CharField(max_length=150)
+    phone = models.CharField(max_length=150)
+    balance = models.DecimalField(default=0, decimal_places=2, max_digits=20)
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name_plural = '7. Γενικά Έξοδα'
+        verbose_name = 'Έξοδο'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+
+    def tag_balance(self):
+        return f'{self.balance} {CURRENCY}'
+
+    def get_edit_url(self):
+        return reverse('payroll_bills:generic_person_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('payroll_bills:generic_person_delete', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, queryset):
+        search_name = request.GET.get('search_name', None)
+
+        queryset = queryset.filter(title__icontains=search_name) if search_name else queryset
+        return queryset
+
 class GenericExpense(DefaultOrderModel):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     category = models.ForeignKey(GenericExpenseCategory,
                                  null=True,
                                  on_delete=models.PROTECT,
@@ -478,8 +512,6 @@ def update_expense_category(sender, instance, **kwargs):
 @receiver(pre_delete, sender=GenericExpense)
 def delete_generic_order_items(sender, instance, **kwargs):
     for order in instance.payment_orders.all(): order.delete()
-
-
 
 
 

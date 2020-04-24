@@ -1,5 +1,5 @@
 from django import forms
-from .models import Payroll, Person, Occupation
+from .models import Payroll, Person, Occupation, GenericExpensePerson, GenericExpense, GenericExpenseCategory
 from .models import Bill,BillCategory
 
 
@@ -67,3 +67,23 @@ class BillFromCategoryForm(BillForm):
 class PersonBillForm(BillForm):
     person = forms.ModelChoiceField(queryset=Person.objects.all(), widget=forms.HiddenInput())
 
+
+class GenericExpenseForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = GenericExpense
+        fields = ['date_expired', 'title', 'person', 'category', 'value', 'is_paid']
+
+
+class GenericExpensePersonForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = GenericExpensePerson
+        fields = ['title', 'phone']
+
+
+class GenericExpenseCategoryForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = GenericExpenseCategory
+        fields = ['title',]

@@ -14,6 +14,10 @@ from .bill_views import (BillListView, BillUpdateView, BillCreateView, bill_dele
                          BillCategoryListView, BillCategoryUpdateView, BillCategoryCreateView, bill_category_delete_view,
                          BillCategoryCardView
                          )
+from .general_expenses import (GenericExpenseListView, GenericExpenseCreateView, GenericExpenseUpdateView, generic_expense_delete_view,
+                               GenericExpensePersonListView, GenericExpensePersonUpdateView, GenericExpensePersonCreateView, generic_person_delete_view,
+                               GenericExpenseCategoryListView, GenericExpenseCategoryUpdateView, GenericExpenseCategoryCreateView, expense_category_delete_view
+                               )
 
 from .ajax_views import ajax_bill_form_modal_view
 
@@ -70,6 +74,25 @@ urlpatterns = [
     path('bill/copy/<int:pk>/', copy_bill_view, name='copy_bill_view'),
     path('action/payroll-pay/<int:pk>/', action_pay_bill_view, name='action_pay_bill'),
     path('bill/validate-edit-form/<int:pk>/', validate_edit_bill_form, name='validate_bill_edit_form'),
+
+
+    # generic expenses
+
+    path('generic-expenses/list/', GenericExpenseListView.as_view(), name='generic_expense_list'),
+    path('generic-expenses/create/', GenericExpenseCreateView.as_view(), name='generic_expense_create'),
+    path('generic-expenses/update/<int:pk>/', GenericExpenseUpdateView.as_view(), name='generic_expense_update'),
+    path('generic-expenses/delete/<int:pk>/', generic_expense_delete_view, name='generic_expense_delete'),
+
+    path('generic-person/list/', GenericExpensePersonListView.as_view(), name='generic_person_list'),
+    path('generic-person/create/', GenericExpensePersonCreateView.as_view(), name='generic_person_create'),
+    path('generic-person/update/<int:pk>/', GenericExpensePersonUpdateView.as_view(), name='generic_person_update'),
+    path('generic-person/delete/<int:pk>/', generic_person_delete_view, name='generic_person_delete'),
+
+    path('generic-category/list/', GenericExpenseCategoryListView.as_view(), name='generic_category_list'),
+    path('generic-category/create/', GenericExpenseCategoryCreateView.as_view(), name='generic_category_create'),
+    path('generic-category/update/<int:pk>/', GenericExpenseCategoryUpdateView.as_view(), name='generic_category_update'),
+    path('generic-category/delete/<int:pk>/', expense_category_delete_view, name='generic_category_delete'),
+
     
 
     # ajax_views

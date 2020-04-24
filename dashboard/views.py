@@ -22,7 +22,7 @@ class DashboardHomepageView(TemplateView):
         context['total_incomes'] = incomes_qs.aggregate(Sum('final_value'))['final_value__sum'] if incomes_qs.exists() else 0.00
         context['total_vendors'] = Vendor.objects.all().aggregate(Sum('balance'))['balance__sum'] if Vendor.objects.exists() else 0.00
         context['total_costumers'] = Costumer.objects.all().aggregate(Sum('balance'))['balance__sum'] if Costumer.objects.exists() else 0.00
-        context['total_bills'] = Bill.objects.filter(is_paid=False).aggregate('value')['value__sum'] if Bill.objects.filter(is_paid=False) else 0.00
+        context['total_bills'] = Bill.objects.filter(is_paid=False).aggregate(Sum('value'))['value__sum'] if Bill.objects.filter(is_paid=False) else 0.00
         context['bills'] = Bill.objects.filter(is_paid=False)[:8]
         context['payroll'] = Payroll.objects.filter(is_paid=False)[:8]
         context['vendor_payments'] = Payment.objects.all()[:8]
