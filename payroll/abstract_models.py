@@ -24,9 +24,9 @@ class DefaultOrderModel(models.Model):
     value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Αξία')
     taxes = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Φόροι')
     paid_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Πληρωτέο Ποσό')
-    final_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Τελική Αξίσ')
+    final_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Τελική Αξία')
     discount = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Επιπλέον Έκπτωση')
-    is_paid = models.BooleanField(default=False, verbose_name='Πληρωμένο?')
+    is_paid = models.BooleanField(default=False, verbose_name='Πληρωμενο?')
     printed = models.BooleanField(default=False, verbose_name='Εκτυπωμένο')
     objects = models.Manager()
 

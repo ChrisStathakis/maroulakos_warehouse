@@ -15,7 +15,7 @@ from itertools import chain
 from costumers.models import CostumerPayment
 from point_of_sale.models import SalesInvoice
 from catalogue.models import Product, ProductStorage
-from payroll.models import Bill, Payroll
+from payroll.models import Bill, Payroll, GenericExpense
 from warehouse.models import Payment, Invoice, Vendor
 from warehouse.warehouse_models import InvoiceTransformation
 from .tools import sort_months
@@ -82,6 +82,13 @@ class AnalysisOutcomeView(TemplateView):
         bills = Bill.filters_data(self.request, Bill.objects.all())
         payrolls = Payroll.filters_data(self.request, Payroll.objects.all())
         invoices = Invoice.filters_data(self.request, Invoice.objects.filter(order_type__in=['a']))
+        generic_expenses = GenericExpense.filters_data(self.request, GenericExpense.objects.all())
+
+        # analyse general expenses
+        total_generic = generic_expenses.aggregate(Sum('final_value'))['final_value__sum'] if generic_expenses else 0
+        analysis_generic = generic_expenses.values('category__title').annotate(total=Sum('final_value')).order_by('-total')
+        analysis_generic_per_month = generic_expenses.annotate(month=TruncMonth('date_expired')).values('month').annotate(
+            total=Sum('final_value')).values('month', 'total').order_by('month')
 
         # analyse bills
         total_bills = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills else 0
@@ -101,10 +108,10 @@ class AnalysisOutcomeView(TemplateView):
         payroll_analysis_per_month = payrolls.annotate(month=TruncMonth('date_expired')).values('month'). \
             annotate(total=Sum('final_value')).values('month', 'total').order_by('month')
 
-        total_expenses = total_bills + total_payroll + total_invoices
+        total_expenses = total_bills + total_payroll + total_invoices + total_generic
 
         # create unique months
-        months = sort_months([analysis_invoices_per_month, analysis_bills_per_month, payroll_analysis_per_month])
+        months = sort_months([analysis_invoices_per_month, analysis_bills_per_month, payroll_analysis_per_month, analysis_generic_per_month])
         result_per_months = []
         for month in months:
             data = {
@@ -123,10 +130,15 @@ class AnalysisOutcomeView(TemplateView):
                 if ele['month'] == month:
                     data['payroll'] = ele['total']
                     data['total'] = data['total'] + ele['total']
+            for ele in analysis_generic_per_month:
+                if ele['month'] == month:
+                    data['generic'] = ele['total']
+                    data['total'] = data['total'] + ele['total']
             # put the data together
             data['invoice'] = data['invoice'] if 'invoice' in data.keys() else 0
             data['bills'] = data['bills'] if 'bills' in data.keys() else 0
             data['payroll'] = data['payroll'] if 'payroll' in data.keys() else 0
+            data['generic'] = data['generic'] if 'generic' in data.keys() else 0
             result_per_months.append(data)
         context.update(locals())
         return context
@@ -145,7 +157,7 @@ class CashRowView(TemplateView):
         incomes = CostumerPayment.filters_data(self.request, CostumerPayment.objects.all()).order_by('date')
         total = incomes.aggregate(Sum('value'))['value__sum'] if incomes.exists() else 0
 
-        # vendor_paymets
+        # vendor_payments
         vendor_payments = Payment.filters_data(self.request, Payment.objects.all())
         vendor_payments_total = vendor_payments.aggregate(Sum('value'))['value__sum'] if vendor_payments.exists() else 0
 
@@ -155,9 +167,12 @@ class CashRowView(TemplateView):
         bills = Bill.filters_data(self.request, Bill.objects.filter(is_paid=True))
         bills_total = bills.aggregate(Sum('final_value'))['final_value__sum'] if bills.exists() else 0
 
-        total_expenses = vendor_payments_total + bills_total + payrolls_total
+        generic_expenses = GenericExpense.filters_data(self.request, GenericExpense.objects.all())
+        generic_total = generic_expenses.aggregate(Sum('final_value'))['final_value__sum'] if generic_expenses.exists() else 0
+
+        total_expenses = vendor_payments_total + bills_total + payrolls_total + generic_total
         expenses_query = sorted(
-            chain(bills, vendor_payments, payrolls),
+            chain(bills, vendor_payments, payrolls, generic_expenses),
             key=attrgetter('date'))
         diff = round(total - total_expenses, 2)
         context.update(locals())
@@ -221,19 +236,28 @@ class BalanceSheetView(TemplateView):
                                                                        paid_value=Sum('paid_value')) \
             .order_by('person__title')
 
-
+        # general expenses
+        general_expenses = GenericExpense.objects.all()
+        general_per_month = general_expenses.annotate(month=TruncMonth('date_expired')).values('month').annotate(
+            total=Sum('final_value')).values('month', 'total').order_by('month')
+        general_total = general_expenses.aggregate(Sum('final_value'))['final_value__sum'] if general_expenses.exists() else 0
+        general_paid_total = general_expenses.filter(is_paid=True).aggregate(Sum('final_value'))['final_value__sum'] if general_expenses.filter(
+            is_paid=True).exists() else 0
+        general_per_bill = general_expenses.values('category__title').annotate(total_pay=Sum('final_value'),
+                                                                               paid_value=Sum('paid_value'))\
+            .order_by('category__title')
 
 
         # diffs
-        totals = bills_total + payrolls_total + invoices_total
-        paid_totals = bills_paid_total + payrolls_paid_total + payments_total
+        totals = bills_total + payrolls_total + invoices_total + general_total
+        paid_totals = bills_paid_total + payrolls_paid_total + payments_total + general_paid_total
 
         diff_paid = incomes_total - paid_totals
         diff_obligations = incomes_total - totals
 
         # chart analysis
         months = sort_months(
-            [incomes_per_month, invoices_per_month, payroll_per_month, bills_per_month])
+            [incomes_per_month, invoices_per_month, payroll_per_month, bills_per_month, general_per_month])
 
         result_per_months = []
         for month in months:
@@ -257,10 +281,15 @@ class BalanceSheetView(TemplateView):
                 if ele['month'] == month:
                     data['payroll'] = ele['total']
                     data['total'] = data['total'] + ele['total']
+            for ele in general_per_month:
+                if ele['month'] == month:
+                    data['generic'] = ele['total']
+                    data['total'] = data['total'] + ele['total']
             data['invoice'] = data['invoice'] if 'invoice' in data.keys() else 0
             data['bills'] = data['bills'] if 'bills' in data.keys() else 0
             data['payroll'] = data['payroll'] if 'payroll' in data.keys() else 0
             data['generic'] = data['generic'] if 'generic' in data.keys() else 0
+            data['income'] = data['income'] if 'income' in data.keys() else 0
             result_per_months.append(data)
 
         context.update(locals())

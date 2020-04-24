@@ -274,7 +274,7 @@
                                 </tr>
                            </thead>
                            <tbody>
-                            {% for category in expenses_per_category %}
+                            {% for category in general_per_bill %}
                                 <tr>
                                     <td>{{ category.category__title }}</td>
                                     <td>{{ category.total_pay }} {{ currency }}</td>
@@ -381,10 +381,10 @@ var ctx = document.getElementById('expenseChart');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Υποχρεωσεις Προμηθευτων', 'Υπόλοιπο Προμηθευτων', 'Λογαριασμοι', 'Μισθοδοσια'],
+        labels: ['Υποχρεωσεις Προμηθευτων', 'Υπόλοιπο Προμηθευτων', 'Λογαριασμοι', 'Μισθοδοσια', 'Γενικα Εξοδα'],
         datasets: [{
             label: '# Σε Ευρω',
-            data: [{{ invoices_total }},{{ vendors_remaining }}, {{ bills_total }}, {{ payrolls_total }}],
+            data: [{{ invoices_total }},{{ vendors_remaining }}, {{ bills_total }}, {{ payrolls_total }}, {{ general_total }}],
             backgroundColor: [
                 'blue',
                 'red',

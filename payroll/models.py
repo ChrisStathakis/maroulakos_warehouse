@@ -312,11 +312,6 @@ class Payroll(DefaultOrderModel):
     def update_category(self):
         self.person.update_balance()
 
-    def destroy_payments(self):
-        queryset = self.payment_orders.all()
-        for payment in queryset:
-            payment.delete()
-
     def tag_value(self):
         return '%s %s' % (self.value, CURRENCY)
 
@@ -393,8 +388,11 @@ class GenericExpenseCategory(models.Model):
     def tag_balance(self):
         return f'{self.balance} {CURRENCY}'
 
-    def get_dashboard_url(self):
-        return reverse('billings:expense_cate_detail', kwargs={'pk': self.id})
+    def get_edit_url(self):
+        return reverse('payroll_bills:generic_category_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('payroll_bills:generic_category_delete', kwargs={'pk': self.id})
 
     @staticmethod
     def filters_data(request, queryset):
@@ -421,9 +419,6 @@ class GenericExpensePerson(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, *kwargs)
 
-    def tag_balance(self):
-        return f'{self.balance} {CURRENCY}'
-
     def get_edit_url(self):
         return reverse('payroll_bills:generic_person_update', kwargs={'pk': self.id})
 
@@ -437,25 +432,21 @@ class GenericExpensePerson(models.Model):
         queryset = queryset.filter(title__icontains=search_name) if search_name else queryset
         return queryset
 
+
 class GenericExpense(DefaultOrderModel):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(GenericExpensePerson, on_delete=models.CASCADE, verbose_name='Προσωπο')
     category = models.ForeignKey(GenericExpenseCategory,
                                  null=True,
                                  on_delete=models.PROTECT,
-                                 related_name='expenses'
+                                 related_name='expenses',
+                                 verbose_name='Κατηγορια'
                                  )
     objects = models.Manager()
-
-    def tag_model(self):
-        return f'Expenses- {self.category}'
 
     class Meta:
         verbose_name_plural = '3. Εντολή Πληρωμής Γενικών Εξόδων'
         verbose_name = 'Εντολή Πληρωμής'
         ordering = ['is_paid', '-date_expired']
-
-    def __str__(self):
-        return self.title
 
     def save(self, *args, **kwargs):
         self.final_value = self.value
@@ -463,28 +454,33 @@ class GenericExpense(DefaultOrderModel):
         super().save(*args, **kwargs)
         self.category.save()
 
-    def get_dashboard_url(self):
-        return reverse('billings:edit_page', kwargs={'pk': self.id, 'slug': 'edit', 'mymodel': 'expense'})
+    def __str__(self):
+        return self.title
+
+    def tag_model(self):
+        return f'Expenses- {self.category}'
+
+    def report_expense_type(self):
+        return self.category.title
+
+    def report_value(self):
+        return self.final_value
+
+    def report_date(self):
+        return self.date_expired
+
+    @property
+    def date(self):
+        return self.date_expired
+
+    def get_edit_url(self):
+        return reverse('payroll_bills:generic_category_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('payroll_bills:generic_category_delete', kwargs={'pk': self.id})
 
     def get_paid_url(self):
         return reverse('billings:edit_page', kwargs={'pk': self.id, 'slug': 'paid', 'mymodel': 'expense'})
-
-    def get_delete_url(self):
-        return reverse('billings:edit_page', kwargs={'pk': self.id, 'slug': 'delete', 'mymodel': 'expense'})
-
-    def get_dashboard_save_as_url(self):
-        return reverse('billings:save_as_view', kwargs={'pk': self.id, 'slug': 'expense'})
-
-    def get_dashboard_list_url(self):
-        return reverse('billings:expenses_list')
-
-    def update_category(self):
-        self.category.update_balance()
-
-    def destroy_payments(self):
-        queryset = self.payment_orders.all()
-        for payment in queryset:
-            payment.delete()
 
     @staticmethod
     def filters_data(request, queryset):
