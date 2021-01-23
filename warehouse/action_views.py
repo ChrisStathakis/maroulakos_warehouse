@@ -46,20 +46,26 @@ def create_product_from_invoice(request, pk):
     form = InvoiceProductForm(request.POST or None, initial={'vendor': instance.vendor})
     if form.is_valid():
         product = form.save()
+        storage = form.cleaned_data.get('storage')
+        product_storage = ProductStorage.objects.create(
+            product=product,
+            storage=storage,
+            priority=True
+        )
         qty = form.cleaned_data.get('qty', 1)
-        '''
-        new_item =InvoiceItem.object.create(
+        new_item = InvoiceItem.objects.create(
                     order_code=product.order_sku,
                     vendor=product.vendor,
-                    invoice=invoice,    
+                    invoice=instance,
                     product=product,
                     unit=product.unit,
                     qty=qty,
                     value=product.price_buy,
                     discount=product.order_discount,
-                    taxes_modifier=product.taxes_modifier    
+                    taxes_modifier=product.taxes_modifier,
+                    storage=product_storage
                 )
-        '''
+
         
         return redirect(instance.get_edit_url())
     else:

@@ -136,15 +136,15 @@ class VendorBankingAccount(models.Model):
 
 class Invoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
-    order_type = models.CharField(max_length=1, choices=INVOICE_TYPES, default='a')
+    order_type = models.CharField(max_length=1, choices=INVOICE_TYPES, default='a', verbose_name='Είδος Παραστατικού')
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
                                        verbose_name='Τροπος Πληρωμης')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
-    value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια', default=0.00)
-    taxes_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Φορος', default=0)
+    value = models.DecimalField(decimal_places=3, max_digits=20, verbose_name='Καθαρή Αξια', default=0.00)
+    taxes_value = models.DecimalField(decimal_places=3, max_digits=20, verbose_name='Φορος', default=0)
     extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία', default=0.00)
-    final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
+    final_value = models.DecimalField(decimal_places=3, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
 
     class Meta:
@@ -205,13 +205,13 @@ class InvoiceItem(models.Model):
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
-    value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή')
+    value = models.DecimalField(max_digits=17, decimal_places=3, verbose_name='Τιμή')
 
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Εκπτωση')
-    discount_value = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Ποσο Εκπτωσης')
+    discount_value = models.DecimalField(max_digits=10, decimal_places=3, default=0, verbose_name='Ποσο Εκπτωσης')
 
-    clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
-    total_clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Καθαρη Αξια')
+    clean_value = models.DecimalField(max_digits=17, decimal_places=3, verbose_name='Αξια')
+    total_clean_value = models.DecimalField(max_digits=17, decimal_places=3, verbose_name='Καθαρη Αξια')
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
@@ -221,7 +221,7 @@ class InvoiceItem(models.Model):
 
     def save(self, *args, **kwargs):
         print(self.value,100-self.discount/100, self.discount)
-        self.clean_value = self.value * ((100-self.discount)/100)
+        self.clean_value = Decimal(self.value) * ((100-Decimal(self.discount))/100)
         self.discount_value = (Decimal(self.value) * Decimal(self.discount / 100)) * (self.qty)
         self.total_clean_value = self.clean_value * self.qty
 

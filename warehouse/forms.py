@@ -1,5 +1,6 @@
 from django import forms
 from .models import Vendor, Note, VendorBankingAccount, Invoice, Payment, Product, InvoiceItem, ProductStorage, Employer
+from project_settings.models import Storage
 from .warehouse_models import InvoiceTransformation, InvoiceTransformationItem, WarehouseMovementInvoiceItem, WarehouseMovementsInvoice
 from dal.autocomplete import ModelSelect2
 
@@ -49,7 +50,7 @@ class InvoiceForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'extra_value', 'description']
+        fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'description']
 
 
 class VendorBankingAccountForm(BaseForm, forms.ModelForm):
@@ -71,12 +72,14 @@ class NoteForm(BaseForm, forms.ModelForm):
 
 class InvoiceProductForm(BaseForm, forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput(), required=True)
+    qty = forms.DecimalField(label='Ποσότητα', required=True)
+    storage = forms.ModelChoiceField(queryset=Storage.objects.all(), required=True, label='Αποθήκη')
 
     class Meta:
         model = Product
         fields = ['order_sku', 'title', 'unit', 'taxes_modifier',
                   'order_discount', 'product_class', 'vendor', 'price_buy',
-                  
+                  'qty',
                   ]
 
 
