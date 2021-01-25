@@ -42,8 +42,8 @@ class WarehouseMovementInvoiceItem(models.Model):
     invoice = models.ForeignKey(WarehouseMovementsInvoice, on_delete=models.CASCADE, verbose_name='Παραστατικο', related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Προϊον', related_name='ware_movements')
     qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Ποσοτητα')
-    value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
-    total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Συνολική Αξια')
+    value = models.DecimalField(max_digits=17, decimal_places=3, verbose_name='Αξια')
+    total_value = models.DecimalField(max_digits=17, decimal_places=3, verbose_name='Συνολική Αξια')
     storage = models.ForeignKey(ProductStorage, on_delete=models.PROTECT, blank=True, null=True, verbose_name='Αποθηκη', related_name='ware_storage_movements')
     used_qty = models.DecimalField(max_digits=17, decimal_places=2, default=0)
     locked = models.BooleanField(default=False)
@@ -89,8 +89,8 @@ class InvoiceTransformation(models.Model):
     date = models.DateField(verbose_name="Ημερομηνια")
     title = models.CharField(max_length=200, verbose_name='Παρτιδα Εμφαλωσης')
     costumer = models.ForeignKey(Costumer, on_delete=models.CASCADE, verbose_name='Πελατης', blank=True, null=True)
-    value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
-    cost = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Κοστολογηση')
+    value = models.DecimalField(decimal_places=3, max_digits=17, default=0, verbose_name='Αξια')
+    cost = models.DecimalField(decimal_places=3, max_digits=17, default=0, verbose_name='Κοστολογηση')
     payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL, blank=True, verbose_name='Τροπος Πληρωμής')
 
     def __str__(self):
@@ -132,8 +132,8 @@ class InvoiceTransformationItem(models.Model):
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Ποσοτητα')
     value = models.DecimalField(decimal_places=2, max_digits=17, default=0, verbose_name='Αξια')
 
-    total_value = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    total_value = models.DecimalField(decimal_places=3, max_digits=17, default=0)
+    total_cost = models.DecimalField(decimal_places=3, max_digits=17, default=0)
     # ixnilasimitita
     used_qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     locked = models.BooleanField(default=False, verbose_name='Κλειδωμενο')
@@ -212,8 +212,8 @@ class InvoiceTransformationIngredient(models.Model):
     warehouse_item = models.ForeignKey(InvoiceItem, null=True, on_delete=models.CASCADE, related_name='warehouse_items')
     qty = models.DecimalField(decimal_places=2, max_digits=17, default=0)
     qty_ratio = models.DecimalField(decimal_places=3, max_digits=17, default=0)
-    cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
-    total_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0)
+    cost = models.DecimalField(decimal_places=3, max_digits=17, default=0)
+    total_cost = models.DecimalField(decimal_places=3, max_digits=17, default=0)
 
     def save(self, *args, **kwargs):
         self.qty = self.invoice_item.qty*self.qty_ratio

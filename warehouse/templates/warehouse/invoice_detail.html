@@ -9,7 +9,7 @@
                     <div class="card-header">
                         <h4>Επιλογη Προϊοντος</h4>
                         <form method="get" class="form">
-                            <input type="text" class="form-control search_button" data-href="{% url 'warehouse:search_products_ware' object.id %}">
+                            <input name="q" type="text" class="form-control search_button" data-href="{% url 'warehouse:search_products_ware' object.id %}">
                         </form>
                     </div>
                     <div class="card-body" id="product_container">

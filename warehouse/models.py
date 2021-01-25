@@ -177,8 +177,6 @@ class Invoice(models.Model):
     def tag_person(self):
         return self.vendor
 
-    
-
     @staticmethod
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)

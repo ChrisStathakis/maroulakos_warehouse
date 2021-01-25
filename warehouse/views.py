@@ -391,6 +391,11 @@ class InvoiceDetailView(UpdateView):
         context['products'] = Product.objects.filter(vendor=self.object.vendor)
         context['product_form'] = InvoiceProductForm(initial={'vendor': self.object.vendor})
         context['order_items'] = self.object.order_items.all()
+        products = Product.objects.filter(vendor=self.object.vendor)
+        q = self.request.GET.get('q', None)
+        if q:
+            products = Product.filters_data(self.request, products)
+        context['products'] = products
         context['page_title'] = f'{self.object.get_order_type_display()} - {self.object.title}'
         return context
 

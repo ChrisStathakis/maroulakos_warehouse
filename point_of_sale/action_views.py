@@ -24,7 +24,8 @@ def create_order_item_view(request, pk, dk):
                                         'invoice': instance,
                                         'costumer': instance.costumer,
                                         'value': product.final_price,
-                                        'order_code': product.sku
+                                        'order_code': product.sku,
+
                                         }
                                 )
     '''
@@ -40,6 +41,7 @@ def create_order_item_view(request, pk, dk):
         return redirect(back_url)
     else:
         messages.warning(request, form.errors)
+    form_title = f'{product.title}'
     return render(request, template_name='point_of_sale/form_view.html', context=locals())
 
 
@@ -95,8 +97,6 @@ def validate_connect_to_warehouse_view(request, pk, dk):
         sale_item.storage = warehouse_item.storage
         sale_item.expiration_date = warehouse_item.expiration_date
         sale_item.save()
-
-
         old_warehouse_item.save() if old_warehouse_item is not None else ''
         old_storage.save() if old_storage is not None else ''
     else:

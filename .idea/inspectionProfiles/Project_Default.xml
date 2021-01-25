@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="95">
+          <list size="96">
             <item index="0" class="java.lang.String" itemvalue="psycopg2" />
             <item index="1" class="java.lang.String" itemvalue="psycopg2-binary" />
             <item index="2" class="java.lang.String" itemvalue="Pillow" />
@@ -100,6 +100,7 @@
             <item index="92" class="java.lang.String" itemvalue="dal-admin-filters" />
             <item index="93" class="java.lang.String" itemvalue="openpyxl" />
             <item index="94" class="java.lang.String" itemvalue="Twisted" />
+            <item index="95" class="java.lang.String" itemvalue="asgiref" />
           </list>
         </value>
       </option>

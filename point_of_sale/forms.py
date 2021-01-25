@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import SalesInvoice, SalesInvoiceItem, Costumer
+from .models import SalesInvoice, SalesInvoiceItem, Costumer, ProductStorage
 from catalogue.models import Product
 from project_settings.forms import BaseForm
 
@@ -24,11 +24,12 @@ class SaleInvoiceItemForm(BaseForm, forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
     invoice = forms.ModelChoiceField(queryset=SalesInvoice.objects.all(), widget=forms.HiddenInput())
     costumer = forms.ModelChoiceField(queryset=Costumer.objects.all(), widget=forms.HiddenInput())
+    storage = forms.ModelChoiceField(queryset=ProductStorage.objects.all(), widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = SalesInvoiceItem
         fields = ['product', 'invoice', 'order_code', 'unit', 'qty',
-                  'value', 'taxes_modifier', 'costumer'
+                  'value', 'taxes_modifier', 'costumer', 'storage'
                   ]
 
 

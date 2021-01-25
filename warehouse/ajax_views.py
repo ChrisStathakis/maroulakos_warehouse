@@ -86,7 +86,8 @@ def ajax_create_product_modal(request, pk, dk):
                                           'form': form,
                                           'product': product,
                                           'action_url': action_url,
-                                          'invoice': invoice
+                                          'invoice': invoice,
+                                          'title': product
                                           }
                                     )
     return JsonResponse(data)

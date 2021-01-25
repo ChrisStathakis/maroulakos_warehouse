@@ -74,6 +74,7 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput(), required=True)
     qty = forms.DecimalField(label='Ποσότητα', required=True)
     storage = forms.ModelChoiceField(queryset=Storage.objects.all(), required=True, label='Αποθήκη')
+    price_buy = forms.DecimalField(label='Αξια', widget=forms.NumberInput(attrs={'step': '0.001'}))
 
     class Meta:
         model = Product

@@ -100,10 +100,10 @@ class Product(models.Model):
     safe_stock = models.DecimalField(max_digits=17, decimal_places=2, default=0, verbose_name='Ασφαλη Αποθεμα')
     safe_warning = models.BooleanField(default=False)
     order_sku = models.CharField(blank=True, null=True, max_length=50, verbose_name='Κωδικος Τιμολογιου')
-    price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0,
+    price_buy = models.DecimalField(decimal_places=3, max_digits=16, default=0,
                                     verbose_name="Τιμή Αγοράς")  # the price which you buy the product
     order_discount = models.IntegerField(default=0, verbose_name="'Εκπτωση Τιμολογίου σε %")
-    qty_kilo = models.DecimalField(max_digits=5, decimal_places=3, default=1,
+    qty_kilo = models.DecimalField(max_digits=10, decimal_places=3, default=1,
                                    verbose_name='Βάρος/Τεμάχια ανά Συσκευασία ')
     taxes_modifier = models.IntegerField(default=24, verbose_name='ΦΠΑ')
     objects = models.Manager()
@@ -244,7 +244,7 @@ class ProductIngredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredients')
     ingredient = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ingredient_value', verbose_name='Συστατικο')
     qty = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Αναλογια')
-    cost = models.DecimalField(decimal_places=2, max_digits=17, verbose_name='Κοστος', default=0)
+    cost = models.DecimalField(decimal_places=3, max_digits=17, verbose_name='Κοστος', default=0)
 
     def save(self, *args, **kwargs):
         price_buy = self.ingredient.price_buy * (100-self.ingredient.order_discount)/100

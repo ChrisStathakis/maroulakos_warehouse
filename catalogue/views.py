@@ -139,7 +139,7 @@ def delete_product_view(request, pk):
     except ProtectedError:
         messages.error(request, 'Το Προϊον Χρησιμοποιειται')
 
-    return redirect(reverse('edit_product_list'))
+    return redirect(reverse('catalogue:product_list'))
 
 
 @staff_member_required
