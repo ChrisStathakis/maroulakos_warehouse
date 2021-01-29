@@ -28,16 +28,13 @@
                                     <table class="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <th>Κωδικος Εμφιαλωσης</th>
+                                                <th>L.O.T ΠΑΡΑΓΩΓΗΣ</th>
                                                 <th>{{ instance.title }}</th>
                                             </tr>
+
                                             <tr>
-                                                <th>Σειρα - Αριθμός</th>
-                                                <th><p class="font-weight-bold mb-1">{{ instance.get_series_display }}-{{ instance.number }}</p></th>
-                                            </tr>
-                                            <tr>
-                                                <th>Ημερομηνια - Ωρα</th>
-                                                <th>{{ instance.date|date:"d/m/Y"}} - {{ instance.date}}</th>
+                                                <th>Ημερομηνια</th>
+                                                <th>{{ instance.date|date:"d/m/Y"}}</th>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -48,18 +45,18 @@
                             {% for product in products %}
                             <div class="row p-5">
                                 <div class="col-md-12">
-
                                     <h4>{{ product }}</h4>
+                                    ΠΑΡΑΧΘΕΝ ΠΟΣΟΤΗΤΑ: {{ product.qty }}   | ΗΜΕΡΟΜΗΝΙΑ ΛΗΞΗΣ: {{ product.expiration_date }} ΤΟΠΟΣ ΑΠΟΘΗΚΕΥΣΗΣ {{ product.storage }}
                                     <hr>
                                 </div>
                                 <div class="col-md-12">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th class="border-0 text-uppercase small font-weight-bold">Κωδικος Υλης</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">L.O.T</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Αποθηκη</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Προμηθευτης</th>
-                                                <th class="border-0 text-uppercase small font-weight-bold">Υλικο Συσκευασιας</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">Υλικ'ο / 'A Ύλη</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Ημερομηνια</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Ποσοτητα</th>
                                             </tr>
@@ -71,7 +68,7 @@
                                                     <td>{{ ele.storage }}</td>
                                                     <td>{{ ele.product.vendor }}</td>
                                                     <td>{{ ele.product }}</td>
-                                                    <td>{{ ele.warehouse_item.invoice.date }}</td>
+                                                    <td>{{ ele.warehouse_item.invoice.date|date:"d/m/Y" }}</td>
                                                     <td>{{ ele.qty }}</td>
                                                 </tr>
                                             {% endfor %}

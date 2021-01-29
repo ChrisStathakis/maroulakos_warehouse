@@ -17,6 +17,7 @@ from django_tables2 import RequestConfig
 
 from decimal import Decimal
 
+
 @method_decorator(staff_member_required, name='dispatch')
 class WarehouseMovementsInvoiceListView(ListView):
     model = WarehouseMovementsInvoice

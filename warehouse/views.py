@@ -254,11 +254,18 @@ class InvoiceTransformationDetailView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['products'] = Product.objects.filter(product_class__have_ingredient=True)[:10]
+        context["back_url"] = reverse('warehouse:invoice_trans_list')
         return context
 
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+@staff_member_required()
+def delete_invoice_transformation_view(request, pk):
+    obj = get_object_or_404(InvoiceTransformation, id=pk)
+    # need heklp
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -412,6 +419,7 @@ def create_sale_invoice_transformation_view(request, pk):
     instance = get_object_or_404(InvoiceTransformation, id=pk)
     instance.locked = True
     instance.save()
+    '''
     sale_invoice = SalesInvoice.objects.create(
         costumer=instance.costumer,
         order_type='a',
@@ -428,5 +436,5 @@ def create_sale_invoice_transformation_view(request, pk):
             storage=item.storage,
             costumer=instance.costumer
         )
-
-    return redirect(sale_invoice.get_edit_url())
+    '''
+    return redirect(instance.get_edit_url())

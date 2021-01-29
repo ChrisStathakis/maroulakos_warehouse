@@ -8,7 +8,7 @@
                     <div class="card-header text-center">
                         <h4>{{ object }}</h4>
                         <a class="btn btn-info pull-left" href="{% url 'warehouse:print_invoice_transformation' object.id %}"><i class="fa fa-print"></i> </a>
-                         <a href="{% url 'warehouse:transform_list' %}" class="btn btn-warning pull-right">Επιστροφη</a>
+                         <a href="{{ back_url }}" class="btn btn-warning pull-right">Επιστροφη</a>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -50,7 +50,7 @@
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                         <i class="fa fa-edit"></i> Επεξεργασια
                                     </button>
-                                    <a href="{% url 'warehouse:create_sale_from_trans' object.id %}"  class="btn btn-success">Μετατροπη σε πωληση</a>
+                                    {% comment %}<a href="{% url 'warehouse:create_sale_from_trans' object.id %}"  class="btn btn-success">Μετατροπη σε πωληση</a> {% endcomment %}
                                     <button type="button" class="btn btn-danger">Διαγραφη</button>
                                 </div>
                                 {% endif %}
