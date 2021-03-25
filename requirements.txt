@@ -80,7 +80,7 @@ python-social-auth==0.3.6
 python3-memcached==1.51
 python3-openid==3.1.0
 pytz==2019.3
-PyYAML==5.2
+PyYAML==5.4
 redis==3.3.11
 reportlab==3.5.34
 requests==2.22.0
