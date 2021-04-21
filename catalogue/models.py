@@ -109,6 +109,9 @@ class Product(models.Model):
     objects = models.Manager()
     # my_query = ProductManager()
 
+    class Meta:
+        ordering = ['-id', ]
+
     def save(self, *args, **kwargs):
         self.safe_warning = False if self.safe_stock == 0 else False if self.qty > self.safe_stock else True
         if self.product_class.have_storage:
@@ -170,16 +173,14 @@ class Product(models.Model):
         q = request.GET.get('q', None)
         search_name = request.GET.get('search_name', None)
         product_class_name = request.GET.get('product_class_name', None)
-        if product_class_name:
-            qs = qs.filter(product_class__have_ingredient=True)
-
+        vendor_name = request.GET.getlist('vendor_name', None)
+        cate_name = request.GET.getlist('cate_name', None)
+        qs = qs.filter(vendor__in=vendor_name) if vendor_name else qs
+        qs = qs.filter(category__in=cate_name) if cate_name else qs
+        qs = qs.filter(product_class__have_ingredient=True) if product_class_name else qs
         if q:
-            qs = qs.filter(Q(title__icontains=q) |
-                           Q(order_sku__icontains=q) |
-                           Q(sku__icontains=q)
-                           ).distinct()
+            qs = qs.filter(Q(title__icontains=q) |Q(order_sku__icontains=q) | Q(sku__icontains=q)).distinct()
         if search_name:
-
             qs = qs.filter(Q(title__icontains=search_name) |
                            Q(order_sku__icontains=search_name) |
                            Q(sku__icontains=search_name)

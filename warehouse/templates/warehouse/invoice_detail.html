@@ -129,11 +129,9 @@
                                     </div>
                                   </div>
                                 </div>
-                                <a href="#" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
+                                <a href="{% url 'warehouse:invoice_delete' invoice.id%}" onclick="return confirm('ΕΙΣΑΙ ΣΙΓΟΥΡΟΣ;')" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

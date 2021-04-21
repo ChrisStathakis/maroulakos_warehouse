@@ -108,6 +108,7 @@ def validate_order_item_update_view(request, pk):
     form = InvoiceItemForm(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+
     return redirect(instance.invoice.get_edit_url())
 
 
