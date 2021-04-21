@@ -138,7 +138,7 @@ class Invoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
     order_type = models.CharField(max_length=1, choices=INVOICE_TYPES, default='a', verbose_name='Είδος Παραστατικού')
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
-    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True,
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True, blank=True,
                                        verbose_name='Τροπος Πληρωμης')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
     value = models.DecimalField(decimal_places=3, max_digits=20, verbose_name='Καθαρή Αξια', default=0.00)
@@ -196,7 +196,7 @@ class InvoiceItem(models.Model):
         ('c', 'Κιλό'),
 
     )
-    order_code = models.CharField(max_length=50, blank=True, verbose_name='Κωδικος Τιμολογιου')
+    order_code = models.CharField(max_length=50, blank=True, verbose_name='Κωδικος Τιμολογιου', null=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, verbose_name='Προμηθευτης')
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='invoice_items', verbose_name='Προϊον')
