@@ -10,11 +10,17 @@ CURRENCY = 're'
 
 
 class OffsShoreCompany(models.Model):
-    title = models.CharField(unique=True)
-    afm = models.CharField(unique=True)
+    title = models.CharField(unique=True, max_length=200)
+    afm = models.CharField(unique=True, max_length=200)
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('offshore:company_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('offshore:company_delete', kwargs={'pk': self.id})
 
 
 class OffsShoreCostumer(models.Model):
@@ -86,6 +92,9 @@ class OffsShoreCompanyCostumer(models.Model):
 
     def __str__(self):
         return f'{self.costumer} | {self.company}'
+
+    def get_absolute_url(self):
+        return reverse('offshore:costumer_company_card', kwargs={'pk': self.id})
 
 
 class OffshoreOrder(models.Model):
