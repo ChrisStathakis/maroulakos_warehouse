@@ -55,3 +55,45 @@
         </div>
     </div>
 {% endblock %}
+
+{% block extra_js %}
+    <script>
+        $('.quick_view').click(function (evt) {
+            evt.preventDefault();
+            $('#modal_area').empty();
+            const my_btn = $(this);
+            const url = my_btn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function (data) {
+                    $('#modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+        })
+        })
+    </script>
+
+    <script>
+      $('.calculate_button').click(function (evt) {
+        evt.preventDefault();
+            $('#modal_area').empty();
+            const my_btn = $(this);
+            const url = my_btn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+
+                success: function (data) {
+                    $('#modal_area').html(data.result);
+                    $('#quick_view_modal').modal('show');
+                }
+        })
+        })
+    </script>
+
+
+{% endblock %}

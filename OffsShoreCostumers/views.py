@@ -5,9 +5,12 @@ from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
+
 from .models import OffsShoreCompany, OffsShoreCostumer, OffsShoreCompanyCostumer
 from .forms import (OffshoreCompanyForm, OffshoreCostumerForm)
 from .tables import (OffsShoreCompanyTable, OffshoreCompanyCostumerTable, OrderTable, PaymentTable)
+
+
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -95,11 +98,16 @@ def create_costumer_from_company_view(request, pk):
 @staff_member_required
 def costumer_company_card_view(request, pk):
     instance = get_object_or_404(OffsShoreCompanyCostumer, id=pk)
+    context = locals()
     orders = instance.orders.all()
     payments = instance.payments.all()
     orders_table = OrderTable(orders)
     payments_table = PaymentTable(payments)
-    context = locals()
+
+    context['date_filter'] = True
+    context['orders_table'] = orders_table
+    context['payments_table'] = payments_table
+
     return render(request, 'offshore/costumer_card_view.html', context)
 
 

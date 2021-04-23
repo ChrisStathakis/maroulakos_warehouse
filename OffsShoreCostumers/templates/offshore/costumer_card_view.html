@@ -6,8 +6,16 @@
          <div class="col-12">
              <div class="card">
                  <div class="card-header">
-                     <div class="card-title"><h4 class="text-center">{{ object }}, Υπόλοιπο {{ object.tag_balance }}</h4> </div>
-                      <a href="{% url 'costumer_list' %}" class="btn btn-sm btn-outline-warning btn-round text-right">Επιστροφη</a>
+                     <div class="card-title"><h4 class="text-center">{{ instance }}, Υπόλοιπο {{ instance.tag_balance }}</h4> </div>
+                      <a href="{% url 'offshore:company_update' instance.company.id %}" class="btn btn-sm btn-outline-warning btn-round text-right">Επιστροφη</a>
+                 </div>
+                 <div class="card-body">
+                      <form method="get" class="form">
+                          <div class="row">
+                              {% include 'filters/my_filters.html' %}
+                          </div>
+                          <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
+                      </form>
                  </div>
              </div>
          </div>
@@ -96,7 +104,7 @@
                         </span>
                       </div>
                       <div class="col-md-5 col-5 text-right">
-                        <a href="{% url 'create_order_costumer_detail' object.id %}" class="btn btn-sm btn-outline-warning btn-round btn-icon"><i class="fa fa-plus"></i></a>
+                        <a href="{% url 'offshore:create_order' instance.id %}" class="btn btn-sm btn-outline-warning btn-round btn-icon"><i class="fa fa-plus"></i></a>
                       </div>
                     </div>
                   </li>
@@ -110,12 +118,12 @@
                         </span>
                       </div>
                       <div class="col-md-5 col-5 text-right">
-                        <a href="{% url 'create_payment_costumer_detail' object.id %}" class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-plus"></i></a>
+                        <a href="" class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-plus"></i></a>
                       </div>
                     </div>
                   </li>
                 </ul>
-                  <a href="{% url 'costumer_delete' object.id %}" onclick="return confirm('Είσαι Σιγουρος;')" class="btn btn-danger"><i class="fa fa-warning"></i> Διαγραφη </a>
+                  <a href="" onclick="return confirm('Είσαι Σιγουρος;')" class="btn btn-danger"><i class="fa fa-warning"></i> Διαγραφη </a>
               </div>
             </div>
           </div>
@@ -123,7 +131,7 @@
             <div class="card card-user">
               <div class="card-header">
                 <h5 class="card-title">Επεργασία Προφίλ</h5>
-                  <a href="{% url 'costumer_empty_log' object.id %}" class="btn btn-warning">Καθαρισμος Κινησεων</a>
+                  <a href="" class="btn btn-warning">Καθαρισμος Κινησεων</a>
 
               </div>
               <div class="card-body">

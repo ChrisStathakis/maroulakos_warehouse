@@ -2,20 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="335ef01a-65b6-4215-907c-724aea06320f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/tables.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/company_update.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/form_view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/actions_view.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/ajax_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/ajax_analysis_view.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/calculate_balance_view.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_order_container.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_view_modal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/print_movements.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/tables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OffsShoreCostumers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/OffsShoreCostumers/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_settings/templates/include/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/project_settings/templates/include/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse_management/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse_management/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse_management/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse_management/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,92 +30,7 @@
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="102" column="48" lean-forward="true" selection-start-line="102" selection-start-column="48" selection-end-line="102" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#95#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="costumer_card_view.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2856">
-              <caret line="168" column="14" selection-start-line="168" selection-start-column="14" selection-end-line="168" selection-end-column="14" />
-              <folding>
-                <element signature="e#835#857#0#HTML" expanded="true" />
-                <element signature="e#1248#1270#0#HTML" expanded="true" />
-                <element signature="e#2847#2865#0#HTML" expanded="true" />
-                <element signature="e#2951#2969#0#HTML" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="102" selection-start-line="15" selection-start-column="102" selection-end-line="15" selection-end-column="102" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="26" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tables.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/tables.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="83" column="31" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#31#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="list_view.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="46" column="50" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -146,6 +63,8 @@
       <find>nvoice-transformation-list</find>
       <find>nvoice-transformation</find>
       <find>μετα</find>
+      <find>create_payment_costumer_detail</find>
+      <find>ajax_quick_order_view</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -154,7 +73,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/warehouse/urls.py" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/ajax/ware_product_container.html" />
         <option value="$PROJECT_DIR$/project_settings/templates/project_settings/storage_analysis.html" />
         <option value="$PROJECT_DIR$/project_settings/print_view.py" />
@@ -187,18 +105,25 @@
         <option value="$PROJECT_DIR$/warehouse/views.py" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/transfo_detail.html" />
         <option value="$PROJECT_DIR$/warehouse/models.py" />
-        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/form_view.html" />
         <option value="$PROJECT_DIR$/warehouse_management/settings.py" />
         <option value="$PROJECT_DIR$/warehouse_management/urls.py" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/company_update.html" />
         <option value="$PROJECT_DIR$/project_settings/templates/include/navbar.html" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/forms.py" />
-        <option value="$PROJECT_DIR$/OffsShoreCostumers/tables.py" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/views.py" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/print_movements.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/actions_view.py" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/tables.py" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/urls.py" />
         <option value="$PROJECT_DIR$/OffsShoreCostumers/models.py" />
-        <option value="$PROJECT_DIR$/OffsShoreCostumers/views.py" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_order_container.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/calculate_balance_view.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/ajax_analysis_view.html" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/ajax_views.py" />
+        <option value="$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_view_modal.html" />
       </list>
     </option>
   </component>
@@ -236,24 +161,6 @@
             <path>
               <item name="maroulakos_warehouse" type="b2602c69:ProjectViewProjectNode" />
               <item name="maroulakos_warehouse" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="maroulakos_warehouse" type="b2602c69:ProjectViewProjectNode" />
-              <item name="maroulakos_warehouse" type="462c0819:PsiDirectoryNode" />
-              <item name="OffsShoreCostumers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="maroulakos_warehouse" type="b2602c69:ProjectViewProjectNode" />
-              <item name="maroulakos_warehouse" type="462c0819:PsiDirectoryNode" />
-              <item name="OffsShoreCostumers" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="maroulakos_warehouse" type="b2602c69:ProjectViewProjectNode" />
-              <item name="maroulakos_warehouse" type="462c0819:PsiDirectoryNode" />
-              <item name="OffsShoreCostumers" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="offshore" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -301,8 +208,8 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32624868" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14322917" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32624868" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14322917" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -321,7 +228,7 @@
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="manage.py@maroulakos_warehouse" order="9" weight="0.32831737" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14322917" />
@@ -329,17 +236,17 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="right" id="Database" order="4" />
       <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.32624868" />
       <window_info anchor="bottom" id="Event Log" order="13" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Python Console" order="11" />
     </layout-to-restore>
   </component>
@@ -361,64 +268,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/analysis/templates/analysis/balance_sheet.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="49">
-          <caret line="273" column="37" lean-forward="true" selection-start-line="273" selection-start-column="37" selection-end-line="273" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/payroll/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="469" column="32" selection-start-line="469" selection-start-column="32" selection-end-line="469" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/templates/analysis/cash_row.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="65" column="62" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="169" column="31" selection-start-line="169" selection-start-column="31" selection-end-line="169" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="24" column="90" selection-start-line="24" selection-start-column="90" selection-end-line="24" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/admin.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project_settings/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="18" column="6" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/ajax_views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="89" column="58" selection-start-line="89" selection-start-column="58" selection-end-line="89" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/ajax/product_modal.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/ajax/ware_product_container.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -668,37 +517,118 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html">
+    <entry file="file://$PROJECT_DIR$/analysis/templates/analysis/analysis_outcome.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="782">
-          <caret line="46" column="50" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="50" />
+        <state relative-caret-position="391">
+          <caret line="23" column="35" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="23" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/forms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="26" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
+        <state relative-caret-position="416">
+          <caret line="29" column="90" selection-start-line="29" selection-start-column="90" selection-end-line="29" selection-end-column="90" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/project_settings/templates/filters/my_filters.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="80" selection-start-line="8" selection-start-column="80" selection-end-line="8" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/print_movements.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/actions_view.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="46" column="47" selection-start-line="46" selection-start-column="47" selection-end-line="46" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#86#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="83" column="31" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
+        <state relative-caret-position="442">
+          <caret line="32" column="73" selection-start-line="32" selection-start-column="73" selection-end-line="32" selection-end-column="73" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_order_container.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="35" selection-start-line="35" selection-end-line="35" />
+          <folding>
+            <element signature="e#450#457#1#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/ajax_views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <element signature="e#0#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/ajax_analysis_view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="53" selection-start-line="53" selection-end-line="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/calculate_balance_view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
+          <folding>
+            <element signature="e#450#457#1#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/list_view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="98" column="14" selection-start-line="98" selection-start-column="14" selection-end-line="98" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/ajax_views/quick_view_modal.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="109" column="76" selection-start-line="109" selection-start-column="76" selection-end-line="109" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="102" selection-start-line="15" selection-start-column="102" selection-end-line="15" selection-end-column="102" />
+        <state relative-caret-position="450">
+          <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="4" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -707,33 +637,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+        <state relative-caret-position="348">
+          <caret line="110" column="45" selection-start-line="110" selection-start-column="45" selection-end-line="110" selection-end-column="45" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="102" column="48" lean-forward="true" selection-start-line="102" selection-start-column="48" selection-end-line="102" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#95#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OffsShoreCostumers/templates/offshore/costumer_card_view.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2856">
-          <caret line="168" column="14" selection-start-line="168" selection-start-column="14" selection-end-line="168" selection-end-column="14" />
-          <folding>
-            <element signature="e#835#857#0#HTML" expanded="true" />
-            <element signature="e#1248#1270#0#HTML" expanded="true" />
-            <element signature="e#2847#2865#0#HTML" expanded="true" />
-            <element signature="e#2951#2969#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>

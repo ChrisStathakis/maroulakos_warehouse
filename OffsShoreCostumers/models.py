@@ -2,11 +2,12 @@ from django.db import models
 from django.db.models import Sum, Q
 from django.urls import reverse
 from django.utils import timezone
+from django.conf import settings
 
 import datetime
 from decimal import Decimal
 
-CURRENCY = 're'
+CURRENCY = settings.CURRENCY
 
 
 class OffsShoreCompany(models.Model):
@@ -88,13 +89,35 @@ class OffsShoreCostumer(models.Model):
 class OffsShoreCompanyCostumer(models.Model):
     company = models.ForeignKey(OffsShoreCompany, on_delete=models.CASCADE)
     costumer = models.ForeignKey(OffsShoreCostumer, on_delete=models.CASCADE)
-    balance = models.DecimalField(max_digits=30, decimal_places=2, default=0)
+    balance = models.DecimalField(max_digits=30, decimal_places=2, default=0, verbose_name='Υπόλοιπο')
+    
+    def save(self, *args, **kwargs):
+        orders, payments = self.orders.all(), self.payments.all()
+        add = orders.aggregate(Sum('value'))['value__sum'] if orders.exists() else 0
+        minus = payments.aggregate(Sum('value'))['value__sum'] if payments.exists() else 0 
+        self.balance = add - minus
+        super(OffsShoreCompanyCostumer, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.costumer} | {self.company}'
 
     def get_absolute_url(self):
         return reverse('offshore:costumer_company_card', kwargs={'pk': self.id})
+
+    def get_edit_url(self):
+        return self.get_absolute_url()
+
+    def get_order_url(self):
+        return reverse('offshore:create_order', kwargs={'pk': self.id})
+
+    def get_payment_url(self):
+        return reverse('offshore:create_payment_costumer_view', kwargs={'pk': self.id})
+
+    def get_quick_view_url(self):
+        return reverse('offshore:costumer_quick_view', kwargs={'pk': self.id})
+
+    def tag_balance(self):
+        return f'{self.balance} {CURRENCY}'
 
 
 class OffshoreOrder(models.Model):
@@ -107,7 +130,7 @@ class OffshoreOrder(models.Model):
 
     class Meta:
         ordering = ['-date']
-
+        
     def __str__(self):
         return f'{self.customer} - {self.title}'
 
@@ -115,6 +138,7 @@ class OffshoreOrder(models.Model):
         if self.id:
             self.title = f'Παραστατικο {self.id}' if len(self.title) == 0 else self.title
         super().save(*args, **kwargs)
+        self.customer.save()
 
     def tag_value(self):
         return f'{self.value} {CURRENCY}'
