@@ -1,0 +1,88 @@
+<!DOCTYPE html> {% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ instance.costumer }} | {{ instance.get_series_display }} | {{ instance.number }}</title>
+        <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
+        <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
+<!------ Include the above in your HEAD tag ---------->
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="row p-5">
+                                <div class="col-md-6">
+                                    <h4>Αναλυση Κινήσεων {{ obj }}</h4>
+                                    <p class="font-weight-bold mb-4">ΜΑΡΟΥΛΑΚΟΣ ΑΕ</p>
+
+                                </div>
+
+                                <div class="col-md-6 text-right">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Ετος</th>
+                                                <th>{{ year }}</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row p-5">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΗΜΕΡΟΜΗΝΙΑ</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΚΩΔΙΚΟΣ</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΠΕΛΑΤΗΣ</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΠΟΣΟ</th>
+                                                <th class="border-0 text-uppercase small font-weight-bold">ΚΙΝΗΣΗ</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>-</td>
+                                                <td colspan="2">Υπόλοιπο προηγουμενων χρήσεων</td>
+
+                                                <td>{{ pre_diff }} {{ currency }}</td>
+                                                <td> - </td>
+                                            </tr>
+                                            {% for ele in merged_qs %}
+                                                <tr>
+                                                    <td>{{ ele.date|date:"d/m/Y" }}</td>
+                                                    <td>{{ ele.title }}</td>
+                                                    <td>{{ ele.customer }}</td>
+                                                    <td>{{ ele.tag_print_value }}</td>
+                                                    <td>{{ ele.tag_movement }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Προηγ. Υπόλοιπο</td>
+                                                <td>Συνολο Τιμ.{{ orders_sum }} {{ currency }}</td>
+                                                <td>Συνολο Πληρ. {{ payments_sum }} {{ currency }}</td>
+                                                <td></td>
+                                                <th>Διαφορά {{ diff }} {{ currency }}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+  </body>
+</html>

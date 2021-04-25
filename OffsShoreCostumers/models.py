@@ -143,17 +143,20 @@ class OffshoreOrder(models.Model):
     def tag_value(self):
         return f'{self.value} {CURRENCY}'
 
+    def get_absolute_url(self):
+        return reverse('offshore:update_payment', kwargs={'pk': self.id})
+
     def get_edit_url(self):
-        return reverse('orders:order_update', kwargs={'pk': self.id})
-
-    def get_modal_url(self):
-        return reverse('ajax_quick_order_view', kwargs={'pk': self.id})
-
-    def get_edit_costumer_url(self):
-        return reverse('edit_order_from_costumer', kwargs={'pk': self.id})
+        return self.get_absolute_url()
 
     def get_delete_url(self):
-        return reverse('orders:order_delete', kwargs={'pk': self.id})
+        return reverse('offshore:delete_order', kwargs={'pk': self.id})
+
+    def tag_movement(self):
+        return 'Τιμολόγιο'
+
+    def tag_print_value(self):
+        return self.tag_value()
 
     @staticmethod
     def filters_data(request, qs):
@@ -199,22 +202,19 @@ class OffshorePayment(models.Model):
         if self.id:
             self.title = f'Πληρωμή {self.id}' if len(self.title) == 0 else self.title
         super().save(*args, **kwargs)
-        self.customer.update_payments()
+        self.customer.save()
 
     def tag_value(self):
         return f'{self.value} {CURRENCY}'
 
+    def get_absolute_url(self):
+        return reverse('offshore:update_payment', kwargs={'pk': self.id})
+
     def get_edit_url(self):
-        return reverse('orders:payment_update', kwargs={'pk': self.id})
-
-    def get_edit_costumer_url(self):
-        return reverse('edit_payment_from_costumer', kwargs={'pk': self.id})
-
-    def get_modal_url(self):
-        return reverse('ajax_quick_payment_view', kwargs={'pk': self.id})
+        return self.get_absolute_url()
 
     def get_delete_url(self):
-        return reverse('orders:payment_delete', kwargs={'pk': self.id})
+        return reverse('offshore:delete_payment', kwargs={'pk': self.id})
 
     @staticmethod
     def filters_data(request, qs):
@@ -241,4 +241,8 @@ class OffshorePayment(models.Model):
             qs = qs.filter(date__range=[date_start, date_end])
         return qs
 
+    def tag_movement(self):
+        return 'Πληρωμή'
 
+    def tag_print_value(self):
+        return f'-{self.value} {CURRENCY}'

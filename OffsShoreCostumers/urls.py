@@ -4,7 +4,10 @@ from .views import (CompanyListView, CompanyCreateView, CompanyUpdateView, compa
                     create_costumer_from_company_view, costumer_company_card_view
                     )
 
-from .actions_view import (CreateOrderView, )
+from .actions_view import (CreateOrderView, OrderUpdateView, delete_order_view,
+                           PaymentUpdateView, delete_payment_view,
+                           print_customer_movements_view, CreatePaymentView)
+
 from .ajax_views import (quick_view_costumer_view, quick_pay_costumer_view, ajax_calculate_balance,
                          ajax_analysis_view, ajax_quick_order_view, ajax_quick_payment_view)
 
@@ -19,11 +22,18 @@ urlpatterns = [
 
     path('create-costumer_from_company_view/<int:pk>/', create_costumer_from_company_view, name='create_company_from_list'),
     path('costumer-company-card/<int:pk>/', costumer_company_card_view, name='costumer_company_card'),
+    path('print-movements/<int:pk>/', print_customer_movements_view, name='print_customer_movements'),
 
 
 
 
     path('actions/order/<int:pk>/', CreateOrderView.as_view(), name='create_order'),
+    path('actions/order-update/<int:pk>/', OrderUpdateView.as_view(), name='update_order'),
+    path('actions/order-delete/<int:pk>/', delete_order_view, name='delete_order'),
+
+    path('create/payments/<int:pk>/', CreatePaymentView.as_view(), name='create_payment'),
+    path('actions/payments-update/<int:pk>/', PaymentUpdateView.as_view(), name='update_payment'),
+    path('actions/payments-delete/<int:pk>/', delete_payment_view, name='delete_payment'),
 
     # ajax
     path('costumer/quick_view/<int:pk>/', quick_view_costumer_view, name='costumer_quick_view'),

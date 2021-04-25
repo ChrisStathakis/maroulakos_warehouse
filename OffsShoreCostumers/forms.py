@@ -32,3 +32,12 @@ class OffshoreOrderForm(BaseForm, forms.ModelForm):
     class Meta:
         model = OffshoreOrder
         fields = '__all__'
+
+
+class OffshorePaymentForm(BaseForm, forms.ModelForm):
+    customer = forms.ModelChoiceField(queryset=OffsShoreCompanyCostumer.objects.all(), widget=forms.HiddenInput())
+    date = forms.DateField(label='Ημερομηνία', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = OffshorePayment
+        fields = '__all__'

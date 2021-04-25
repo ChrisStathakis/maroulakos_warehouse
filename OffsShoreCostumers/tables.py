@@ -58,11 +58,11 @@ class OrderTable(tables.Table):
 
 class PaymentTable(tables.Table):
     action = tables.TemplateColumn(
-        "<a href='{{ record.get_edit_costumer_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
+        "<a href='' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
         orderable=False,verbose_name='Επεξεργασια'
     )
     info = tables.TemplateColumn(
-        "<button data-href='{{ record.get_modal_url }}' class='btn btn-success btn-round quick_view'>"
+        "<button data-href='' class='btn btn-success btn-round quick_view'>"
         "<i class='fa fa-info'></i></button>",
         orderable=False, verbose_name='Πληροφοριες'
     )

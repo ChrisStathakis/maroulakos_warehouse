@@ -16,6 +16,7 @@
                           </div>
                           <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
                       </form>
+
                  </div>
              </div>
          </div>
@@ -23,6 +24,7 @@
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title"> Παραστατικα</h4>
+                  <a href="{% url 'offshore:create_order' instance.id %}" class="btn btn-primary">Δημιουργία Παραστατικού</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive" style="height: 400px;">
@@ -35,6 +37,7 @@
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Πληρωμές</h4>
+                  <a href="{% url 'offshore:create_payment' instance.id %}" class="btn btn-warning">Δημιουργία Πληρωμής</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive"  style="height: 400px;">
@@ -93,7 +96,7 @@
                 <h4 class="card-title">Επιλογες</h4>
               </div>
               <div class="card-body">
-                <ul class="list-unstyled team-members">
+                  <ul class="list-unstyled team-members">
                   <li>
                     <div class="row">
                       <div class="col-md-7 col-7">
@@ -124,6 +127,16 @@
                   </li>
                 </ul>
                   <a href="" onclick="return confirm('Είσαι Σιγουρος;')" class="btn btn-danger"><i class="fa fa-warning"></i> Διαγραφη </a>
+                  <hr>
+                  <h4>Εκτυπωση κινήσεων</h4>
+                  <form method="get" action="{% url 'offshore:print_customer_movements' instance.id %}" class="form">
+                      <div class="form-group">
+                          <label>Χρονιά</label>
+                          <input type="number" class="form-control" step="1" name="year" required />
+                      </div>
+                      <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> </button>
+                  </form>
+
               </div>
             </div>
           </div>
