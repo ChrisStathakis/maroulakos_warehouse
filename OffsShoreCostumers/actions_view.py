@@ -119,17 +119,19 @@ class PaymentUpdateView(UpdateView):
         form.save()
         return super(PaymentUpdateView, self).form_valid(form)
 
+
 @staff_member_required
 def delete_order_view(request, pk):
     obj = get_object_or_404(OffshoreOrder, id=pk)
     obj.delete()
-    return redirect(obj.get_edit_url())
+    return redirect(obj.customer.get_edit_url())
+
 
 @staff_member_required
 def delete_payment_view(request, pk):
     obj = get_object_or_404(OffshorePayment, id=pk)
     obj.delete()
-    return obj.customer.get_edit_url()
+    return redirect(obj.customer.get_edit_url())
 
 
 @staff_member_required

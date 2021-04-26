@@ -144,7 +144,7 @@ class OffshoreOrder(models.Model):
         return f'{self.value} {CURRENCY}'
 
     def get_absolute_url(self):
-        return reverse('offshore:update_payment', kwargs={'pk': self.id})
+        return reverse('offshore:update_order', kwargs={'pk': self.id})
 
     def get_edit_url(self):
         return self.get_absolute_url()

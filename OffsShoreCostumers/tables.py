@@ -40,38 +40,40 @@ class OffshoreCompanyCostumerTable(tables.Table):
 
 class OrderTable(tables.Table):
     action = tables.TemplateColumn(
-        "<a href='' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
+        "<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
         orderable=False, verbose_name='Επεξεργασια'
     )
     info = tables.TemplateColumn(
-        "<button data-href='' class='btn btn-success btn-round quick_view'>"
-        "<i class='fa fa-info'></i></button>",
-        orderable=False, verbose_name='Πληροφοριες'
+        "<a href='{{ record.get_delete_url }}' class='btn btn-danger btn-round'>"
+        "<i class='fa fa-remove'></i></a>",
+        orderable=False, verbose_name='διαγραφη'
     )
+    date = tables.TemplateColumn('<p>{{ record.date|date:"d-m-Y" }} </p>', orderable=False, verbose_name='ημερομηνια')
     tag_value = tables.Column(orderable=False, verbose_name='Αξία')
 
     class Meta:
         model = OffshoreOrder
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'title', 'tag_value', 'info', 'action']
+        fields = ['date', 'title', 'tag_value', 'action', 'info']
 
 
 class PaymentTable(tables.Table):
     action = tables.TemplateColumn(
-        "<a href='' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
-        orderable=False,verbose_name='Επεξεργασια'
+        "<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
+        orderable=False, verbose_name='Επεξεργασια'
     )
     info = tables.TemplateColumn(
-        "<button data-href='' class='btn btn-success btn-round quick_view'>"
-        "<i class='fa fa-info'></i></button>",
-        orderable=False, verbose_name='Πληροφοριες'
+        "<a href='{{ record.get_delete_url }}' class='btn btn-danger btn-round'>"
+        "<i class='fa fa-remove'></i></a>",
+        orderable=False, verbose_name='Διαγραφή'
     )
+    ate = tables.TemplateColumn('<p>{{ record.date|date:"d-m-Y" }} </p>', orderable=False, verbose_name='ημερομηνια')
     tag_value = tables.Column(orderable=False, verbose_name='Αξια')
 
     class Meta:
         model = OffshorePayment
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'title', 'tag_value', 'info', 'action']
+        fields = ['date', 'title', 'tag_value', 'action', 'info']
 
 
 class OrderTableListView(tables.Table):
@@ -79,12 +81,17 @@ class OrderTableListView(tables.Table):
         "<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
         orderable=False, verbose_name='Επεξεργασια'
     )
+    info = tables.TemplateColumn(
+        "<a href='{{ record.get_delete_url }}' class='btn btn-danger btn-round'>"
+        "<i class='fa fa-remove'></i></button>",
+        orderable=False, verbose_name='Διαγραφή'
+    )
     tag_value = tables.Column(orderable=False, verbose_name='Αξία')
 
     class Meta:
         model = OffshoreOrder
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'customer', 'title', 'tag_value']
+        fields = ['date', 'customer', 'title', 'tag_value', 'action', 'info']
 
 
 class PaymentTableListView(tables.Table):
@@ -92,9 +99,14 @@ class PaymentTableListView(tables.Table):
         "<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
         orderable=False, verbose_name='Επεξεργασια'
     )
+    info = tables.TemplateColumn(
+        "<a href='{{ record.get_delete_url }}' class='btn btn-danger btn-round'>"
+        "<i class='fa fa-remove'></i></button>",
+        orderable=False, verbose_name='Διαγραφή'
+    )
     tag_value = tables.Column(orderable=False, verbose_name='Αξία')
 
     class Meta:
         model = OffshorePayment
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['date', 'customer', 'title', 'tag_value']
+        fields = ['date', 'customer', 'title', 'tag_value', 'action', 'info']
