@@ -13,6 +13,16 @@ CURRENCY = settings.CURRENCY
 class OffsShoreCompany(models.Model):
     title = models.CharField(unique=True, max_length=200)
     afm = models.CharField(unique=True, max_length=200)
+    balance = models.DecimalField(max_digits=30, decimal_places=2, default=0, verbose_name='Υπόλοιπο')
+    
+    def save(self, *args, **kwargs):
+        costumers = self.offsshorecompanycostumer_set.all()
+        orders = OffshoreOrder.objects.filter(customer__in=costumers)
+        payments = OffshorePayment.objects.filter(customer__in=costumers)
+        orders__sum = orders.aggregate(Sum('value'))['value__sum'] if orders.exists() else 0
+        payments__sum = payments.aggregate(Sum('value'))['value__sum'] if payments.exists() else 0
+        self.balance = orders__sum - payments__sum
+        super(OffsShoreCompany, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -87,8 +97,8 @@ class OffsShoreCostumer(models.Model):
 
 
 class OffsShoreCompanyCostumer(models.Model):
-    company = models.ForeignKey(OffsShoreCompany, on_delete=models.CASCADE)
-    costumer = models.ForeignKey(OffsShoreCostumer, on_delete=models.CASCADE)
+    company = models.ForeignKey(OffsShoreCompany, on_delete=models.PROTECT)
+    costumer = models.ForeignKey(OffsShoreCostumer, on_delete=models.PROTECT,)
     balance = models.DecimalField(max_digits=30, decimal_places=2, default=0, verbose_name='Υπόλοιπο')
     
     def save(self, *args, **kwargs):
@@ -97,6 +107,7 @@ class OffsShoreCompanyCostumer(models.Model):
         minus = payments.aggregate(Sum('value'))['value__sum'] if payments.exists() else 0 
         self.balance = add - minus
         super(OffsShoreCompanyCostumer, self).save(*args, **kwargs)
+        self.company.save()
 
     def __str__(self):
         return f'{self.costumer} | {self.company}'
@@ -106,6 +117,9 @@ class OffsShoreCompanyCostumer(models.Model):
 
     def get_edit_url(self):
         return self.get_absolute_url()
+
+    def get_delete_url(self):
+        return reverse('offshore:delete_customer', kwargs={'pk': self.id})
 
     def get_order_url(self):
         return reverse('offshore:create_order', kwargs={'pk': self.id})

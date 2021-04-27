@@ -11,8 +11,6 @@ from .forms import (OffshoreCompanyForm, OffshoreCostumerForm)
 from .tables import (OffsShoreCompanyTable, OffshoreCompanyCostumerTable, OrderTable, PaymentTable)
 
 
-
-
 @method_decorator(staff_member_required, name='dispatch')
 class CompanyListView(ListView):
     template_name = 'offshore/list_view.html'
@@ -57,13 +55,17 @@ class CompanyUpdateView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CompanyUpdateView, self).get_context_data(**kwargs)
-        context['page_title'] = f'ΠΕΛΑΤΕΣ {self.company}'
+        context['page_title'] = f'ΠΕΛΑΤΕΣ {self.company}- Υπόλοιπο: {self.company.balance}'
         context['back_url'] = reverse('offshore:company_list')
         context['create_url'] = reverse('offshore:create_company_from_list', kwargs={'pk': self.company.id})
+        context['extra_buttons'] = True
+        context['form'] = OffshoreCompanyForm(self.request.POST or None, instance=self.company)
+        context['company'] = self.company
         qs_table = OffshoreCompanyCostumerTable(self.object_list)
 
         context['queryset_table'] = qs_table
         return context
+
 
 
 @staff_member_required
@@ -103,11 +105,24 @@ def costumer_company_card_view(request, pk):
     payments = instance.payments.all()
     orders_table = OrderTable(orders)
     payments_table = PaymentTable(payments)
-
+    form = OffshoreCostumerForm(request.POST or None, instance=instance.costumer)
+    if form.is_valid():
+        form.save()
+        return redirect(instance.get_absolute_url())
     context['date_filter'] = True
     context['orders_table'] = orders_table
     context['payments_table'] = payments_table
+    context['form'] = form
+    context['instance'] = instance
 
     return render(request, 'offshore/costumer_card_view.html', context)
 
 
+@staff_member_required
+def delete_customer_view(request, pk):
+    obj = get_object_or_404(OffsShoreCompanyCostumer, id=pk)
+    customer = obj.costumer
+    obj.delete()
+    if not customer.offsshorecompanycostumer_set.exists():
+        customer.delete()
+    return redirect(obj.company.get_absolute_url())

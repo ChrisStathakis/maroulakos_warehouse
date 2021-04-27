@@ -49,90 +49,19 @@
     </div>
      <div class="row">
           <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="author">
-                  <a href="#">
-                    <h5 class="title">{{ object }}</h5>
-                  </a>
-                  <p class="description">
-                    Κατασταση {{ object.tag_active }} |  AMKA {{ object.amka }}
-                  </p>
-                </div>
-                <p class="description text-center">
-                  Τηλέφωνα
-                  <br> {{ object.cellphone|default_if_none:"Δεν υπάρχει κινητό" }}
-                  <br> {{ object.phone }}
-                </p>
-              </div>
-              <div class="card-footer">
-                <hr>
-                <div class="button-container">
-                  <div class="row">
-                    <div class="col-lg-3 col-md-6 col-6 ml-auto">
-                      <h5>{{ object.tag_value }}
-                        <br>
-                        <small>Συνολικός Τζιρος</small>
-                      </h5>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
-                      <h5>{{ object.tag_paid_value }}
-                        <br>
-                        <small>Πληρωμένη Αξία</small>
-                      </h5>
-                    </div>
-                    <div class="col-lg-3 mr-auto red">
-                      <h5 style="color: red">{{ object.tag_balance }}
-                        <br>
-                        <small style="color: red">Υπόλοιπο</small>
-                      </h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Επιλογες</h4>
               </div>
               <div class="card-body">
-                  <ul class="list-unstyled team-members">
-                  <li>
-                    <div class="row">
-                      <div class="col-md-7 col-7">
-                        Παραστατικού
-                        <br />
-                        <span class="text-muted">
-                          <small>Δημιουργία</small>
-                        </span>
-                      </div>
-                      <div class="col-md-5 col-5 text-right">
-                        <a href="{% url 'offshore:create_order' instance.id %}" class="btn btn-sm btn-outline-warning btn-round btn-icon"><i class="fa fa-plus"></i></a>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="row">
-                      <div class="col-md-7 col-7">
-                        Πληρωμής
-                        <br />
-                        <span class="text-success">
-                          <small>Δημιουργία</small>
-                        </span>
-                      </div>
-                      <div class="col-md-5 col-5 text-right">
-                        <a href="" class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-plus"></i></a>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-                  <a href="" onclick="return confirm('Είσαι Σιγουρος;')" class="btn btn-danger"><i class="fa fa-warning"></i> Διαγραφη </a>
+                  <a href="{{ instance.get_delete_url }}" onclick="return confirm('Είσαι Σιγουρος;')" class="btn btn-danger"><i class="fa fa-warning"></i> Διαγραφη </a>
                   <hr>
                   <h4>Εκτυπωση κινήσεων</h4>
                   <form method="get" action="{% url 'offshore:print_customer_movements' instance.id %}" class="form">
                       <div class="form-group">
                           <label>Χρονιά</label>
-                          <input type="number" class="form-control" step="1" name="year" required />
+                          <input type="number" min="2010" class="form-control" step="1" name="year" required />
                       </div>
                       <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> </button>
                   </form>
@@ -144,7 +73,7 @@
             <div class="card card-user">
               <div class="card-header">
                 <h5 class="card-title">Επεργασία Προφίλ</h5>
-                  <a href="" class="btn btn-warning">Καθαρισμος Κινησεων</a>
+
 
               </div>
               <div class="card-body">

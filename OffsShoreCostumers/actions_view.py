@@ -9,8 +9,8 @@ import datetime
 from itertools import chain
 from operator import attrgetter
 
-from .models import OffshoreOrder, OffsShoreCompanyCostumer, OffshorePayment
-from .forms import OffshoreOrderForm, OffshorePaymentForm
+from .models import OffshoreOrder, OffsShoreCompanyCostumer, OffshorePayment, OffsShoreCompany
+from .forms import OffshoreOrderForm, OffshorePaymentForm, OffshoreCompanyForm
 
 CURRENCY = settings.CURRENCY
 
@@ -160,3 +160,15 @@ def print_customer_movements_view(request, pk):
     currency = CURRENCY
     diff = orders_sum + pre_diff - payments_sum
     return render(request, 'offshore/print_view.html', context=locals())
+
+
+@staff_member_required
+def update_or_delete_company_view(request, pk, action):
+    obj = get_object_or_404(OffsShoreCompany, id=pk)
+    if action == 'delete':
+        obj.delete()
+    if action == 'update':
+        form = OffshoreCompanyForm(request.POST or None, instance=obj)
+        if form.is_valid():
+            form.save()
+    return redirect(obj.get_absolute_url())
