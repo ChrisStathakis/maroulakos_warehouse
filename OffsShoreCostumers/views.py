@@ -67,7 +67,6 @@ class CompanyUpdateView(ListView):
         return context
 
 
-
 @staff_member_required
 def company_delete_view(request, pk):
     obj = get_object_or_404(OffsShoreCompany, id=pk)
@@ -89,7 +88,7 @@ def create_costumer_from_company_view(request, pk):
             company=company,
             costumer=costumer
         )
-        return redirect(instance.get_absolute_url)
+        return redirect(company.get_absolute_url())
     context = dict()
     context['page_title'] = f'ΔΗΜΙΟΥΡΓΙΑ ΠΕΛΑΤΗ ==> {company}'
     context['back_url'] = company.get_absolute_url()

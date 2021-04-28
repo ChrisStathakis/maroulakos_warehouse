@@ -18,10 +18,7 @@ class OffshoreCompanyCostumerTable(tables.Table):
         "<a href='{{ record.get_edit_url }}' class='btn btn-primary btn-round'><i class='fa fa-edit'></i></a>",
         orderable=False, verbose_name='Καρτέλα'
     )
-    quick_view = tables.TemplateColumn(
-        "<a data-href='{{ record.get_quick_view_url }}' class='btn btn-success btn-round quick_view'><i class='fa fa-eye'></i></a>",
-        orderable=False, verbose_name='Πληρωμη'
-    )
+
 
     actions = tables.TemplateColumn(
         '<a href="{{ record.get_order_url }}" class="btn btn-warning btn-round">'
