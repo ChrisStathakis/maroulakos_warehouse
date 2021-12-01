@@ -136,6 +136,7 @@ class VendorBankingAccount(models.Model):
 
 class Invoice(models.Model):
     date = models.DateField(verbose_name='Ημερομηνια')
+    date_invoice = models.DateField(verbose_name='Ημερομηνια Τιμολογίου', blank=True, null=True)
     order_type = models.CharField(max_length=1, choices=INVOICE_TYPES, default='a', verbose_name='Είδος Παραστατικού')
     title = models.CharField(max_length=150, verbose_name='Αριθμος Τιμολογιου')
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True, blank=True,
@@ -155,12 +156,19 @@ class Invoice(models.Model):
         self.value = qs.aggregate(Sum('total_clean_value'))['total_clean_value__sum'] if qs.exists() else 0.00
         self.taxes_value = qs.aggregate(Sum('taxes_value'))['taxes_value__sum'] if qs.exists() else 0.00
         self.final_value = round(Decimal(self.value) + Decimal(self.extra_value) + Decimal(self.taxes_value), 2)
+        if not self.date_invoice:
+            self.date_invoice = self.date
         super(Invoice, self).save(*args, **kwargs)
         if self.vendor:
             self.vendor.update_value()
 
     def __str__(self):
         return f'{self.title}'
+
+    def show_invoice_date(self):
+        if self.date_invoice != self.date:
+            return self.date_invoice
+        return False
 
     def get_edit_url(self):
         return reverse('warehouse:invoice_update', kwargs={'pk': self.id})
@@ -216,6 +224,9 @@ class InvoiceItem(models.Model):
     storage = models.ForeignKey(ProductStorage, blank=True, null=True, on_delete=models.PROTECT, related_name='storage_invoices', verbose_name='Αποθηκη')
     used_qty = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Χρησιμοποιημενη Ποσοτητα', default=0)
     locked = models.BooleanField(default=False, verbose_name='Κλειδωμενο')
+
+    class Meta:
+        ordering = ['id', ]
 
     def save(self, *args, **kwargs):
         print(self.value,100-self.discount/100, self.discount)

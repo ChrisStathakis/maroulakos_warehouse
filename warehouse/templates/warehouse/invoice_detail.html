@@ -82,7 +82,10 @@
                         <div class="row">
                             <div class="col-6">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Ημερομηνια... {{ invoice.date }}</li>
+                                    <li class="list-group-item">
+                                        Ημερομηνια... {{ invoice.date|date:"d-m-Y" }} <br>
+                                        {% if invoice.show_invoice_date %} Ημερομηνια Τιμολογίου... {{ invoice.date_invoice|date:'d-m-Y' }} {% endif %}
+                                    </li>
                                     <li class="list-group-item">Κωδικος Τιμ.. {{ invoice.title }}</li>
                                     <li class="list-group-item">Αξια Προϊόντων... {{ invoice.tag_value }}</li>
                                     <li class="list-group-item">Εκπτωση Τιμολογιου... {{ invoice.extra_value }}</li>

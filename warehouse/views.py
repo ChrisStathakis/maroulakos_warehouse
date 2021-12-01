@@ -373,7 +373,7 @@ class CreateInvoiceView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form_title"], context['back_url'], = 'Δημιουργια Προμηθευτη', reverse('warehouse:invoice_list')
+        context["form_title"], context['back_url'], = 'Δημιουργια Παραστατικού', reverse('warehouse:invoice_list')
         context['popup'] = True
         return context
 

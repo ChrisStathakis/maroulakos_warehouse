@@ -47,10 +47,11 @@ class InvoiceVendorDetailForm(BaseForm, forms.ModelForm):
 class InvoiceForm(BaseForm, forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True, label='Ημερομηνία')
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=ModelSelect2(url='warehouse:vendor_autocomplete'), label='Προμηθευτης')
+    date_invoice = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False, label='Ημερομηνία Τιμολογίου')
 
     class Meta:
         model = Invoice
-        fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'description']
+        fields = ['date', 'vendor', 'order_type', 'title', 'payment_method', 'description', 'extra_value', 'date_invoice']
 
 
 class VendorBankingAccountForm(BaseForm, forms.ModelForm):
